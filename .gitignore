@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+
+# Evaluation outputs
+predictions.jsonl
+scores.json
