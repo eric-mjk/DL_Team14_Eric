@@ -1,3 +1,0 @@
-5.3.2.21.14 Certificate
-This is a reference to a Certificates object, which if needed identifies a chained set of unencoded
-X.509 certificates to prove an ancestor authority.

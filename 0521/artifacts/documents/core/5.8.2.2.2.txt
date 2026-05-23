@@ -1,3 +1,0 @@
-5.8.2.2.2 Name
-This is the name of the associated Log table.
-This column SHALL NOT be modifiable by the host.

@@ -1,2 +1,0 @@
-4.2.2 Base Template Methods
-Refer to section 4.2.1.4 for supported methods.

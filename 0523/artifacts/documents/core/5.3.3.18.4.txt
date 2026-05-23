@@ -1,3 +1,0 @@
-5.3.3.18.4 SetPackage Result
-This method returns an empty results list.  Success or failure of the method invocation is determined by
-the method's accompanying status code.

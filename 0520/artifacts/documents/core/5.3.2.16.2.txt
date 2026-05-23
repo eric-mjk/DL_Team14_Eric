@@ -1,3 +1,0 @@
-5.3.2.16.2 Name
-This is the name of the C_AES_256 object.
-For C_AES_256 objects that exist at issuance, this column SHALL NOT be modifiable by the host.

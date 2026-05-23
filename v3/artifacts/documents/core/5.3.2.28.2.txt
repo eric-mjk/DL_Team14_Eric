@@ -1,3 +1,0 @@
-5.3.2.28.2 Name
-This is the name of the C_HMAC_384 object.
-For C_HMAC_384 objects that exist at issuance, this column SHALL NOT be modifiable by the host.

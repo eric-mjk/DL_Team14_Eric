@@ -1,3 +1,0 @@
-5.5.4.5.2.1 Result
-The SetClockLow method returns an empty list.  Success or failure of the method invocation is
-determinable based on the status code returned in response to the method invocation.

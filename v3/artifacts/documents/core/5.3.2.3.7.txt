@@ -1,3 +1,0 @@
-5.3.2.3.7 NumColumns
-This value indicates the number of columns in the table.  For byte tables this SHALL be 0x01.
-This column SHALL NOT be modifiable by the host.

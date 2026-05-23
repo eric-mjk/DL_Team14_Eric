@@ -1,3 +1,0 @@
-5.3.2.3.8 Rows
-This value indicates the actual number of rows that have been created for the table.
-This column SHALL NOT be modifiable by the host.

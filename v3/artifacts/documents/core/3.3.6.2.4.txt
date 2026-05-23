@@ -1,2 +1,0 @@
-3.3.6.2.4 Vendor Unique
-These bytes are vendor specific.

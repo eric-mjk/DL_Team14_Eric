@@ -1,3 +1,0 @@
-5.4.2.3.9 Name
-This is the unique name of this template.
-This column SHALL NOT be modifiable by the host.

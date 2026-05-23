@@ -1,3 +1,0 @@
-5.4.2.1.2 Bytes
-This value is the size in bytes of the TPer’s entire protected storage area.
-This column SHALL NOT be modifiable by the host.

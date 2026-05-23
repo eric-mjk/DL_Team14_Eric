@@ -1,2 +1,0 @@
-3.3.4 Synchronous Protocol
-The TPer SHALL support the Synchronous Protocol. Refer to [2] for details.
