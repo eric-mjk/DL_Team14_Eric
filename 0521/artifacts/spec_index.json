@@ -1,18 +1,1917 @@
 {
+  "access_policy": {
+    "access_control_rows": [
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 01 00 00 00 00",
+        "invoking_pattern": "00 00 00 01 00 00 00 00",
+        "invoking_uid": "0000000100000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 01 TT TT TT TT *AC1",
+        "invoking_pattern": "00 00 00 01 TT TT TT TT *AC1",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 02 00 00 00 01",
+        "invoking_pattern": "00 00 00 02 00 00 00 01",
+        "invoking_uid": "0000000200000001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 03 00 00 00 00",
+        "invoking_pattern": "00 00 00 03 00 00 00 00",
+        "invoking_uid": "0000000300000000",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 03 TT TT TT TT *AC2",
+        "invoking_pattern": "00 00 00 03 TT TT TT TT *AC2",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 06 00 00 00 00",
+        "invoking_pattern": "00 00 00 06 00 00 00 00",
+        "invoking_uid": "0000000600000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 06 TT TT TT TT *AC3",
+        "invoking_pattern": "00 00 00 06 TT TT TT TT *AC3",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 08 00 00 00 00",
+        "invoking_pattern": "00 00 00 08 00 00 00 00",
+        "invoking_uid": "0000000800000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 08 TT TT TT TT *AC4",
+        "invoking_pattern": "00 00 00 08 TT TT TT TT *AC4",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 09 00 00 00 00",
+        "invoking_pattern": "00 00 00 09 00 00 00 00",
+        "invoking_uid": "0000000900000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 09 TT TT TT TT *AC5",
+        "invoking_pattern": "00 00 00 09 TT TT TT TT *AC5",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acesetenabled"
+        ],
+        "invoking_name": "00 00 00 09 00 00 00 03",
+        "invoking_pattern": "00 00 00 09 00 00 00 03",
+        "invoking_uid": "0000000900000003",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acesetenabled"
+        ],
+        "invoking_name": "00 00 00 09 00 00 02 01",
+        "invoking_pattern": "00 00 00 09 00 00 02 01",
+        "invoking_uid": "0000000900000201",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acesetenabled"
+        ],
+        "invoking_name": "00 00 00 09 00 00 02 00 (+XX)",
+        "invoking_pattern": "00 00 00 09 00 00 02 00 (+XX)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 00 00",
+        "invoking_pattern": "00 00 00 0B 00 00 00 00",
+        "invoking_uid": "0000000B00000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinsidgetnopin"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 00 01",
+        "invoking_pattern": "00 00 00 0B 00 00 00 01",
+        "invoking_uid": "0000000B00000001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinsidsetpin"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 00 01",
+        "invoking_pattern": "00 00 00 0B 00 00 00 01",
+        "invoking_uid": "0000000B00000001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinmsidgetpin"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 84 02",
+        "invoking_pattern": "00 00 00 0B 00 00 84 02",
+        "invoking_uid": "0000000B00008402",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinsidgetnopin"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 02 01",
+        "invoking_pattern": "00 00 00 0B 00 00 02 01",
+        "invoking_uid": "0000000B00000201",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinsidgetnopin"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 02 00 (+XX)",
+        "invoking_pattern": "00 00 00 0B 00 00 02 00 (+XX)",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinadminssetpin"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 02 01",
+        "invoking_pattern": "00 00 00 0B 00 00 02 01",
+        "invoking_uid": "0000000B00000201",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinadminssetpin"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 02 00 (+XX)",
+        "invoking_pattern": "00 00 00 0B 00 00 02 00 (+XX)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 02 01 00 03 00 01",
+        "invoking_pattern": "00 00 02 01 00 03 00 01",
+        "invoking_uid": "0000020100030001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acetperinfosetprogrammaticresetenable"
+        ],
+        "invoking_name": "00 00 02 01 00 03 00 01",
+        "invoking_pattern": "00 00 02 01 00 03 00 01",
+        "invoking_uid": "0000020100030001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 02 04 00 00 00 00",
+        "invoking_pattern": "00 00 02 04 00 00 00 00",
+        "invoking_uid": "0000020400000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 02 04 TT TT TT TT *AC6",
+        "invoking_pattern": "00 00 02 04 TT TT TT TT *AC6",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 00 00 00 00 01",
+        "invoking_pattern": "00 00 00 00 00 00 00 01",
+        "invoking_uid": "0000000000000001",
+        "method": "Authenticate",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 00 00 00 00 01",
+        "invoking_pattern": "00 00 00 00 00 00 00 01",
+        "invoking_uid": "0000000000000001",
+        "method": "Random",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 02 05 00 00 00 00",
+        "invoking_pattern": "00 00 02 05 00 00 00 00",
+        "invoking_uid": "0000020500000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 02 05 TT TT TT TT *AC7",
+        "invoking_pattern": "00 00 02 05 TT TT TT TT *AC7",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acespsidaceadmin"
+        ],
+        "invoking_name": "00 00 02 05 TT TT TT TT *AC7",
+        "invoking_pattern": "00 00 02 05 TT TT TT TT *AC7",
+        "invoking_uid": null,
+        "method": "Revert",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acespsid"
+        ],
+        "invoking_name": "00 00 02 05 TT TT TT TT *AC7",
+        "invoking_pattern": "00 00 02 05 TT TT TT TT *AC7",
+        "invoking_uid": null,
+        "method": "Activate",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 11 01 00 00 00 01",
+        "invoking_pattern": "00 00 11 01 00 00 00 01",
+        "invoking_uid": "0000110100000001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACEDAAEAECAEACEDAAEAECA"
+        ],
+        "invoking_name": "00 00 11 01 00 00 00 01",
+        "invoking_pattern": "00 00 11 01 00 00 00 01",
+        "invoking_uid": "0000110100000001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.2.1.5",
+        "uid": null
+      },
+      {
+        "ace_refs": [],
+        "invoking_name": "00 00 00 00 00 00 00 01",
+        "invoking_pattern": "00 00 00 00 00 00 00 01",
+        "invoking_uid": "0000000000000001",
+        "method": "Authenticate",
+        "name": "ACE_Anybody",
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [],
+        "invoking_name": "00 00 00 00 00 00 00 01",
+        "invoking_pattern": "00 00 00 00 00 00 00 01",
+        "invoking_uid": "0000000000000001",
+        "method": "Random",
+        "name": "ACE_Anybody",
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [],
+        "invoking_name": "00 00 00 00 00 00 00 01",
+        "invoking_pattern": "00 00 00 00 00 00 00 01",
+        "invoking_uid": "0000000000000001",
+        "method": "RevertSP",
+        "name": "ACE_Anybody",
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [],
+        "invoking_name": "00 00 00 01 00 00 00 00",
+        "invoking_pattern": "00 00 00 01 00 00 00 00",
+        "invoking_uid": "0000000100000000",
+        "method": "Next",
+        "name": "ACE_Anybody",
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 01 TT TT TT TT",
+        "invoking_pattern": "00 00 00 01 TT TT TT TT",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [],
+        "invoking_name": "00 00 00 02 00 00 00 01",
+        "invoking_pattern": "00 00 00 02 00 00 00 01",
+        "invoking_uid": "0000000200000001",
+        "method": "Get",
+        "name": "ACE_Anybody",
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [],
+        "invoking_name": "00 00 00 03 00 00 00 00",
+        "invoking_pattern": "00 00 00 03 00 00 00 00",
+        "invoking_uid": "0000000300000000",
+        "method": "Next",
+        "name": "ACE_Anybody",
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 03 TT TT TT TT *AC3",
+        "invoking_pattern": "00 00 00 03 TT TT TT TT *AC3",
+        "invoking_uid": null,
+        "method": "SPTemplatesObj",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 06 00 00 00 00",
+        "invoking_pattern": "00 00 00 06 00 00 00 00",
+        "invoking_uid": "0000000600000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 06 TT TT TT TT *AC4",
+        "invoking_pattern": "00 00 00 06 TT TT TT TT *AC4",
+        "invoking_uid": null,
+        "method": "MethodIDObj",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 08 00 00 00 00",
+        "invoking_pattern": "00 00 00 08 00 00 00 00",
+        "invoking_uid": "0000000800000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacegetall"
+        ],
+        "invoking_name": "00 00 00 08 TT TT TT TT *AC5",
+        "invoking_pattern": "00 00 00 08 TT TT TT TT *AC5",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 80 00",
+        "invoking_pattern": "00 00 00 08 00 03 80 00",
+        "invoking_uid": "0000000800038000",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 90 00",
+        "invoking_pattern": "00 00 00 08 00 03 90 00",
+        "invoking_uid": "0000000800039000",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 A8 01",
+        "invoking_pattern": "00 00 00 08 00 03 A8 01",
+        "invoking_uid": "000000080003A801",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 A8 00 (+MMMM)",
+        "invoking_pattern": "00 00 00 08 00 03 A8 00 (+MMMM)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 04 40 01",
+        "invoking_pattern": "00 00 00 08 00 04 40 01",
+        "invoking_uid": "0000000800044001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 04 40 00 (+MMMM)",
+        "invoking_pattern": "00 00 00 08 00 04 40 00 (+MMMM)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 B0 00",
+        "invoking_pattern": "00 00 00 08 00 03 B0 00",
+        "invoking_uid": "000000080003B000",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 B0 01",
+        "invoking_pattern": "00 00 00 08 00 03 B0 01",
+        "invoking_uid": "000000080003B001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 B0 00 (+NNNN)",
+        "invoking_pattern": "00 00 00 08 00 03 B0 00 (+NNNN)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 B8 00",
+        "invoking_pattern": "00 00 00 08 00 03 B8 00",
+        "invoking_uid": "000000080003B800",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 B8 01",
+        "invoking_pattern": "00 00 00 08 00 03 B8 01",
+        "invoking_uid": "000000080003B801",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 B8 00 (+NNNN)",
+        "invoking_pattern": "00 00 00 08 00 03 B8 00 (+NNNN)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 D0 00",
+        "invoking_pattern": "00 00 00 08 00 03 D0 00",
+        "invoking_uid": "000000080003D000",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 D0 01",
+        "invoking_pattern": "00 00 00 08 00 03 D0 01",
+        "invoking_uid": "000000080003D001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 D0 00 (+NNNN)",
+        "invoking_pattern": "00 00 00 08 00 03 D0 00 (+NNNN)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 E0 00",
+        "invoking_pattern": "00 00 00 08 00 03 E0 00",
+        "invoking_uid": "000000080003E000",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 E0 01",
+        "invoking_pattern": "00 00 00 08 00 03 E0 01",
+        "invoking_uid": "000000080003E001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 E0 00 (+NNNN)",
+        "invoking_pattern": "00 00 00 08 00 03 E0 00 (+NNNN)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 E8 00",
+        "invoking_pattern": "00 00 00 08 00 03 E8 00",
+        "invoking_uid": "000000080003E800",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 E8 01",
+        "invoking_pattern": "00 00 00 08 00 03 E8 01",
+        "invoking_uid": "000000080003E801",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 E8 00 (+NNNN)",
+        "invoking_pattern": "00 00 00 08 00 03 E8 00 (+NNNN)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 F8 01",
+        "invoking_pattern": "00 00 00 08 00 03 F8 01",
+        "invoking_uid": "000000080003F801",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 FC 00",
+        "invoking_pattern": "00 00 00 08 00 03 FC 00",
+        "invoking_uid": "000000080003FC00",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceacesetbooleanexpression"
+        ],
+        "invoking_name": "00 00 00 08 00 03 FC 01",
+        "invoking_pattern": "00 00 00 08 00 03 FC 01",
+        "invoking_uid": "000000080003FC01",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 09 00 00 00 00",
+        "invoking_pattern": "00 00 00 09 00 00 00 00",
+        "invoking_uid": "0000000900000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACEAEAACEABDECAE"
+        ],
+        "invoking_name": "00 00 00 09 TT TT TT TT *AC7",
+        "invoking_pattern": "00 00 00 09 TT TT TT TT *AC7",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceadminssetcommonname"
+        ],
+        "invoking_name": "00 00 00 09 00 01 00 01",
+        "invoking_pattern": "00 00 00 09 00 01 00 01",
+        "invoking_uid": "0000000900010001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACEAEEABEDACEADECAE"
+        ],
+        "invoking_name": "00 00 00 09 00 01 00 02",
+        "invoking_pattern": "00 00 00 09 00 01 00 02",
+        "invoking_uid": "0000000900010002",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACEAEEABEDACEADECAE"
+        ],
+        "invoking_name": "00 00 00 09 00 01 00 00 (+XX XX)",
+        "invoking_pattern": "00 00 00 09 00 01 00 00 (+XX XX)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACEAEEABEDACEE1ECAE"
+        ],
+        "invoking_name": "00 00 00 09 00 03 00 01",
+        "invoking_pattern": "00 00 00 09 00 03 00 01",
+        "invoking_uid": "0000000900030001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACEAEEABEDACEEECAE"
+        ],
+        "invoking_name": "00 00 00 09 00 03 00 00 (+MMMM)",
+        "invoking_pattern": "00 00 00 09 00 03 00 00 (+MMMM)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 0B 00 00 00 00",
+        "invoking_pattern": "00 00 00 0B 00 00 00 00",
+        "invoking_uid": "0000000B00000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinadminsgetallnopin"
+        ],
+        "invoking_name": "00 00 00 0B 00 01 00 01",
+        "invoking_pattern": "00 00 00 0B 00 01 00 01",
+        "invoking_uid": "0000000B00010001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinadminsgetallnopin"
+        ],
+        "invoking_name": "00 00 00 0B 00 01 00 00 (+XX XX)",
+        "invoking_pattern": "00 00 00 0B 00 01 00 00 (+XX XX)",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinadminsgetallnopin"
+        ],
+        "invoking_name": "00 00 00 0B 00 03 00 01",
+        "invoking_pattern": "00 00 00 0B 00 03 00 01",
+        "invoking_uid": "0000000B00030001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinadminsgetallnopin"
+        ],
+        "invoking_name": "00 00 00 0B 00 03 00 00 (+MM MM)",
+        "invoking_pattern": "00 00 00 0B 00 03 00 00 (+MM MM)",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinadminssetpin"
+        ],
+        "invoking_name": "00 00 00 0B 00 01 00 01",
+        "invoking_pattern": "00 00 00 0B 00 01 00 01",
+        "invoking_uid": "0000000B00010001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinadminssetpin"
+        ],
+        "invoking_name": "00 00 00 0B 00 01 00 00 (+XX XX)",
+        "invoking_pattern": "00 00 00 0B 00 01 00 00 (+XX XX)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinuser1setpin"
+        ],
+        "invoking_name": "00 00 00 0B 00 03 00 01",
+        "invoking_pattern": "00 00 00 0B 00 03 00 01",
+        "invoking_uid": "0000000B00030001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acecpinusermmmmsetpin"
+        ],
+        "invoking_name": "00 00 00 0B 00 03 00 00 (+MM MM)",
+        "invoking_pattern": "00 00 00 0B 00 03 00 00 (+MM MM)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 1D 00 00 00 00",
+        "invoking_pattern": "00 00 00 1D 00 00 00 00",
+        "invoking_uid": "0000001D00000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 00 1D TT TT TT TT *AC8",
+        "invoking_pattern": "00 00 00 1D TT TT TT TT *AC8",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 08 01 00 00 00 01",
+        "invoking_pattern": "00 00 08 01 00 00 00 01",
+        "invoking_uid": "0000080100000001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 08 02 00 00 00 00",
+        "invoking_pattern": "00 00 08 02 00 00 00 00",
+        "invoking_uid": "0000080200000000",
+        "method": "Next",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACECBAAEEAEAACEEACEABDECAE"
+        ],
+        "invoking_name": "00 00 08 02 00 00 00 01",
+        "invoking_pattern": "00 00 08 02 00 00 00 01",
+        "invoking_uid": "0000080200000001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACECAE1EAEAACEEACEABDECAE"
+        ],
+        "invoking_name": "00 00 08 02 00 03 00 01",
+        "invoking_pattern": "00 00 08 02 00 03 00 01",
+        "invoking_uid": "0000080200030001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACECAEEAEAACEEACEABDECAE"
+        ],
+        "invoking_name": "00 00 08 02 00 03 00 00 (+NN NN )",
+        "invoking_pattern": "00 00 08 02 00 03 00 00 (+NN NN )",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACECBADEACECBAAEEDCEDACECBAAEECEDACEADECAE"
+        ],
+        "invoking_name": "00 00 08 02 00 00 00 00",
+        "invoking_pattern": "00 00 08 02 00 00 00 00",
+        "invoking_uid": "0000080200000000",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACECADAEAACECAE1EDCEDACECAE1ECEDACEADECAE"
+        ],
+        "invoking_name": "00 00 08 02 00 03 00 01",
+        "invoking_pattern": "00 00 08 02 00 03 00 01",
+        "invoking_uid": "0000080200030001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACECADAEAACECAEEDCEDACECAEECEDACEADECAE"
+        ],
+        "invoking_name": "00 00 08 02 00 03 00 00 (+NN NN)",
+        "invoking_pattern": "00 00 08 02 00 03 00 00 (+NN NN)",
+        "invoking_uid": null,
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 08 03 00 00 00 01",
+        "invoking_pattern": "00 00 08 03 00 00 00 01",
+        "invoking_uid": "0000080300000001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "ACEBCADEACEBCEDED"
+        ],
+        "invoking_name": "00 00 08 03 00 00 00 01",
+        "invoking_pattern": "00 00 08 03 00 00 00 01",
+        "invoking_uid": "0000080300000001",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceanybody"
+        ],
+        "invoking_name": "00 00 08 04 00 00 00 00",
+        "invoking_pattern": "00 00 08 04 00 00 00 00",
+        "invoking_uid": "0000080400000000",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "aceadmin"
+        ],
+        "invoking_name": "00 00 08 04 00 00 00 00",
+        "invoking_pattern": "00 00 08 04 00 00 00 00",
+        "invoking_uid": "0000080400000000",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaesmode"
+        ],
+        "invoking_name": "00 00 08 05 00 00 00 01",
+        "invoking_pattern": "00 00 08 05 00 00 00 01",
+        "invoking_uid": "0000080500000001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaesmode"
+        ],
+        "invoking_name": "00 00 08 05 00 03 00 01",
+        "invoking_pattern": "00 00 08 05 00 03 00 01",
+        "invoking_uid": "0000080500030001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaesmode"
+        ],
+        "invoking_name": "00 00 08 05 00 03 00 00 (+NN NN)",
+        "invoking_pattern": "00 00 08 05 00 03 00 00 (+NN NN)",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaes128globalrangegenkey"
+        ],
+        "invoking_name": "00 00 08 05 00 00 00 01",
+        "invoking_pattern": "00 00 08 05 00 00 00 01",
+        "invoking_uid": "0000080500000001",
+        "method": "GenKey",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaes128range1genkey"
+        ],
+        "invoking_name": "00 00 08 05 00 03 00 01",
+        "invoking_pattern": "00 00 08 05 00 03 00 01",
+        "invoking_uid": "0000080500030001",
+        "method": "GenKey",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaes128rangennnngenkey"
+        ],
+        "invoking_name": "00 00 08 05 00 03 00 00 (+NN NN)",
+        "invoking_pattern": "00 00 08 05 00 03 00 00 (+NN NN)",
+        "invoking_uid": null,
+        "method": "GenKey",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaesmode"
+        ],
+        "invoking_name": "00 00 08 06 00 00 00 01",
+        "invoking_pattern": "00 00 08 06 00 00 00 01",
+        "invoking_uid": "0000080600000001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaesmode"
+        ],
+        "invoking_name": "00 00 08 06 00 03 00 01",
+        "invoking_pattern": "00 00 08 06 00 03 00 01",
+        "invoking_uid": "0000080600030001",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaesmode"
+        ],
+        "invoking_name": "00 00 08 06 00 03 00 00 (+NN NN)",
+        "invoking_pattern": "00 00 08 06 00 03 00 00 (+NN NN)",
+        "invoking_uid": null,
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaes256globalrangegenkey"
+        ],
+        "invoking_name": "00 00 08 06 00 00 00 01",
+        "invoking_pattern": "00 00 08 06 00 00 00 01",
+        "invoking_uid": "0000080600000001",
+        "method": "GenKey",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaes256range1genkey"
+        ],
+        "invoking_name": "00 00 08 06 00 03 00 01",
+        "invoking_pattern": "00 00 08 06 00 03 00 01",
+        "invoking_uid": "0000080600030001",
+        "method": "GenKey",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acekaes256rangennnngenkey"
+        ],
+        "invoking_name": "00 00 08 06 00 03 00 00 (+NN NN)",
+        "invoking_pattern": "00 00 08 06 00 03 00 00 (+NN NN)",
+        "invoking_uid": null,
+        "method": "GenKey",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acedatastoregetall"
+        ],
+        "invoking_name": "00 00 10 01 00 00 00 00",
+        "invoking_pattern": "00 00 10 01 00 00 00 00",
+        "invoking_uid": "0000100100000000",
+        "method": "Get",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      },
+      {
+        "ace_refs": [
+          "acedatastoresetall"
+        ],
+        "invoking_name": "00 00 10 01 00 00 00 00",
+        "invoking_pattern": "00 00 10 01 00 00 00 00",
+        "invoking_uid": "0000100100000000",
+        "method": "Set",
+        "name": null,
+        "source": "opal/4.3.1.6",
+        "uid": null
+      }
+    ],
+    "ace_rows": {
+      "0000000800000001": {
+        "boolean_expr": "Anybody",
+        "columns": "all",
+        "name": "ACE_Anybody",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800000001"
+      },
+      "0000000800000002": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_Admin",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800000002"
+      },
+      "0000000800000003": {
+        "boolean_expr": "Anybody",
+        "columns": [
+          0,
+          2
+        ],
+        "name": "ACE_Anybody_Get_CommonName",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800000003"
+      },
+      "0000000800000004": {
+        "boolean_expr": "Admins",
+        "columns": [
+          2
+        ],
+        "name": "ACE_Admins_Set_CommonName",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800000004"
+      },
+      "0000000800008C02": {
+        "boolean_expr": "Admins OR SID",
+        "columns": [
+          0,
+          4,
+          5,
+          6,
+          7
+        ],
+        "name": "ACE_C_PIN_SID_Get_NOPIN",
+        "source": "opal/4.2.1.6",
+        "uid": "0000000800008C02"
+      },
+      "0000000800008C03": {
+        "boolean_expr": "SID",
+        "columns": [
+          3
+        ],
+        "name": "ACE_C_PIN_SID_Set_PIN",
+        "source": "opal/4.2.1.6",
+        "uid": "0000000800008C03"
+      },
+      "0000000800008C04": {
+        "boolean_expr": "Anybody",
+        "columns": [
+          0,
+          3
+        ],
+        "name": "ACE_C_PIN_MSID_Get_PIN",
+        "source": "opal/4.2.1.6",
+        "uid": "0000000800008C04"
+      },
+      "0000000800030001": {
+        "boolean_expr": "SID",
+        "columns": [
+          4
+        ],
+        "name": "ACE_Set_Enabled",
+        "source": "opal/4.2.1.6",
+        "uid": "0000000800030001"
+      },
+      "0000000800030002": {
+        "boolean_expr": "SID",
+        "columns": "all",
+        "name": "ACE_SP_SID",
+        "source": "opal/4.2.1.6",
+        "uid": "0000000800030002"
+      },
+      "0000000800030003": {
+        "boolean_expr": "SID",
+        "columns": null,
+        "name": "ACE_TPerInfo_Set_ProgrammaticResetEnable",
+        "source": "opal/4.2.1.6",
+        "uid": "0000000800030003"
+      },
+      "0000000800038000": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_ACE_Get_All",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800038000"
+      },
+      "0000000800038001": {
+        "boolean_expr": "Admins",
+        "columns": [
+          3
+        ],
+        "name": "ACE_ACE_Set_BooleanExpression",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800038001"
+      },
+      "0000000800039000": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_Authority_Get_All",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800039000"
+      },
+      "0000000800039001": {
+        "boolean_expr": "Admins",
+        "columns": [
+          4
+        ],
+        "name": "ACE_Authority_Set_Enabled",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800039001"
+      },
+      "000000080003A000": {
+        "boolean_expr": "Admins",
+        "columns": [
+          0,
+          4,
+          5,
+          6,
+          7
+        ],
+        "name": "ACE_C_PIN_Admins_Get_All_NOPIN",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003A000"
+      },
+      "000000080003A001": {
+        "boolean_expr": "Admins",
+        "columns": [
+          3
+        ],
+        "name": "ACE_C_PIN_Admins_Set_PIN",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003A001"
+      },
+      "000000080003A801": {
+        "boolean_expr": "Admins OR User1 *ACE1",
+        "columns": [
+          3
+        ],
+        "name": "ACE_C_PIN_User1_Set_PIN",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003A801"
+      },
+      "000000080003B000": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_K_AES_128_GlobalRange_GenKey",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003B000"
+      },
+      "000000080003B001": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_K_AES_128_Range1_GenKey",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003B001"
+      },
+      "000000080003B800": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_K_AES_256_GlobalRange_GenKey",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003B800"
+      },
+      "000000080003B801": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_K_AES_256_Range1_GenKey",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003B801"
+      },
+      "000000080003BFFF": {
+        "boolean_expr": "Anybody",
+        "columns": [
+          4
+        ],
+        "name": "ACE_K_AES_Mode",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003BFFF"
+      },
+      "000000080003D000": {
+        "boolean_expr": "Admins",
+        "columns": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "name": "ACE_Locking_GlobalRange_Get_RangeStartToActiveKey",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003D000"
+      },
+      "000000080003D001": {
+        "boolean_expr": "Admins",
+        "columns": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "name": "ACE_Locking_Range1_Get_RangeStartToActiveKey",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003D001"
+      },
+      "000000080003E000": {
+        "boolean_expr": "Admins",
+        "columns": [
+          7
+        ],
+        "name": "ACE_Locking_GlobalRange_Set_RdLocked",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003E000"
+      },
+      "000000080003E001": {
+        "boolean_expr": "Admins",
+        "columns": [
+          7
+        ],
+        "name": "ACE_Locking_Range1_Set_RdLocked",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003E001"
+      },
+      "000000080003E800": {
+        "boolean_expr": "Admins",
+        "columns": [
+          8
+        ],
+        "name": "ACE_Locking_GlobalRange_Set_WrLocked",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003E800"
+      },
+      "000000080003E801": {
+        "boolean_expr": "Admins",
+        "columns": [
+          8
+        ],
+        "name": "ACE_Locking_Range1_Set_WrLocked",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003E801"
+      },
+      "000000080003F000": {
+        "boolean_expr": "Admins",
+        "columns": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "name": "ACE_Locking_GlblRng_Admins_Set",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003F000"
+      },
+      "000000080003F001": {
+        "boolean_expr": "Admins",
+        "columns": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "name": "ACE_Locking_Admins_RangeStartToLOR",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003F001"
+      },
+      "000000080003F800": {
+        "boolean_expr": "Admins",
+        "columns": [
+          1,
+          2,
+          3
+        ],
+        "name": "ACE_MBRControl_Admins_Set",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003F800"
+      },
+      "000000080003F801": {
+        "boolean_expr": "Admins",
+        "columns": [
+          2,
+          3
+        ],
+        "name": "ACE_MBRControl_Set_DoneToDOR",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003F801"
+      },
+      "000000080003FC00": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_DataStore_Get_All",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003FC00"
+      },
+      "000000080003FC01": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_DataStore_Set_All",
+        "source": "opal/4.3.1.7",
+        "uid": "000000080003FC01"
+      },
+      "0000000800044001": {
+        "boolean_expr": "Admins",
+        "columns": [
+          2
+        ],
+        "name": "ACE_User1_Set_CommonName",
+        "source": "opal/4.3.1.7",
+        "uid": "0000000800044001"
+      },
+      "0000000800050001": {
+        "boolean_expr": "Admins OR SID",
+        "columns": null,
+        "name": "ACE_DataRemovalMechanism_Set_ActiveDataRemovalMechanism",
+        "source": "opal/4.2.1.6",
+        "uid": "0000000800050001"
+      },
+      "acecpinusermmmmsetpin": {
+        "boolean_expr": "Admins OR UserMMMM *ACE1",
+        "columns": [
+          3
+        ],
+        "name": "ACE_C_PIN_UserMMMM_Set_PIN",
+        "source": "opal/4.3.1.7",
+        "uid": null
+      },
+      "acekaes128rangennnngenkey": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_K_AES_128_RangeNNNN_GenKey",
+        "source": "opal/4.3.1.7",
+        "uid": null
+      },
+      "acekaes256rangennnngenkey": {
+        "boolean_expr": "Admins",
+        "columns": "all",
+        "name": "ACE_K_AES_256_RangeNNNN_GenKey",
+        "source": "opal/4.3.1.7",
+        "uid": null
+      },
+      "acelockingrangennnngetrangestarttoactivekey": {
+        "boolean_expr": "Admins",
+        "columns": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "name": "ACE_Locking_RangeNNNN_Get_RangeStartToActiveKey",
+        "source": "opal/4.3.1.7",
+        "uid": null
+      },
+      "acelockingrangennnnsetrdlocked": {
+        "boolean_expr": "Admins",
+        "columns": [
+          7
+        ],
+        "name": "ACE_Locking_RangeNNNN_Set_RdLocked",
+        "source": "opal/4.3.1.7",
+        "uid": null
+      },
+      "acelockingrangennnnsetwrlocked": {
+        "boolean_expr": "Admins",
+        "columns": [
+          8
+        ],
+        "name": "ACE_Locking_RangeNNNN_Set_WrLocked",
+        "source": "opal/4.3.1.7",
+        "uid": null
+      },
+      "aceusermmmmsetcommonname": {
+        "boolean_expr": "Admins",
+        "columns": [
+          2
+        ],
+        "name": "ACE_UserMMMM_Set_CommonName",
+        "source": "opal/4.3.1.7",
+        "uid": null
+      }
+    },
+    "authority_rows": {
+      "Admin1": {
+        "credential": "CAD1",
+        "enabled": true,
+        "is_class": false,
+        "name": "Admin1",
+        "source": "opal/4.3.1.8",
+        "uid": "0000000900010001"
+      },
+      "Admin2": {
+        "credential": "CAD2",
+        "enabled": false,
+        "is_class": false,
+        "name": "Admin2",
+        "source": "opal/4.3.1.8",
+        "uid": "0000000900010002"
+      },
+      "Admin3": {
+        "credential": "CAD3",
+        "enabled": false,
+        "is_class": false,
+        "name": "Admin3",
+        "source": "opal/4.3.1.8",
+        "uid": "0000000900010003"
+      },
+      "Admin4": {
+        "credential": "CAD4",
+        "enabled": false,
+        "is_class": false,
+        "name": "Admin4",
+        "source": "opal/4.3.1.8",
+        "uid": "0000000900010004"
+      },
+      "AdminXX": {
+        "credential": "CAD",
+        "enabled": false,
+        "is_class": false,
+        "name": "AdminXX",
+        "source": "opal/4.2.1.7",
+        "uid": null
+      },
+      "AdminXXXX": {
+        "credential": null,
+        "enabled": false,
+        "is_class": false,
+        "name": "AdminXXXX",
+        "source": "opal/4.3.1.8",
+        "uid": null
+      },
+      "Authority_000001": {
+        "credential": null,
+        "enabled": true,
+        "is_class": false,
+        "name": "Anybody",
+        "source": "opal/4.3.1.8",
+        "uid": "0000000900000001"
+      },
+      "Authority_000002": {
+        "credential": null,
+        "enabled": true,
+        "is_class": true,
+        "name": "Admins",
+        "source": "opal/4.3.1.8",
+        "uid": "0000000900000002"
+      },
+      "Authority_000003": {
+        "credential": null,
+        "enabled": true,
+        "is_class": true,
+        "name": "Makers",
+        "source": "opal/4.2.1.7",
+        "uid": "0000000900000003"
+      },
+      "Authority_000201": {
+        "credential": "CAD1",
+        "enabled": false,
+        "is_class": false,
+        "name": "Admin1",
+        "source": "opal/4.2.1.7",
+        "uid": "0000000900000201"
+      },
+      "SID": {
+        "credential": "CD",
+        "enabled": true,
+        "is_class": false,
+        "name": "SID",
+        "source": "opal/4.2.1.7",
+        "uid": "0000000900000006"
+      },
+      "User0": {
+        "credential": "E",
+        "enabled": true,
+        "is_class": true,
+        "name": "Users",
+        "source": "opal/4.3.1.8",
+        "uid": "0000000900030000"
+      },
+      "User1": {
+        "credential": "CE1",
+        "enabled": false,
+        "is_class": false,
+        "name": "User1",
+        "source": "opal/4.3.1.8",
+        "uid": "0000000900030001"
+      },
+      "UserMMMM": {
+        "credential": "CE",
+        "enabled": false,
+        "is_class": false,
+        "name": "UserMMMM",
+        "source": "opal/4.3.1.8",
+        "uid": null
+      }
+    },
+    "credential_to_authority": {
+      "0000000B00000001": "SID",
+      "0000000B00000201": "Authority_000201",
+      "0000000B00008402": "MSID",
+      "0000000B00010001": "Admin1",
+      "0000000B00010002": "Admin2",
+      "0000000B00010003": "Admin3",
+      "0000000B00010004": "Admin4",
+      "0000000B00030001": "User1"
+    }
+  },
   "category_counts": {
-    "auth/access control": 247,
+    "auth/access control": 245,
     "data command behavior": 54,
-    "method rule": 114,
+    "method rule": 113,
     "non-executable reference": 245,
     "normative reference": 110,
-    "state transition": 60,
-    "table schema": 553
+    "state transition": 59,
+    "table schema": 550
   },
   "column_name_numbers": {
     "ACE": {
       "booleanexpr": 3,
       "columns": 4,
       "commonname": 2,
+      "name": 1,
+      "uid": 0
+    },
+    "AccessControl": {
+      "ace": 5,
+      "acelist": 5,
+      "aces": 5,
+      "commonname": 2,
+      "invokingid": 3,
+      "invokingobject": 3,
+      "method": 4,
+      "methodid": 4,
       "name": 1,
       "uid": 0
     },
@@ -34,6 +1933,14 @@
       "tries": 6,
       "trylimit": 5,
       "uid": 0
+    },
+    "DataStore": {
+      "commonname": 2,
+      "endrow": 4,
+      "name": 1,
+      "startrow": 3,
+      "uid": 0,
+      "value": 5
     },
     "Locking": {
       "activekey": 10,
@@ -85,6 +1992,19 @@
       "mode": 4,
       "name": 1,
       "uid": 0
+    },
+    "MethodID": {
+      "commonname": 2,
+      "name": 1,
+      "uid": 0
+    },
+    "SP": {
+      "commonname": 2,
+      "enabled": 4,
+      "frozen": 5,
+      "lifecycle": 3,
+      "name": 1,
+      "uid": 0
     }
   },
   "method_sections": {
@@ -122,7 +2042,6 @@
       "opal/4.3.1.6"
     ],
     "CloseSession": [
-      "core/.ipynb_checkpoints/5.2.3.5-checkpoint",
       "core/3.3.10",
       "core/3.3.4.7.5",
       "core/3.3.7.1.2",
@@ -391,7 +2310,6 @@
       "opal/5.3"
     ],
     "StartSession": [
-      "core/.ipynb_checkpoints/5.2.3.1-checkpoint",
       "core/3.3.4.5",
       "core/3.3.7.1.2",
       "core/3.3.7.1.3",
@@ -425,7 +2343,6 @@
       "opal/4.1.1.2"
     ],
     "SyncSession": [
-      "core/.ipynb_checkpoints/5.2.3.1-checkpoint",
       "core/3.3.4.5",
       "core/3.3.7.1.2",
       "core/3.3.7.1.4",
@@ -6292,7 +8209,7 @@
       "core/5.3.4.1.5"
     ],
     "status": [
-      "core/3.3.4.1.3",
+      "core/3.3.4.1",
       "core/5.3.3"
     ],
     "sync_session": [
@@ -6301,117 +8218,8 @@
       "core/3.3.7.1.4"
     ]
   },
-  "section_count": 1383,
+  "section_count": 1376,
   "sections": {
-    "core/.ipynb_checkpoints/1.1-checkpoint": {
-      "category": "state transition",
-      "domain": "core",
-      "json_block_count": 0,
-      "line_count": 11,
-      "methods": [],
-      "normative_count": 0,
-      "normative_extracts": [],
-      "path": "artifacts/documents/core/.ipynb_checkpoints/1.1-checkpoint.txt",
-      "section": ".ipynb_checkpoints/1.1-checkpoint",
-      "tables": [],
-      "title": "1.1 Scope and Audience"
-    },
-    "core/.ipynb_checkpoints/5.1.3.1-checkpoint": {
-      "category": "auth/access control",
-      "domain": "core",
-      "json_block_count": 0,
-      "line_count": 10,
-      "methods": [],
-      "normative_count": 1,
-      "normative_extracts": [
-        "A minimum size restriction MAY be defined by an SSC."
-      ],
-      "path": "artifacts/documents/core/.ipynb_checkpoints/5.1.3.1-checkpoint.txt",
-      "section": ".ipynb_checkpoints/5.1.3.1-checkpoint",
-      "tables": [
-        "Table 46 AC_element"
-      ],
-      "title": "5.1.3.1 AC_element"
-    },
-    "core/.ipynb_checkpoints/5.1.3.51-checkpoint": {
-      "category": "table schema",
-      "domain": "core",
-      "json_block_count": 0,
-      "line_count": 6,
-      "methods": [],
-      "normative_count": 0,
-      "normative_extracts": [],
-      "path": "artifacts/documents/core/.ipynb_checkpoints/5.1.3.51-checkpoint.txt",
-      "section": ".ipynb_checkpoints/5.1.3.51-checkpoint",
-      "tables": [
-        "Table 109 max_bytes_32"
-      ],
-      "title": "5.1.3.51 max_bytes_32"
-    },
-    "core/.ipynb_checkpoints/5.2.3.1-checkpoint": {
-      "category": "auth/access control",
-      "domain": "core",
-      "json_block_count": 0,
-      "line_count": 17,
-      "methods": [
-        "StartSession",
-        "SyncSession"
-      ],
-      "normative_count": 0,
-      "normative_extracts": [],
-      "path": "artifacts/documents/core/.ipynb_checkpoints/5.2.3.1-checkpoint.txt",
-      "section": ".ipynb_checkpoints/5.2.3.1-checkpoint",
-      "tables": [],
-      "title": "5.2.3.1 StartSession Method"
-    },
-    "core/.ipynb_checkpoints/5.2.3.5-checkpoint": {
-      "category": "method rule",
-      "domain": "core",
-      "json_block_count": 0,
-      "line_count": 9,
-      "methods": [
-        "CloseSession"
-      ],
-      "normative_count": 2,
-      "normative_extracts": [
-        "This method SHALL only be transmitted by the TPer.",
-        "The TPer MAY transmit this method to notify the"
-      ],
-      "path": "artifacts/documents/core/.ipynb_checkpoints/5.2.3.5-checkpoint.txt",
-      "section": ".ipynb_checkpoints/5.2.3.5-checkpoint",
-      "tables": [],
-      "title": "5.2.3.5 CloseSession Method"
-    },
-    "core/.ipynb_checkpoints/5.3.2.24-checkpoint": {
-      "category": "table schema",
-      "domain": "core",
-      "json_block_count": 0,
-      "line_count": 19,
-      "methods": [],
-      "normative_count": 0,
-      "normative_extracts": [],
-      "path": "artifacts/documents/core/.ipynb_checkpoints/5.3.2.24-checkpoint.txt",
-      "section": ".ipynb_checkpoints/5.3.2.24-checkpoint",
-      "tables": [
-        "Table 201 C_EC_233 Table Description"
-      ],
-      "title": "5.3.2.24 Credential Table Group - C_EC_233 (Object Table)"
-    },
-    "core/.ipynb_checkpoints/5.3.2.25.2-checkpoint": {
-      "category": "table schema",
-      "domain": "core",
-      "json_block_count": 0,
-      "line_count": 3,
-      "methods": [],
-      "normative_count": 1,
-      "normative_extracts": [
-        "For C_EC_283 objects that exist at issuance, this column SHALL NOT be modifiable by the host."
-      ],
-      "path": "artifacts/documents/core/.ipynb_checkpoints/5.3.2.25.2-checkpoint.txt",
-      "section": ".ipynb_checkpoints/5.3.2.25.2-checkpoint",
-      "tables": [],
-      "title": "5.3.2.25.2 Name"
-    },
     "core/1.1": {
       "category": "state transition",
       "domain": "core",
@@ -27839,5 +29647,926 @@
     }
   },
   "source_root": "artifacts/documents",
+  "table_schemas": {
+    "ACE": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid",
+            "UID"
+          ],
+          "number": 0,
+          "type": "str"
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name",
+            "Name"
+          ],
+          "number": 1,
+          "type": "str"
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname",
+            "CommonName"
+          ],
+          "number": 2,
+          "type": "str"
+        },
+        "3": {
+          "mutability": "read_write",
+          "names": [
+            "booleanexpr",
+            "BooleanExpr"
+          ],
+          "number": 3,
+          "type": "str"
+        },
+        "4": {
+          "mutability": "read_write",
+          "names": [
+            "columns",
+            "Columns"
+          ],
+          "number": 4,
+          "type": "str"
+        }
+      },
+      "max_column": 4,
+      "name_to_number": {
+        "booleanexpr": 3,
+        "columns": 4,
+        "commonname": 2,
+        "name": 1,
+        "uid": 0
+      },
+      "sources": [
+        "built-in",
+        "opal/4.2.1.6",
+        "opal/4.3.1.7"
+      ]
+    },
+    "AccessControl": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid",
+            "UID"
+          ],
+          "number": 0,
+          "type": "str"
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name"
+          ],
+          "number": 1
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname",
+            "CommonName"
+          ],
+          "number": 2,
+          "type": "str"
+        },
+        "3": {
+          "mutability": "read_only",
+          "names": [
+            "invokingid",
+            "invokingobject",
+            "InvokingID"
+          ],
+          "number": 3,
+          "type": "str"
+        },
+        "4": {
+          "mutability": "read_only",
+          "names": [
+            "methodid",
+            "method",
+            "MethodID"
+          ],
+          "number": 4,
+          "type": "str"
+        },
+        "5": {
+          "mutability": "read_write",
+          "names": [
+            "ace",
+            "acelist",
+            "aces"
+          ],
+          "number": 5
+        }
+      },
+      "max_column": 5,
+      "name_to_number": {
+        "ace": 5,
+        "acelist": 5,
+        "aces": 5,
+        "commonname": 2,
+        "invokingid": 3,
+        "invokingobject": 3,
+        "method": 4,
+        "methodid": 4,
+        "name": 1,
+        "uid": 0
+      },
+      "sources": [
+        "built-in",
+        "opal/4.2.1.5",
+        "opal/4.3.1.6"
+      ]
+    },
+    "Authority": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid",
+            "UID"
+          ],
+          "number": 0,
+          "type": "str"
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name",
+            "Name"
+          ],
+          "number": 1,
+          "type": "str"
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname",
+            "CommonName"
+          ],
+          "number": 2,
+          "type": "str"
+        },
+        "3": {
+          "mutability": "read_only",
+          "names": [
+            "isclass",
+            "IsClass"
+          ],
+          "number": 3,
+          "type": "str"
+        },
+        "4": {
+          "mutability": "read_write",
+          "names": [
+            "enabled",
+            "Enabled"
+          ],
+          "number": 4,
+          "type": "str"
+        },
+        "5": {
+          "mutability": "read_write",
+          "names": [
+            "credential",
+            "Credential"
+          ],
+          "number": 5,
+          "type": "str"
+        },
+        "6": {
+          "mutability": "read_write",
+          "names": [
+            "operation",
+            "Operation"
+          ],
+          "number": 6,
+          "type": "str"
+        }
+      },
+      "max_column": 6,
+      "name_to_number": {
+        "commonname": 2,
+        "credential": 5,
+        "enabled": 4,
+        "isclass": 3,
+        "name": 1,
+        "operation": 6,
+        "uid": 0
+      },
+      "sources": [
+        "built-in",
+        "opal/4.2.1.7",
+        "opal/4.3.1.8"
+      ]
+    },
+    "C_PIN": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid",
+            "UID"
+          ],
+          "number": 0,
+          "type": "str"
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name",
+            "Name"
+          ],
+          "number": 1,
+          "type": "str"
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname",
+            "CommonName"
+          ],
+          "number": 2,
+          "type": "str"
+        },
+        "3": {
+          "mutability": "write_only",
+          "names": [
+            "pin",
+            "PIN"
+          ],
+          "number": 3,
+          "type": "str"
+        },
+        "4": {
+          "mutability": "read_write",
+          "names": [
+            "charset",
+            "CharSet"
+          ],
+          "number": 4,
+          "type": "str"
+        },
+        "5": {
+          "mutability": "read_write",
+          "names": [
+            "trylimit",
+            "TryLimit"
+          ],
+          "number": 5,
+          "type": "str"
+        },
+        "6": {
+          "mutability": "read_only",
+          "names": [
+            "tries",
+            "Tries"
+          ],
+          "number": 6,
+          "type": "str"
+        },
+        "7": {
+          "mutability": "read_write",
+          "names": [
+            "persistence",
+            "Persistence"
+          ],
+          "number": 7,
+          "type": "str"
+        }
+      },
+      "max_column": 7,
+      "name_to_number": {
+        "charset": 4,
+        "commonname": 2,
+        "name": 1,
+        "persistence": 7,
+        "pin": 3,
+        "tries": 6,
+        "trylimit": 5,
+        "uid": 0
+      },
+      "sources": [
+        "built-in",
+        "opal/4.2.1.8",
+        "opal/4.3.1.9"
+      ]
+    },
+    "DataStore": {
+      "columns": {
+        "0": {
+          "mutability": "read_write",
+          "names": [
+            "uid"
+          ],
+          "number": 0
+        },
+        "1": {
+          "mutability": "read_write",
+          "names": [
+            "name"
+          ],
+          "number": 1
+        },
+        "2": {
+          "mutability": "read_write",
+          "names": [
+            "commonname"
+          ],
+          "number": 2
+        },
+        "3": {
+          "mutability": "read_write",
+          "names": [
+            "startrow"
+          ],
+          "number": 3
+        },
+        "4": {
+          "mutability": "read_write",
+          "names": [
+            "endrow"
+          ],
+          "number": 4
+        },
+        "5": {
+          "mutability": "read_write",
+          "names": [
+            "value"
+          ],
+          "number": 5
+        }
+      },
+      "max_column": 5,
+      "name_to_number": {
+        "commonname": 2,
+        "endrow": 4,
+        "name": 1,
+        "startrow": 3,
+        "uid": 0,
+        "value": 5
+      },
+      "sources": [
+        "built-in"
+      ]
+    },
+    "Locking": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid",
+            "UID"
+          ],
+          "number": 0,
+          "type": "str"
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name",
+            "Name"
+          ],
+          "number": 1,
+          "type": "str"
+        },
+        "10": {
+          "mutability": "read_only",
+          "names": [
+            "activekey",
+            "ActiveKey"
+          ],
+          "number": 10,
+          "type": "str"
+        },
+        "11": {
+          "mutability": "read_write",
+          "names": [
+            "nextkey",
+            "NextKey"
+          ],
+          "number": 11,
+          "type": "str"
+        },
+        "12": {
+          "mutability": "read_write",
+          "names": [
+            "reencryptstate",
+            "ReEncryptState"
+          ],
+          "number": 12,
+          "type": "str"
+        },
+        "13": {
+          "mutability": "read_write",
+          "names": [
+            "reencyptrequest",
+            "reencryptrequest",
+            "ReEncyptRequest"
+          ],
+          "number": 13,
+          "type": "str"
+        },
+        "14": {
+          "mutability": "read_write",
+          "names": [
+            "advkeymode",
+            "AdvKeyMode"
+          ],
+          "number": 14,
+          "type": "str"
+        },
+        "15": {
+          "mutability": "read_write",
+          "names": [
+            "verifymode",
+            "VerifyMode"
+          ],
+          "number": 15,
+          "type": "str"
+        },
+        "16": {
+          "mutability": "read_write",
+          "names": [
+            "contonreset",
+            "ContOnReset"
+          ],
+          "number": 16,
+          "type": "str"
+        },
+        "17": {
+          "mutability": "read_write",
+          "names": [
+            "lastreencryptlba",
+            "LastReEncryptLBA"
+          ],
+          "number": 17,
+          "type": "str"
+        },
+        "18": {
+          "mutability": "read_write",
+          "names": [
+            "lastreencstate",
+            "lastreencstat",
+            "LastReEncState"
+          ],
+          "number": 18,
+          "type": "str"
+        },
+        "19": {
+          "mutability": "read_write",
+          "names": [
+            "generalstatus",
+            "GeneralStatus"
+          ],
+          "number": 19,
+          "type": "str"
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname",
+            "CommonName"
+          ],
+          "number": 2,
+          "type": "str"
+        },
+        "3": {
+          "mutability": "read_write",
+          "names": [
+            "rangestart",
+            "RangeStart"
+          ],
+          "number": 3,
+          "type": "int"
+        },
+        "4": {
+          "mutability": "read_write",
+          "names": [
+            "rangelength",
+            "RangeLength"
+          ],
+          "number": 4,
+          "type": "int"
+        },
+        "5": {
+          "mutability": "read_write",
+          "names": [
+            "readlockenabled",
+            "ReadLockEnabled"
+          ],
+          "number": 5,
+          "type": "str"
+        },
+        "6": {
+          "mutability": "read_write",
+          "names": [
+            "writelockenabled",
+            "WriteLockEnabled"
+          ],
+          "number": 6,
+          "type": "str"
+        },
+        "7": {
+          "mutability": "read_write",
+          "names": [
+            "readlocked",
+            "ReadLocked"
+          ],
+          "number": 7,
+          "type": "str"
+        },
+        "8": {
+          "mutability": "read_write",
+          "names": [
+            "writelocked",
+            "WriteLocked"
+          ],
+          "number": 8,
+          "type": "str"
+        },
+        "9": {
+          "mutability": "read_write",
+          "names": [
+            "lockonreset",
+            "LockOnReset"
+          ],
+          "number": 9,
+          "type": "str"
+        }
+      },
+      "max_column": 19,
+      "name_to_number": {
+        "activekey": 10,
+        "advkeymode": 14,
+        "commonname": 2,
+        "contonreset": 16,
+        "generalstatus": 19,
+        "lastreencryptlba": 17,
+        "lastreencstat": 18,
+        "lastreencstate": 18,
+        "lockonreset": 9,
+        "name": 1,
+        "nextkey": 11,
+        "rangelength": 4,
+        "rangestart": 3,
+        "readlocked": 7,
+        "readlockenabled": 5,
+        "reencryptrequest": 13,
+        "reencryptstate": 12,
+        "reencyptrequest": 13,
+        "uid": 0,
+        "verifymode": 15,
+        "writelocked": 8,
+        "writelockenabled": 6
+      },
+      "sources": [
+        "built-in",
+        "opal/4.3.1.1",
+        "opal/4.3.1.10",
+        "opal/4.3.1.2",
+        "opal/4.3.1.3",
+        "opal/4.3.1.5",
+        "opal/4.3.2",
+        "opal/4.3.5.2",
+        "opal/4.3.5.3",
+        "opal/4.3.5.5"
+      ]
+    },
+    "LockingInfo": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid",
+            "UID"
+          ],
+          "number": 0,
+          "type": "str"
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name",
+            "Name"
+          ],
+          "number": 1,
+          "type": "str"
+        },
+        "10": {
+          "mutability": "read_only",
+          "names": [
+            "lowestalignedlba",
+            "LowestAlignedLBA"
+          ],
+          "number": 10,
+          "type": "str"
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "version",
+            "Version"
+          ],
+          "number": 2,
+          "type": "str"
+        },
+        "3": {
+          "mutability": "read_only",
+          "names": [
+            "encryptsupport",
+            "EncryptSupport"
+          ],
+          "number": 3,
+          "type": "str"
+        },
+        "4": {
+          "mutability": "read_only",
+          "names": [
+            "maxranges",
+            "MaxRanges"
+          ],
+          "number": 4,
+          "type": "str"
+        },
+        "5": {
+          "mutability": "read_only",
+          "names": [
+            "maxreencryptions",
+            "MaxReEncryptions"
+          ],
+          "number": 5,
+          "type": "str"
+        },
+        "6": {
+          "mutability": "read_only",
+          "names": [
+            "keysavailablecfg",
+            "KeysAvailableCfg"
+          ],
+          "number": 6,
+          "type": "str"
+        },
+        "7": {
+          "mutability": "read_only",
+          "names": [
+            "alignmentrequired",
+            "AlignmentRequired"
+          ],
+          "number": 7,
+          "type": "str"
+        },
+        "8": {
+          "mutability": "read_only",
+          "names": [
+            "logicalblocksize",
+            "LogicalBlockSize"
+          ],
+          "number": 8,
+          "type": "str"
+        },
+        "9": {
+          "mutability": "read_only",
+          "names": [
+            "alignmentgranularity",
+            "AlignmentGranularity"
+          ],
+          "number": 9,
+          "type": "str"
+        }
+      },
+      "max_column": 10,
+      "name_to_number": {
+        "alignmentgranularity": 9,
+        "alignmentrequired": 7,
+        "encryptsupport": 3,
+        "keysavailablecfg": 6,
+        "logicalblocksize": 8,
+        "lowestalignedlba": 10,
+        "maxranges": 4,
+        "maxreencryptions": 5,
+        "name": 1,
+        "uid": 0,
+        "version": 2
+      },
+      "sources": [
+        "built-in",
+        "opal/4.3.5.1"
+      ]
+    },
+    "MBRControl": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid"
+          ],
+          "number": 0
+        },
+        "1": {
+          "mutability": "read_write",
+          "names": [
+            "enable"
+          ],
+          "number": 1
+        },
+        "2": {
+          "mutability": "read_write",
+          "names": [
+            "done"
+          ],
+          "number": 2
+        },
+        "3": {
+          "mutability": "read_write",
+          "names": [
+            "doneonreset",
+            "mbrdoneonreset"
+          ],
+          "number": 3
+        }
+      },
+      "max_column": 3,
+      "name_to_number": {
+        "done": 2,
+        "doneonreset": 3,
+        "enable": 1,
+        "mbrdoneonreset": 3,
+        "uid": 0
+      },
+      "sources": [
+        "built-in"
+      ]
+    },
+    "MediaKey": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid"
+          ],
+          "number": 0
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name"
+          ],
+          "number": 1
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname"
+          ],
+          "number": 2
+        },
+        "3": {
+          "mutability": "write_only",
+          "names": [
+            "key"
+          ],
+          "number": 3
+        },
+        "4": {
+          "mutability": "read_write",
+          "names": [
+            "mode"
+          ],
+          "number": 4
+        }
+      },
+      "max_column": 4,
+      "name_to_number": {
+        "commonname": 2,
+        "key": 3,
+        "mode": 4,
+        "name": 1,
+        "uid": 0
+      },
+      "sources": [
+        "built-in"
+      ]
+    },
+    "MethodID": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid",
+            "UID"
+          ],
+          "number": 0,
+          "type": "str"
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name",
+            "Name"
+          ],
+          "number": 1,
+          "type": "str"
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname",
+            "CommonName"
+          ],
+          "number": 2,
+          "type": "str"
+        }
+      },
+      "max_column": 2,
+      "name_to_number": {
+        "commonname": 2,
+        "name": 1,
+        "uid": 0
+      },
+      "sources": [
+        "built-in",
+        "opal/4.2.1.4"
+      ]
+    },
+    "SP": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid",
+            "UID"
+          ],
+          "number": 0,
+          "type": "str"
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name",
+            "Name"
+          ],
+          "number": 1,
+          "type": "str"
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname",
+            "CommonName"
+          ],
+          "number": 2,
+          "type": "str"
+        },
+        "3": {
+          "mutability": "read_only",
+          "names": [
+            "lifecycle",
+            "LifeCycle"
+          ],
+          "number": 3,
+          "type": "str"
+        },
+        "4": {
+          "mutability": "read_write",
+          "names": [
+            "enabled"
+          ],
+          "number": 4
+        },
+        "5": {
+          "mutability": "read_write",
+          "names": [
+            "frozen",
+            "Frozen"
+          ],
+          "number": 5,
+          "type": "str"
+        }
+      },
+      "max_column": 5,
+      "name_to_number": {
+        "commonname": 2,
+        "enabled": 4,
+        "frozen": 5,
+        "lifecycle": 3,
+        "name": 1,
+        "uid": 0
+      },
+      "sources": [
+        "built-in",
+        "opal/4.2.1.3",
+        "opal/4.2.3.3"
+      ]
+    }
+  },
   "version": 1
 }

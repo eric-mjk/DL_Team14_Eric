@@ -362,7 +362,7 @@ def extract_return_column(return_values, column):
     return extract_columns(return_values).get(column)
 
 
-def normalize_cellblock(cellblock):
+def normalize_cellblock(cellblock, family=None):
     start = None
     end = None
     if isinstance(cellblock, list):
@@ -371,13 +371,13 @@ def normalize_cellblock(cellblock):
                 continue
             for key in ("startColumn", "StartColumn", "start_column"):
                 if key in item:
-                    start = column_number(item.get(key))
+                    start = column_number(item.get(key), family)
             for key in ("endColumn", "EndColumn", "end_column"):
                 if key in item:
-                    end = column_number(item.get(key))
+                    end = column_number(item.get(key), family)
     elif isinstance(cellblock, dict):
-        start = column_number(cellblock.get("startColumn") or cellblock.get("StartColumn") or cellblock.get("start_column"))
-        end = column_number(cellblock.get("endColumn") or cellblock.get("EndColumn") or cellblock.get("end_column"))
+        start = column_number(cellblock.get("startColumn") or cellblock.get("StartColumn") or cellblock.get("start_column"), family)
+        end = column_number(cellblock.get("endColumn") or cellblock.get("EndColumn") or cellblock.get("end_column"), family)
 
     if start is None and end is not None:
         start = end
@@ -419,7 +419,7 @@ def normalize_record(record):
         values = optional.get("Values")
         value_columns = extract_columns(values, family)
         return_columns = extract_columns(out.get("return_values"), family)
-        cellblock = normalize_cellblock(required.get("Cellblock"))
+        cellblock = normalize_cellblock(required.get("Cellblock"), family)
         authority_uid = compact_uid(
             arg_value(required, optional, "HostSigningAuthority", "Authority", "SigningAuthority")
         )

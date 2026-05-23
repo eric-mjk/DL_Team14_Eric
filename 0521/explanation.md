@@ -95,10 +95,10 @@ result = judge_final(state, events[-1])
 - `Properties`는 Session Manager에 호출되어야 한다.
 - `StartSession`은 SP availability, session open 여부, credential/challenge match를 본다.
 - `Authenticate`는 open session과 proof/credential match를 본다.
-- `Get`은 object family별 access-control과 Cellblock validity를 본다.
-- `Set`은 write session, authenticated authority, protected column access를 본다.
+- `Get`은 spec에서 추출한 ACE/AccessControl policy를 먼저 적용하고, policy가 unknown이면 object family별 conservative fallback과 Cellblock validity를 본다.
+- `Set`은 table schema의 column range/read-only policy, ACE/AccessControl write policy, Authority.Enabled state, write session, authenticated authority를 함께 본다.
 - `Activate`는 AdminSP write session과 SID authority가 있어야 LockingSP activation으로 인정한다.
-- `GenKey`는 active LockingSP와 authenticated LockingSP admin write session이 필요하다.
+- `GenKey`는 active LockingSP와 ACE/AccessControl 또는 authenticated LockingSP admin write session이 필요하다.
 - `Revert/RevertSP`는 owner/admin write session과 target SP lifecycle을 본다.
 - `Read/Write`는 Locking range lock flags, range overlap, GenKey 이후 data invalidation을 본다.
 
@@ -115,10 +115,14 @@ index에는 다음 정보가 들어간다.
 - method-to-section mapping
 - normative extract count
 - preconfiguration JSON table
+- extracted `table_schemas` for column names, limits, and mutability hints
+- extracted `access_policy` for ACE, AccessControl, Authority, and C_PIN relationships
+- mutable policy state from successful/observed ACE, AccessControl, Authority, and C_PIN table operations
+- generated coverage categories and normative gap report, excluding hidden/checkpoint document copies
 - rule reference mapping
 - column-name mapping
 
-oracle의 `RuleResult`에는 적용된 spec section ref가 붙는다. `SOLVER_DEBUG=1`을 켜면 최종 event, expected/actual status, verdict, state summary, spec refs, reason을 함께 볼 수 있다.
+oracle의 `RuleResult`에는 적용된 spec section ref, matched policy source, coverage status가 붙는다. `SOLVER_DEBUG=1`을 켜면 최종 event, expected/actual status, verdict, state summary, spec refs, matched policy source, coverage status, reason을 함께 볼 수 있다.
 
 ```bash
 SOLVER_DEBUG=1 DATASET_DIR=../dataset LABEL_PATH=../dataset/label.jsonl python evaluate.py
@@ -134,4 +138,4 @@ SOLVER_DEBUG=1 DATASET_DIR=../dataset LABEL_PATH=../dataset/label.jsonl python e
 score=100.00
 ```
 
-현재 방향은 public testcase만 맞추는 것이 아니라, Core/Opal 문서 기반으로 state machine과 oracle rule을 확장해서 hidden testcase에서도 일반화하는 것이다.
+현재 방향은 public testcase만 맞추는 것이 아니라, Core/Opal 문서 기반으로 state machine과 oracle rule을 확장해서 hidden testcase에서도 일반화하는 것이다. `artifacts/spec_coverage_report.json`은 구현된 ref, unresolved ref, rule-ref 없는 코드 rule, normative gap과 각 gap의 권장 조치를 기계적으로 확인하는 traceability artifact다. 남은 `partial`/`indexed_only` gap은 의도적으로 보이는 상태로 유지한다.

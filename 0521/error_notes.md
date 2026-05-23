@@ -7,6 +7,11 @@
 - Added locking-range read/write checks using ReadLockEnabled, WriteLockEnabled, ReadLocked, and WriteLocked columns before applying key-generation readback rules.
 - Added a generated spec index from all document text files and attached spec section references to debug oracle decisions.
 - Added lifecycle handling for Revert/RevertSP and initialized Locking/MBR defaults from Opal preconfiguration tables.
+- Added generated coverage reporting (`spec_coverage.md` plus `artifacts/spec_coverage_report.json`) and fixed rule-reference validation so all emitted refs resolve into the index.
+- Extracted ACE, AccessControl, Authority, and C_PIN preconfiguration rows into state policy metadata, with a conservative three-valued BooleanExpr evaluator.
+- Added schema-first column validation, read-only Set handling, named Cellblock normalization, and Locking range overlap checks.
+- Extended debug output with matched policy source and coverage status.
+- Excluded checkpoint document copies from spec indexing, upgraded coverage gaps with reasons/actions, and made successful policy-table operations update ACE/AccessControl/Authority/C_PIN state.
 
 ## 한국어 실행 흐름 요약
 

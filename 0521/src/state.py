@@ -1,7 +1,18 @@
 from copy import deepcopy
+import re
 
 from .normalizer import compact_uid, is_success_status, to_bool, to_int
-from .spec_docs import default_locking_ranges, default_mbr_control, default_table_rows
+from .spec_docs import (
+    column_list_from_value,
+    default_access_policy,
+    default_locking_ranges,
+    default_mbr_control,
+    default_table_rows,
+    exact_uid_or_none,
+    method_name_from_value,
+    normalize_authority_name,
+    normalized_column_name,
+)
 
 
 LOCKING_COLUMNS = {
@@ -34,8 +45,13 @@ def empty_session():
     }
 
 
+def fresh_access_policy():
+    return deepcopy(default_access_policy())
+
+
 def initial_state():
     locking_ranges = default_locking_ranges()
+    access_policy = fresh_access_policy()
     return {
         "session": empty_session(),
         "credentials": {
@@ -51,6 +67,10 @@ def initial_state():
         "locking_ranges": locking_ranges,
         "mbr": default_mbr_control(),
         "tables": default_table_rows(),
+        "ace_rows": access_policy.get("ace_rows", {}),
+        "access_control_rows": access_policy.get("access_control_rows", []),
+        "authority_rows": access_policy.get("authority_rows", {}),
+        "credential_to_authority": access_policy.get("credential_to_authority", {}),
         "key_generations": {},
         "key_generations_by_range": {},
         "writes": {},
@@ -227,6 +247,196 @@ def merge_table_columns(state, event, columns):
         },
     )
     current.setdefault("columns", {}).update(columns)
+    current.setdefault("values", {}).update({str(column): value for column, value in columns.items()})
+
+
+def policy_scope_from_source(source):
+    text = str(source or "")
+    if text.startswith("opal/4.2"):
+        return "AdminSP"
+    if text.startswith("opal/4.3"):
+        return "LockingSP"
+    return None
+
+
+def policy_row_scope(row):
+    return row.get("sp") or policy_scope_from_source(row.get("source"))
+
+
+def credential_mapping_scope(uid):
+    uid = compact_uid(uid)
+    if not uid or not uid.startswith("0000000B") or len(uid) < 12:
+        return None
+    if uid[8:12] in {"0001", "0003"}:
+        return "LockingSP"
+    if uid[8:12] == "0000":
+        return "AdminSP"
+    return None
+
+
+def reset_access_policy_scope(state, sp=None):
+    policy = fresh_access_policy()
+    if sp is None:
+        state["ace_rows"] = policy.get("ace_rows", {})
+        state["access_control_rows"] = policy.get("access_control_rows", [])
+        state["authority_rows"] = policy.get("authority_rows", {})
+        state["credential_to_authority"] = policy.get("credential_to_authority", {})
+        return
+
+    state["ace_rows"] = {
+        key: row
+        for key, row in (state.get("ace_rows") or {}).items()
+        if policy_row_scope(row) != sp
+    }
+    state["ace_rows"].update({
+        key: row
+        for key, row in (policy.get("ace_rows") or {}).items()
+        if policy_row_scope(row) == sp
+    })
+    state["access_control_rows"] = [
+        row
+        for row in (state.get("access_control_rows") or [])
+        if policy_row_scope(row) != sp
+    ] + [
+        row
+        for row in (policy.get("access_control_rows") or [])
+        if policy_row_scope(row) == sp
+    ]
+    state["authority_rows"] = {
+        key: row
+        for key, row in (state.get("authority_rows") or {}).items()
+        if policy_row_scope(row) != sp
+    }
+    state["authority_rows"].update({
+        key: row
+        for key, row in (policy.get("authority_rows") or {}).items()
+        if policy_row_scope(row) == sp
+    })
+    state["credential_to_authority"] = {
+        key: value
+        for key, value in (state.get("credential_to_authority") or {}).items()
+        if credential_mapping_scope(key) != sp
+    }
+    state["credential_to_authority"].update({
+        key: value
+        for key, value in (policy.get("credential_to_authority") or {}).items()
+        if credential_mapping_scope(key) == sp
+    })
+
+
+def normalized_policy_name(value):
+    return re.sub(r"[^0-9A-Za-z]", "", str(value or "")).lower()
+
+
+def policy_object_key(event):
+    uid = compact_uid(event.get("object_uid"))
+    if uid:
+        return uid
+    name = event.get("object")
+    normalized = normalized_policy_name(name)
+    return normalized or None
+
+
+def ace_refs_from_value(value):
+    raw_items = value if isinstance(value, list) else [value]
+    refs = []
+    for item in raw_items:
+        item_text = str(item or "").strip()
+        compact = exact_uid_or_none(item_text)
+        ref = compact if compact else normalized_column_name(item_text)
+        if ref:
+            refs.append(ref)
+    return refs
+
+
+def apply_ace_columns(state, event, columns):
+    key = policy_object_key(event)
+    if not key:
+        return
+    row = state.setdefault("ace_rows", {}).setdefault(
+        key,
+        {
+            "uid": compact_uid(event.get("object_uid")),
+            "name": event.get("object"),
+            "source": "trajectory",
+            "sp": state["session"].get("sp"),
+        },
+    )
+    if 3 in columns:
+        row["boolean_expr"] = columns[3]
+    if 4 in columns:
+        row["columns"] = column_list_from_value(columns[4])
+    row.setdefault("source", "trajectory")
+    row.setdefault("sp", state["session"].get("sp"))
+
+
+def apply_access_control_columns(state, event, columns):
+    key = policy_object_key(event)
+    if not key:
+        return
+    rows = state.setdefault("access_control_rows", [])
+    row = next((item for item in rows if item.get("uid") == key or normalized_policy_name(item.get("name")) == key), None)
+    if row is None:
+        row = {
+            "uid": compact_uid(event.get("object_uid")),
+            "name": event.get("object"),
+            "source": "trajectory",
+            "sp": state["session"].get("sp"),
+            "ace_refs": [],
+        }
+        rows.append(row)
+    if 3 in columns:
+        invoking = columns[3]
+        row["invoking_uid"] = exact_uid_or_none(invoking)
+        row["invoking_pattern"] = str(invoking or "")
+        row["invoking_name"] = invoking
+    if 4 in columns:
+        row["method"] = method_name_from_value(columns[4])
+    if 5 in columns:
+        row["ace_refs"] = ace_refs_from_value(columns[5])
+    row.setdefault("source", "trajectory")
+    row.setdefault("sp", state["session"].get("sp"))
+
+
+def apply_authority_columns(state, event, columns):
+    key = normalize_authority_name(event.get("object_uid") or event.get("object")) or policy_object_key(event)
+    if not key:
+        return
+    row = state.setdefault("authority_rows", {}).setdefault(
+        key,
+        {
+            "uid": compact_uid(event.get("object_uid")),
+            "name": event.get("object"),
+            "source": "trajectory",
+            "sp": state["session"].get("sp"),
+        },
+    )
+    if 4 in columns:
+        parsed = to_bool(columns[4])
+        row["enabled"] = parsed if parsed is not None else bool(columns[4])
+    if 5 in columns:
+        row["credential"] = compact_uid(columns[5])
+    row.setdefault("source", "trajectory")
+    row.setdefault("sp", state["session"].get("sp"))
+
+
+def apply_cpin_policy_columns(state, event, columns):
+    uid = compact_uid(event.get("object_uid"))
+    authority = event.get("credential_authority") or normalize_authority_name(event.get("object"))
+    if uid and authority:
+        state.setdefault("credential_to_authority", {})[uid] = authority
+
+
+def apply_policy_table_columns(state, event, columns):
+    family = event.get("object_family")
+    if family == "ACE":
+        apply_ace_columns(state, event, columns)
+    elif family == "AccessControl":
+        apply_access_control_columns(state, event, columns)
+    elif family == "Authority":
+        apply_authority_columns(state, event, columns)
+    elif family == "C_PIN":
+        apply_cpin_policy_columns(state, event, columns)
 
 
 def apply_successful_get(state, event):
@@ -234,6 +444,7 @@ def apply_successful_get(state, event):
     columns = event.get("return_columns") or {}
     credential_authority = event.get("credential_authority")
     merge_table_columns(state, event, columns)
+    apply_policy_table_columns(state, event, columns)
 
     if credential_authority and 3 in columns:
         state["credentials"][credential_authority] = columns[3]
@@ -252,6 +463,7 @@ def apply_successful_set(state, event):
     columns = event.get("value_columns") or {}
     credential_authority = event.get("credential_authority")
     merge_table_columns(state, event, columns)
+    apply_policy_table_columns(state, event, columns)
 
     if credential_authority and 3 in columns:
         state["credentials"][credential_authority] = columns[3]
@@ -311,12 +523,14 @@ def reset_locking_sp(state, preserve_global_key=False):
     state["locking_ranges"] = default_ranges
     state["mbr"] = default_mbr_control()
     state["credentials"]["Admin1"] = None
+    reset_access_policy_scope(state, "LockingSP")
 
 
 def reset_admin_sp_credentials(state):
     state["credentials"]["SID"] = None
     state["credentials"]["MSID"] = None
     state["credentials"]["Admin1"] = None
+    reset_access_policy_scope(state, "AdminSP")
 
 
 def apply_successful_revert(state, event):
@@ -340,6 +554,34 @@ def apply_successful_revert_sp(state, event):
         reset_admin_sp_credentials(state)
         state["sp_lifecycle"]["AdminSP"] = "Manufactured"
     state["session"] = empty_session()
+
+
+def reset_like_command(event):
+    text = f"{event.get('command') or ''} {event.get('result') or ''}".lower()
+    return any(marker in text for marker in ("reset", "reboot", "power cycle", "powercycle"))
+
+
+def reset_flag_enabled(value):
+    parsed = to_bool(value)
+    if parsed is not None:
+        return parsed
+    text = str(value or "").strip().lower()
+    return text not in {"", "none", "false", "0", "no"}
+
+
+def apply_reset_like_event(state, event):
+    for entry in state.get("locking_ranges", {}).values():
+        if not reset_flag_enabled(entry.get("lock_on_reset")):
+            continue
+        if entry.get("read_lock_enabled"):
+            entry["read_locked"] = True
+        if entry.get("write_lock_enabled"):
+            entry["write_locked"] = True
+    done_on_reset = state.get("mbr", {}).get("done_on_reset")
+    if done_on_reset is not None:
+        parsed = to_bool(done_on_reset)
+        state["mbr"]["done"] = parsed if parsed is not None else done_on_reset
+        state["mbr"][2] = state["mbr"].get("done")
 
 
 def range_bounds(entry):
@@ -473,6 +715,10 @@ def apply_event(state, event):
             apply_successful_revert(state, event)
         elif method == "RevertSP":
             apply_successful_revert_sp(state, event)
+        return
+
+    if event["kind"] == "command" and reset_like_command(event):
+        apply_reset_like_event(state, event)
         return
 
     if event["kind"] == "write":

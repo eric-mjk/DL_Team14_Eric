@@ -1,13 +1,14 @@
+import re
 from dataclasses import dataclass
 
-from .normalizer import is_success_status
+from .normalizer import is_success_status, to_int
 from .state import (
     data_command_success,
     is_error_result,
     key_generation_for_lba,
     lock_state_for_lba,
 )
-from .spec_docs import COLUMN_LIMITS, refs_for
+from .spec_docs import COLUMN_LIMITS, max_column_for_family, read_only_columns_for_family, refs_for
 
 
 AUTH_ERROR_STATUSES = {"not_authorized", "authority_locked_out"}
@@ -39,6 +40,8 @@ class RuleResult:
     expected_status: str = "unknown"
     actual_status: str = "unknown"
     spec_refs: tuple = ()
+    policy_source: str = "none"
+    coverage_status: str = "implemented"
 
 
 def spec_refs_for(*rule_keys):
@@ -50,12 +53,46 @@ def spec_refs_for(*rule_keys):
     return tuple(refs)
 
 
-def pass_result(reason, confidence=0.95, expected_status="unknown", actual_status="unknown", spec_refs=()):
-    return RuleResult("pass", confidence, reason, expected_status, actual_status, tuple(spec_refs))
+def pass_result(
+    reason,
+    confidence=0.95,
+    expected_status="unknown",
+    actual_status="unknown",
+    spec_refs=(),
+    policy_source="none",
+    coverage_status="implemented",
+):
+    return RuleResult(
+        "pass",
+        confidence,
+        reason,
+        expected_status,
+        actual_status,
+        tuple(spec_refs),
+        policy_source,
+        coverage_status,
+    )
 
 
-def fail_result(reason, confidence=0.95, expected_status="unknown", actual_status="unknown", spec_refs=()):
-    return RuleResult("fail", confidence, reason, expected_status, actual_status, tuple(spec_refs))
+def fail_result(
+    reason,
+    confidence=0.95,
+    expected_status="unknown",
+    actual_status="unknown",
+    spec_refs=(),
+    policy_source="none",
+    coverage_status="implemented",
+):
+    return RuleResult(
+        "fail",
+        confidence,
+        reason,
+        expected_status,
+        actual_status,
+        tuple(spec_refs),
+        policy_source,
+        coverage_status,
+    )
 
 
 def status_class(status):
@@ -96,12 +133,20 @@ def status_matches(actual, expected):
     return actual == expected
 
 
-def expected_status_result(event, expected_status, reason, confidence=0.95, rule_key=None):
+def expected_status_result(
+    event,
+    expected_status,
+    reason,
+    confidence=0.95,
+    rule_key=None,
+    policy_source="none",
+    coverage_status="implemented",
+):
     actual = actual_status_class(event)
     refs = spec_refs_for(rule_key) if rule_key else ()
     if status_matches(actual, expected_status):
-        return pass_result(reason, confidence, expected_status, actual, refs)
-    return fail_result(reason, confidence, expected_status, actual, refs)
+        return pass_result(reason, confidence, expected_status, actual, refs, policy_source, coverage_status)
+    return fail_result(reason, confidence, expected_status, actual, refs, policy_source, coverage_status)
 
 
 def expected_success_result(event, expected_success, reason, confidence=0.95):
@@ -109,25 +154,333 @@ def expected_success_result(event, expected_success, reason, confidence=0.95):
     return expected_status_result(event, expected, reason, confidence)
 
 
-def session_has_authority(state, authority=None):
-    authorities = state["session"].get("authorities") or set()
-    if authority is None:
-        return bool(authorities)
-    return authority in authorities
+def normalized_policy_text(value):
+    return re.sub(r"[^0-9A-Za-z]", "", str(value or "")).lower()
 
 
 def is_admin_authority(authority):
     return authority == "SID" or (isinstance(authority, str) and authority.startswith("Admin"))
 
 
+def authority_records_for(state, authority):
+    if not authority:
+        return []
+    wanted = normalized_policy_text(authority)
+    rows = state.get("authority_rows") or {}
+    records = []
+    for key, row in rows.items():
+        values = {key, row.get("name"), row.get("uid")}
+        if any(wanted and wanted == normalized_policy_text(value) for value in values):
+            records.append(row)
+    return records
+
+
+def authority_enabled(state, authority):
+    if authority in {None, "Anybody"}:
+        return True
+    records = authority_records_for(state, authority)
+    if not records:
+        return True
+    return any(record.get("enabled") is not False for record in records)
+
+
+def effective_session_authorities(state):
+    authorities = set(state["session"].get("authorities") or set())
+    return {authority for authority in authorities if authority_enabled(state, authority)}
+
+
+def session_has_authority(state, authority=None):
+    authorities = effective_session_authorities(state)
+    if authority is None:
+        return bool(authorities)
+    return authority in authorities
+
+
 def session_has_admin_authority(state, sp=None):
-    authorities = state["session"].get("authorities") or set()
+    authorities = effective_session_authorities(state)
     if sp == "LockingSP":
         return any(isinstance(authority, str) and authority.startswith("Admin") for authority in authorities)
     if sp == "AdminSP":
         return any(authority == "SID" or (isinstance(authority, str) and authority.startswith("Admin")) for authority in authorities)
     return any(is_admin_authority(authority) for authority in authorities)
 
+
+def session_authority_tokens(state):
+    authorities = effective_session_authorities(state)
+    tokens = set(authorities)
+    tokens.add("Anybody")
+    if any(is_admin_authority(authority) for authority in authorities) and authority_enabled(state, "Admins"):
+        tokens.add("Admins")
+    return tokens
+
+
+def boolean_atom_value(atom, tokens):
+    text = str(atom or "").strip().strip("'\"")
+    if not text:
+        return None
+    normalized = normalized_policy_text(text)
+    if normalized in {"true", "yes", "1"}:
+        return True
+    if normalized in {"false", "no", "0"}:
+        return False
+    if normalized == "anybody":
+        return True
+    if normalized == "admins":
+        return "Admins" in tokens
+    for token in tokens:
+        if normalized == normalized_policy_text(token):
+            return True
+    if re.fullmatch(r"sid|admin\d+|user\d+", normalized):
+        return False
+    return None
+
+
+def combine_boolean(op, values):
+    if op == "OR":
+        if any(value is True for value in values):
+            return True
+        if any(value is None for value in values):
+            return None
+        return False
+    if op == "AND":
+        if any(value is False for value in values):
+            return False
+        if any(value is None for value in values):
+            return None
+        return True
+    return None
+
+
+def evaluate_boolean_expr(expr, state):
+    tokens = session_authority_tokens(state)
+    if expr is None:
+        return None
+    if isinstance(expr, bool):
+        return expr
+    if isinstance(expr, dict):
+        for op in ("OR", "AND", "or", "and"):
+            if op in expr:
+                value = expr[op]
+                items = value if isinstance(value, list) else [value]
+                return combine_boolean(op.upper(), [evaluate_boolean_expr(item, state) for item in items])
+        for key in ("Authority", "authority", "Name", "name", "Value", "value"):
+            if key in expr:
+                return evaluate_boolean_expr(expr[key], state)
+        return None
+    if isinstance(expr, list):
+        if not expr:
+            return None
+        op = str(expr[0]).upper()
+        if op in {"OR", "AND"}:
+            return combine_boolean(op, [evaluate_boolean_expr(item, state) for item in expr[1:]])
+        if any(str(item).upper() == "OR" for item in expr):
+            return combine_boolean("OR", [evaluate_boolean_expr(item, state) for item in expr if str(item).upper() != "OR"])
+        if any(str(item).upper() == "AND" for item in expr):
+            return combine_boolean("AND", [evaluate_boolean_expr(item, state) for item in expr if str(item).upper() != "AND"])
+        if len(expr) == 1:
+            return evaluate_boolean_expr(expr[0], state)
+        return None
+
+    text = str(expr).strip()
+    if not text:
+        return None
+    or_parts = re.split(r"\bOR\b|\|\|", text, flags=re.IGNORECASE)
+    if len(or_parts) > 1:
+        return combine_boolean("OR", [evaluate_boolean_expr(part, state) for part in or_parts])
+    and_parts = re.split(r"\bAND\b|&&", text, flags=re.IGNORECASE)
+    if len(and_parts) > 1:
+        return combine_boolean("AND", [evaluate_boolean_expr(part, state) for part in and_parts])
+    return boolean_atom_value(text.strip("()[]{} "), tokens)
+
+
+def uid_pattern_matches(pattern, uid):
+    uid = str(uid or "").upper()
+    if not pattern or not uid:
+        return False
+    pattern_text = str(pattern).split("*", 1)[0].split("(", 1)[0]
+    tokens = re.findall(r"[0-9A-Fa-f]{2}|TT|XX|MM|NN", pattern_text)
+    if not tokens:
+        return False
+    regex_parts = []
+    for token in tokens:
+        upper = token.upper()
+        if upper in {"TT", "XX", "MM", "NN"}:
+            regex_parts.append(r"[0-9A-F]{2}")
+        else:
+            regex_parts.append(upper)
+    regex = "^" + "".join(regex_parts)
+    return re.match(regex, uid) is not None
+
+
+def access_row_matches(row, event):
+    method = row.get("method")
+    if method and method != event.get("method") and normalized_policy_text(method) != normalized_policy_text(event.get("method_uid")):
+        return False
+
+    invoking_uid = row.get("invoking_uid")
+    invoking_name = row.get("invoking_name") or row.get("name")
+    invoking_pattern = row.get("invoking_pattern") or invoking_name
+    event_uid = event.get("object_uid")
+    if invoking_uid:
+        return invoking_uid == event_uid
+    if uid_pattern_matches(invoking_pattern, event_uid):
+        return True
+    if not invoking_name:
+        return False
+
+    row_text = normalized_policy_text(invoking_name)
+    candidates = {
+        normalized_policy_text(event.get("object")),
+        normalized_policy_text(event.get("object_name")),
+        normalized_policy_text(event.get("object_family")),
+    }
+    candidates.discard("")
+    return any(candidate and (candidate == row_text or candidate in row_text or row_text in candidate) for candidate in candidates)
+
+
+def policy_scope_from_source(source):
+    text = str(source or "")
+    if text.startswith("opal/4.2"):
+        return "AdminSP"
+    if text.startswith("opal/4.3"):
+        return "LockingSP"
+    return None
+
+
+def policy_scope_for_event(state, event):
+    return object_sp(event) or state["session"].get("sp")
+
+
+def best_scoped_policy_row(rows, target_sp, row_source=None):
+    if not rows:
+        return None
+    if target_sp:
+        scoped = [row for row in rows if policy_scope_from_source(row.get("source")) == target_sp]
+        if scoped:
+            return scoped[0]
+    source_scope = policy_scope_from_source(row_source)
+    if source_scope:
+        scoped = [row for row in rows if policy_scope_from_source(row.get("source")) == source_scope]
+        if scoped:
+            return scoped[0]
+    return rows[0]
+
+
+def ace_for_ref(ace_rows, ref, target_sp=None, row_source=None):
+    ref_uid = str(ref or "").upper()
+    candidates = []
+    if ref_uid in ace_rows:
+        candidates.append(ace_rows[ref_uid])
+    ref_name = normalized_policy_text(ref)
+    for ace in ace_rows.values():
+        if ace in candidates:
+            continue
+        if ref_uid and ref_uid == str(ace.get("uid") or "").upper():
+            candidates.append(ace)
+        elif ref_name and ref_name == normalized_policy_text(ace.get("name")):
+            candidates.append(ace)
+    return best_scoped_policy_row(candidates, target_sp, row_source=row_source)
+
+
+def requested_policy_columns(event, write=False):
+    method = event.get("method")
+    if method not in {"Get", "Set"}:
+        return set()
+    if write:
+        columns = set((event.get("value_columns") or {}).keys())
+    else:
+        columns = set(event.get("cellblock_columns") or [])
+    return columns or None
+
+
+def columns_authorized(allowed_columns, requested_columns):
+    if requested_columns is None:
+        return None
+    if not requested_columns:
+        return True
+    if allowed_columns == "all":
+        return True
+    if allowed_columns is None:
+        return None
+    allowed = set(allowed_columns)
+    if not allowed:
+        return None
+    return requested_columns.issubset(allowed)
+
+
+def ace_policy_decision(state, event, write=False):
+    access_rows = state.get("access_control_rows") or []
+    ace_rows = state.get("ace_rows") or {}
+    if not access_rows or not ace_rows:
+        return None
+
+    requested_columns = requested_policy_columns(event, write=write)
+    matched_rows = [row for row in access_rows if access_row_matches(row, event)]
+    if not matched_rows:
+        return None
+    target_sp = policy_scope_for_event(state, event)
+    scoped_rows = [row for row in matched_rows if policy_scope_from_source(row.get("source")) == target_sp]
+    if scoped_rows:
+        matched_rows = scoped_rows
+
+    saw_unknown = False
+    saw_denied = False
+    denied_source = None
+    for row in matched_rows:
+        refs = row.get("ace_refs") or []
+        if not refs:
+            saw_unknown = True
+            continue
+        for ref in refs:
+            ace = ace_for_ref(ace_rows, ref, target_sp=target_sp, row_source=row.get("source"))
+            if not ace:
+                saw_unknown = True
+                continue
+            source_scope = policy_scope_from_source(row.get("source")) or target_sp or "unknown"
+            source = f"AccessControl:{row.get('source') or row.get('name')} ACE:{ace.get('source') or ace.get('name')} scope:{source_scope}"
+            allowed_by_expr = evaluate_boolean_expr(ace.get("boolean_expr"), state)
+            if allowed_by_expr is True:
+                allowed_by_columns = columns_authorized(ace.get("columns"), requested_columns)
+                if allowed_by_columns is True:
+                    return {"allowed": True, "source": source, "coverage": "implemented"}
+                if allowed_by_columns is False:
+                    saw_denied = True
+                    denied_source = source
+                else:
+                    saw_unknown = True
+            elif allowed_by_expr is False:
+                saw_denied = True
+                denied_source = source
+            else:
+                saw_unknown = True
+    if saw_denied and not saw_unknown:
+        return {"allowed": False, "source": denied_source or "AccessControl", "coverage": "implemented"}
+    return None
+
+
+def policy_status_result(state, event, write=False, reason="ACE/AccessControl policy matched."):
+    decision = ace_policy_decision(state, event, write=write)
+    if decision is None:
+        return None
+    target_sp = object_sp(event) or state["session"].get("sp")
+    if target_sp and not session_open_for(state, target_sp, write_required=write):
+        return expected_status_result(
+            event,
+            "auth_error",
+            f"{reason} Matched policy still requires an open {'write ' if write else ''}{target_sp} session.",
+            rule_key="access_control",
+            policy_source=decision.get("source", "AccessControl"),
+            coverage_status=decision.get("coverage", "implemented"),
+        )
+    expected = "success" if decision["allowed"] else "auth_error"
+    return expected_status_result(
+        event,
+        expected,
+        reason,
+        rule_key="access_control",
+        policy_source=decision.get("source", "AccessControl"),
+        coverage_status=decision.get("coverage", "implemented"),
+    )
 
 def credential_matches(state, authority, challenge):
     if not authority:
@@ -193,7 +546,9 @@ def invalid_cellblock(event):
         return False
     if start is None or end is None or start < 0 or end < 0 or start > end:
         return True
-    max_column = COLUMN_LIMITS.get(event.get("object_family"))
+    max_column = max_column_for_family(event.get("object_family"))
+    if max_column is None:
+        max_column = COLUMN_LIMITS.get(event.get("object_family"))
     return max_column is not None and end > max_column
 
 
@@ -203,8 +558,64 @@ def invalid_set_columns(event):
         return False
     if any(column < 0 for column in columns):
         return True
-    max_column = COLUMN_LIMITS.get(event.get("object_family"))
+    max_column = max_column_for_family(event.get("object_family"))
+    if max_column is None:
+        max_column = COLUMN_LIMITS.get(event.get("object_family"))
     return max_column is not None and any(column > max_column for column in columns)
+
+
+def read_only_set_columns(event):
+    columns = set((event.get("value_columns") or {}).keys())
+    if not columns:
+        return set()
+    return columns & read_only_columns_for_family(event.get("object_family"))
+
+
+def projected_locking_bounds(state, event):
+    if event.get("object_family") != "Locking":
+        return None
+    range_name = event.get("locking_range")
+    if not range_name:
+        return None
+    current = dict((state.get("locking_ranges") or {}).get(range_name) or {})
+    columns = event.get("value_columns") or {}
+    if 3 in columns:
+        current["range_start"] = columns[3]
+    if 4 in columns:
+        current["range_length"] = columns[4]
+    start = to_int(current.get("range_start"))
+    length = to_int(current.get("range_length"))
+    if start is None or length is None or start < 0 or length < 0:
+        return "invalid"
+    if range_name == "Global" and length == 0:
+        return (0, None)
+    if length == 0:
+        return None
+    return (start, start + length - 1)
+
+
+def invalid_locking_range_update(state, event):
+    columns = event.get("value_columns") or {}
+    if event.get("object_family") != "Locking" or not ({3, 4} & set(columns)):
+        return False
+    range_name = event.get("locking_range")
+    bounds = projected_locking_bounds(state, event)
+    if bounds == "invalid":
+        return True
+    if not bounds or range_name == "Global":
+        return False
+    start, end = bounds
+    for other_name, other in (state.get("locking_ranges") or {}).items():
+        if other_name in {range_name, "Global"}:
+            continue
+        other_start = to_int(other.get("range_start"))
+        other_length = to_int(other.get("range_length"))
+        if other_start is None or other_length is None or other_length <= 0:
+            continue
+        other_end = other_start + other_length - 1
+        if start <= other_end and other_start <= end:
+            return True
+    return False
 
 
 def judge_start_session(state, event):
@@ -344,6 +755,10 @@ def judge_get(state, event):
     if target_sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", f"{obj} Get requires an active LockingSP.", rule_key="locking_table")
 
+    policy_result = policy_status_result(state, event, write=False, reason="Get matched ACE/AccessControl policy.")
+    if policy_result is not None:
+        return policy_result
+
     if family == "C_PIN":
         expected = session_open_for(state, target_sp) and session_has_admin_authority(state, target_sp)
         return expected_status_result(
@@ -400,9 +815,34 @@ def judge_set(state, event):
     if invalid_set_columns(event):
         return expected_status_result(event, "invalid_parameter", "Set Values contain invalid columns for the target object.", rule_key="set")
 
+    read_only = read_only_set_columns(event)
+    if read_only:
+        return expected_status_result(
+            event,
+            {"invalid_parameter", "auth_error"},
+            f"Set Values include read-only/non-modifiable columns {sorted(read_only)}.",
+            rule_key="set",
+            policy_source="table_schema",
+            coverage_status="implemented",
+        )
+
+    if invalid_locking_range_update(state, event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "Locking RangeStart/RangeLength update is negative or overlaps another configured range.",
+            rule_key="locking_table",
+            policy_source="table_schema",
+            coverage_status="implemented",
+        )
+
     target_sp = object_sp(event) or state["session"].get("sp")
     if target_sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", f"{obj} Set requires an active LockingSP.", rule_key="locking_table")
+
+    policy_result = policy_status_result(state, event, write=True, reason="Set matched ACE/AccessControl policy.")
+    if policy_result is not None:
+        return policy_result
 
     if family == "C_PIN":
         authorities = state["session"].get("authorities") or set()
@@ -488,6 +928,9 @@ def judge_gen_key(state, event):
         return expected_status_result(event, "invalid_parameter", "GenKey target must be a media-key object.", rule_key="gen_key")
     if not state.get("locking_sp_active"):
         return expected_status_result(event, "error", "GenKey requires an active LockingSP.", rule_key="gen_key")
+    policy_result = policy_status_result(state, event, write=True, reason="GenKey matched ACE/AccessControl policy.")
+    if policy_result is not None:
+        return policy_result
     expected = authenticated_locking_admin_write(state)
     return expected_status_result(
         event,
@@ -498,6 +941,9 @@ def judge_gen_key(state, event):
 
 
 def judge_random(state, event):
+    count = event.get("count")
+    if count is not None and count < 0:
+        return expected_status_result(event, "invalid_parameter", "Random Count cannot be negative.", rule_key="random")
     target_sp = object_sp(event) or state["session"].get("sp")
     expected = state["session"].get("open") and (target_sp is None or session_open_for(state, target_sp))
     return expected_status_result(
@@ -508,11 +954,34 @@ def judge_random(state, event):
     )
 
 
+def judge_free_space_or_rows(state, event):
+    target_sp = object_sp(event) or state["session"].get("sp")
+    if target_sp and not session_open_for(state, target_sp):
+        return expected_status_result(
+            event,
+            "auth_error",
+            f"{event.get('method')} requires an open session for the target table/SP context.",
+            rule_key="get",
+            coverage_status="partial",
+        )
+    expected = state["session"].get("open")
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        f"{event.get('method')} requires an open session and follows table-management status classes.",
+        rule_key="get",
+        coverage_status="partial",
+    )
+
+
 def judge_next(state, event):
     count = event.get("count")
     if count is not None and count < 0:
         return expected_status_result(event, "invalid_parameter", "Next Count cannot be negative.", rule_key="next")
     target_sp = object_sp(event) or state["session"].get("sp")
+    policy_result = policy_status_result(state, event, write=False, reason="Next matched ACE/AccessControl policy.")
+    if policy_result is not None:
+        return policy_result
     sensitive = event.get("object_family") in {"C_PIN", "Authority", "Locking", "MBRControl", "MediaKey", "ACE", "AccessControl"}
     expected = session_open_for(state, target_sp) and (not sensitive or session_has_authority(state))
     return expected_status_result(
@@ -701,13 +1170,7 @@ def judge_final(state, event):
     if method == "Next":
         return judge_next(state, event)
     if method in {"GetFreeSpace", "GetFreeRows"}:
-        expected = state["session"].get("open")
-        return expected_status_result(
-            event,
-            "success" if expected else "auth_error",
-            f"{method} requires an open session and follows table-management status classes.",
-            rule_key="get",
-        )
+        return judge_free_space_or_rows(state, event)
     if method == "Random":
         return judge_random(state, event)
     if method == "Activate":

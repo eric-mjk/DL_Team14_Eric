@@ -1,26 +1,25 @@
 # 0521 Spec Coverage
 
-`artifacts/spec_index.json` is generated from every `*.txt` document under
-`artifacts/documents`, including checkpoint copies present in the tree.
+Generated from `artifacts/spec_index.json` and the rule references used by the deterministic oracle.
 
 ## Indexed Corpus
 
-- Total indexed sections: 1383
-- Categories: auth/access control 247, data command behavior 54, method rule 114, table schema 553, state transition 60, normative reference 110, non-executable reference 245
-- Parsed preconfiguration/table JSON groups: 50
-- Method mappings include: Properties, StartSession, SyncSession, CloseSession, Authenticate, Get, Set, Next, GetFreeSpace, GetFreeRows, GenKey, Random, Activate, Revert, RevertSP
+- Total indexed sections: 1376
+- Categories: auth/access control 245, data command behavior 54, method rule 113, non-executable reference 245, normative reference 110, state transition 59, table schema 550
+- Coverage states: implemented 51, indexed_only 506, non_executable 243, partial 360, vendor_optional 216
+- Unresolved rule refs: 0
+- Rules without refs: 0
+- Normative gaps: 446
+- All sections classified: true
 
-## Implemented Rule Groups
+## Implemented / Partial Rule Groups
 
-- Session Manager: Properties, StartSession, SyncSession, CloseSession/EndSession.
-- Authentication: StartSession credential matching, explicit Authenticate, per-session authorities, auth failure status classes.
-- Table operations: Get, Set, Next with cellblock/value validation and method-aware protected fallback.
-- Opal lifecycle: Activate, Revert, RevertSP, LockingSP active/inactive state, SID-to-Admin credential copy, failed mutation non-effects.
-- Locking/data behavior: preconfigured Locking/MBR defaults, generic range columns, Read/Write lock checks, GenKey/Revert/RevertSP data invalidation.
-- Traceability: `SOLVER_DEBUG=1` prints rule verdicts with spec section refs.
+- Session and method dispatch rules are implemented for every method in `METHOD_NAMES`, with explicit fallback coverage for protected methods.
+- ACE, AccessControl, Authority, and C_PIN preconfiguration rows are extracted into structured policy metadata when present.
+- Table schemas combine documented column names, preconfiguration rows, and conservative mutability hints.
+- LockingSP lifecycle, Revert/RevertSP reset scope, locking range flags, and data key generation are executable oracle rules.
 
-## Deliberate Runtime Boundaries
+## Gap Policy
 
-- Explanatory sections are indexed as non-executable references rather than turned into code.
-- Optional/vendor-specific behavior is represented as conservative status classes unless the trace provides concrete evidence.
-- Full ACE BooleanExpr evaluation is approximated by Admin/User authority classes because the traces expose normalized command outcomes, not complete ACL graph mutation histories.
+- Normative sections without an executable rule are listed in `artifacts/spec_coverage_report.json` as gaps with reason and recommended action.
+- Explanatory and optional/vendor-specific sections stay indexed and are classified rather than converted into speculative rules.
