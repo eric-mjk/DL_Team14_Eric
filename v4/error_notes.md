@@ -17,6 +17,57 @@
 - Added a method preflight matrix for common fail conditions: missing required parameters, malformed `Cellblock`/`Values`/`Where`/`Count`, invalid targets, closed sessions, and read-only write attempts.
 - Tightened `Authority.Enabled`, class authority tokens (`Admins`, `Users`, `Anybody`), dynamic ACE/AccessControl mutation, `KeepGlobalRangeKey`, and range-crossing lock behavior.
 - Corrected `Set` without `Values` to be a no-op success candidate, and corrected disabled-authority `Authenticate` to expect `SUCCESS` with a false result instead of an authorization status.
+- Added UID-only normalization for Locking SP table objects and `SecretProtect` rows so hidden traces that omit friendly object names still hit the existing `DataStore`, `MBR`, `SecretProtect`, `Locking`, `MBRControl`, and media-key oracle rules.
+- Added duplicate-column detection for `Set` `RowValues`; Core 5.3.4.2.6 requires duplicate columns in one `Set` invocation to fail with `INVALID_PARAMETER`.
+- Added conservative unsigned-integer preflight for session parameters (`HostSessionID`, `SessionTimeout`, `TransTimeout`, `InitialCredit`) so malformed or negative values fail without guessing device-specific timeout bounds.
+- Extended UID-only normalization to core metadata and policy tables (`Table`, `SPInfo`, `SPTemplates`, `MethodID`, `AccessControl`, `ACE`, `Authority`, `SP`) and classified class authorities (`Anybody`, `Admins`, `Users`) as `Authority` objects.
+- Rejected `Next` on byte tables (`MBR`, `DataStore`) as `INVALID_PARAMETER`; Core `Next` iterates object-table UID rows, while these Opal tables are byte tables.
+- Added malformed-boolean preflight for `StartSession.Write` and `RevertSP.KeepGlobalRangeKey` when those parameters are present.
+- Recognized Opal byte-table invoking UIDs for MBR (`00 00 08 04 ...`) and DataStore (`00 00 10 01 ...`); MBR Get now follows ACE_Anybody/open-LockingSP semantics and MBR Set requires authenticated LockingSP admin write access.
+- Added modeled `StartTrustedSession`/`SyncTrustedSession` support: both are accepted only on the Session Manager after a normal session is open, and successful exchanges mark the session as trusted.
+- Added `Set.Where` preflight from Core 5.3.3.7.1: object-row `Set` fails if `Where` is present, while table-level `Set` on object tables fails if `Where` is omitted; byte tables are left to byte-row rules.
+- Normalized list-form method `args` into optional named parameters and added a `Properties.HostProperties` shape check for the required list of name/value pairs.
+- Tightened `StartSession` required-parameter validation to require `HostSessionID`, `SPID`, and `Write` per the Core method signature.
+- Added `HostSessionID` required-parameter validation for `SyncSession`, `StartTrustedSession`, and `SyncTrustedSession`.
+- Added MethodID UID-to-name normalization from the Opal Admin/Locking SP MethodID preconfiguration tables so UID-only method invocations and dynamic AccessControl method references resolve to canonical method names.
+- Hardened MethodID UID parsing for spec/template suffixes such as `*MT1`, avoiding accidental extra digits in compacted UIDs.
+- Tracked `Authority.Secure` from spec defaults and trajectory Set/Get updates; explicit `Authenticate` now fails when a secure-messaging authority is used before the session is marked trusted.
+- Fixed TryLimit replay for `Authenticate` responses encoded as `SUCCESS` with result `False`; these now increment failed authentication counts instead of being treated as successful non-mutating calls.
+- Counted failed authenticated `StartSession` attempts toward TryLimit lockout, matching the spec requirement for implicit session-start authentication failures.
+- Capped replayed failed-authentication counts at nonzero `TryLimit` so tracked `Tries` does not increment beyond the configured limit.
+- Reset replayed failed-authentication counts after successful C_PIN PIN changes via `Set` or `GenKey`, matching the spec Tries reset side effect.
+- Added guarded byte-table `MandatoryWriteGranularity` enforcement: when concrete numeric table metadata is known, byte-table `Set` now validates both `Where` offset and `Values.Bytes` length alignment.
+- Added ReEncryptRequest/ReEncryptState handling for Locking rows: column 12 is host read-only, invalid request/state pairs now fail per Core 5.7.3.7.4, and successful request Sets replay the documented state/key transitions.
+- Tightened `Next.Where` preflight from Core 5.3.3.8.1: when present it must normalize to a 16-hex-digit UID reference, while omitted `Where` still starts iteration from the table's first row.
+- Modeled Core Crypto `Stir`: named `Stir` invocations are no longer treated as unsupported, require `Value`, reject malformed `Internal`, and enforce the required non-success status for false `Value`/`Internal` requests.
+- Corrected Table metadata mutability for Opal granularity columns: `MandatoryWriteGranularity` and `RecommendedAccessGranularity` are now read-only, while Core `MaxSize` remains host-settable.
+- Tightened Core `Random` preflight so the required `Count` parameter must be present and parse as a nonnegative unsigned integer before normal session authorization is considered.
+- Added target-shape preflight for table-management free-space methods: `GetFreeRows` must be invoked on a table UID and `GetFreeSpace` must be invoked on an SP target, matching the Core method signatures.
+- Expanded `cell_block` normalization to accept Core numeric component names `0x03`/`0x04` (and decimal aliases) for `startColumn`/`endColumn`, avoiding false malformed-Cellblock failures on spec-form inputs.
+- Enforced the Core `cell_block` byte-table restriction for `Get`: byte tables (`MBR`, `DataStore`) now reject start/end column components because byte-table accesses are row/byte addressed.
+- Added the Core `NextKey` write-state rule for Locking rows: Set of column 11 is accepted only while the tracked `ReEncryptState` is IDLE; non-IDLE attempts now return a non-success expectation.
+- Completed basic Locking re-encryption column schema coverage for columns 14-19: `AdvKeyMode`/`VerifyMode` reject reserved enum values, and progress/status columns 17-19 are host read-only.
+- Tightened Sync/Trusted session parameter validation: `SPSessionID` is now required and checked as a uinteger, and shared unsigned/boolean preflight scans every named parameter instead of stopping at the first valid one.
+- Added Core `CloseSession` signature validation: `RemoteSessionNumber` and `LocalSessionNumber` are required unsigned parameters before the close-session state rule is applied.
+- Added Core `Set.Values` shape validation: byte tables must use `Bytes`, while object/object-table Sets reject `Bytes` payloads and continue to use RowValues/column-value semantics.
+- Added Core `Set.Where` type validation: table-level object-table Sets require a UID-shaped `Where`, while byte-table Sets require a nonnegative row/offset value.
+- Tightened `Properties.HostProperties` list validation so present list entries must be non-empty property maps; omitted, empty-list, and map-form HostProperties remain accepted.
+- Added conservative Core `GetPackage`/`SetPackage` support so named invocations are no longer unsupported: required signature parameters are enforced, targets must be credential objects, and normal credential access-control/write-session expectations apply.
+- Tracked established `HostSessionID`/`SPSessionID` across successful Start/Sync/Trusted session exchanges and reject later Sync/Trusted calls whose session numbers do not match the active session.
+- Added ClockTime UID normalization and conservative Core `IncrementCounter` support: the method is accepted in read-only sessions on the `ClockTime` table and rejected on incompatible targets.
+- Added conservative Core `GetClock` support using the same ClockTime table target validation and read-only-session allowance as `IncrementCounter`.
+- Added conservative Core Encrypt/Decrypt stream support: Init opens a per-credential stream, Encrypt/Decrypt and Finalize require that stream, duplicate Init fails, and named crypto methods are no longer treated as unsupported.
+- Added Core Hash stream support for `H_SHA_*` objects: `HashInit` opens a per-object stream, `Hash`/`HashFinalize` require it, duplicate Init fails, and Finalize closes it.
+- Added Core HMAC stream support for `H_SHA_*` objects, mirroring Hash stream handling for `HMACInit`, `HMAC`, and `HMACFinalize`.
+- Added conservative Core `Sign`/`Verify` support for public-key credential and `H_SHA_*` hash objects, with incompatible targets rejected before normal access-control expectations.
+- Added conservative Core `XOR` support as an SP method: required `PatternInput`/`DeletePattern`/`Input` parameters are enforced, `DeletePattern` must be boolean, and `PatternInput` must be a UID-shaped byte-table reference.
+- Added conservative Core `CreateRow`/`DeleteRow` support: both are write-session table methods for object tables, byte-table/object-row targets are invalid, and `DeleteRow.Rows` must be a non-empty UID list.
+- Added conservative Core `Delete`/`DeleteSP` support so named destructive methods are no longer unsupported; both require an authorized write session and `Delete` rejects non-object targets such as `SessionManager`.
+- Added conservative Core `CreateTable` support: required signature parameters and unsigned size fields are validated, byte-table creation rejects `MaxSize` and non-empty `Columns`, and normal SP write authorization is enforced.
+- Added Core meta-ACL method support for `GetACL`, `AddACE`, and `RemoveACE`: required UID parameters are validated, targets must be the `AccessControl` table, and write-session requirements are enforced for mutations.
+- Added Core `DeleteMethod` support as the fourth meta-ACL method, sharing AccessControl-table target validation, UID parameter validation, and write-session enforcement.
+- Added Clock mutation method support for `ResetClock`, `SetClockHigh`/`SetLagHigh`, and `SetClockLow`/`SetLagLow`, including ClockTime target checks, required time/lag parameters, write authorization, and immediate SetClock-to-SetLag pairing.
+- Added Log template method support for `AddLog`, `CreateLog`, `ClearLog`, and `FlushLog`: Log/LogList UIDs now normalize, signatures are checked, table-level targets are enforced, and read-only `AddLog`/`FlushLog` sessions are accepted where the spec allows them.
 
 ## v3 Second Pass — Spec Audit 수정 사항 (2026-05-23)
 

@@ -1,6 +1,6 @@
 import re
 
-from .spec_docs import column_number_for_name
+from .spec_docs import column_number_for_name, method_name_from_value
 
 
 ADMIN_SP = "0000020500000001"
@@ -15,6 +15,29 @@ C_PIN_SID_UID = "0000000B00000001"
 LOCKING_GLOBAL_UID = "0000080200000001"
 MBR_CONTROL_UID = "0000080300000001"
 LOCKING_INFO_UID = "0000080100000001"
+
+LOCKING_TABLE_UIDS = {
+    "0000000100000001": "Table",
+    "0000000100000002": "SPInfo",
+    "0000000100000003": "SPTemplates",
+    "0000000100000006": "MethodID",
+    "0000000100000007": "AccessControl",
+    "0000000100000008": "ACE",
+    "0000000100000009": "Authority",
+    "000000010000000B": "C_PIN",
+    "000000010000001D": "SecretProtect",
+    "0000000100000205": "SP",
+    "0000000100000401": "ClockTime",
+    "0000000100000801": "LockingInfo",
+    "0000000100000802": "Locking",
+    "0000000100000803": "MBRControl",
+    "0000000100000804": "MBR",
+    "0000000100000805": "K_AES_128_Key",
+    "0000000100000806": "K_AES_256_Key",
+    "0000000100000A01": "Log",
+    "0000000100000A02": "LogList",
+    "0000000100001001": "DataStore",
+}
 
 SID_AUTHORITY_UID = "0000000900000006"
 ADMIN1_AUTHORITY_UID = "0000000900010001"
@@ -215,6 +238,8 @@ def canonical_object(name, uid):
         return "NonLockingSP"
     if uid and uid.startswith("00000205"):
         return canonical_sp(uid)
+    if uid in LOCKING_TABLE_UIDS:
+        return LOCKING_TABLE_UIDS[uid]
     if uid == C_PIN_MSID_UID:
         return "C_PIN_MSID"
     if uid == C_PIN_SID_UID:
@@ -224,8 +249,16 @@ def canonical_object(name, uid):
         if authority and not authority.startswith("Authority_"):
             return f"C_PIN_{authority}"
         return f"C_PIN_{uid[-6:]}"
+    if uid and uid.startswith("00000006"):
+        return "MethodID"
+    if uid and uid.startswith("00000007"):
+        return "AccessControl"
+    if uid and uid.startswith("00000008"):
+        return "ACE"
     if uid and uid.startswith("00000009"):
         return canonical_authority(uid)
+    if uid and uid.startswith("00000401"):
+        return "ClockTime"
     if uid and uid.startswith("00000801"):
         return "LockingInfo"
     if uid and uid.startswith("00000802"):
@@ -235,12 +268,22 @@ def canonical_object(name, uid):
         return f"Locking_{locking_range}"
     if uid and uid.startswith("00000803"):
         return "MBRControl"
+    if uid and uid.startswith("00000804"):
+        return "MBR"
     if uid and uid.startswith("00000805"):
         key_range = media_key_range_from_uid(uid)
         return f"{key_range}_Key" if key_range else "K_AES_128_Key"
     if uid and uid.startswith("00000806"):
         key_range = media_key_range_from_uid(uid)
         return f"{key_range}_Key" if key_range else "K_AES_256_Key"
+    if uid and uid.startswith("00000A01"):
+        return "Log"
+    if uid and uid.startswith("00000A02"):
+        return "LogList"
+    if uid and uid.startswith("00001001"):
+        return "DataStore"
+    if uid and uid.startswith("0000001D"):
+        return "SecretProtect"
 
     if name:
         normalized_name = str(name).strip().replace(" ", "_")
@@ -263,6 +306,12 @@ def canonical_object(name, uid):
             return "SPInfo"
         if lower_name == "sptemplates":
             return "SPTemplates"
+        if lower_name == "clocktime":
+            return "ClockTime"
+        if lower_name == "log":
+            return "Log"
+        if lower_name in {"loglist", "log_list"}:
+            return "LogList"
         if lower_name == "secretprotect":
             return "SecretProtect"
         if lower_name == "datastore":
@@ -283,17 +332,40 @@ def object_family(uid, obj):
         return "SP"
     if obj and obj.startswith("C_PIN_"):
         return "C_PIN"
-    if obj and (obj == "SID" or obj.startswith("Admin") or obj.startswith("User") or obj.startswith("Authority_")):
+    if obj and (obj in {"SID", "Anybody", "Admins", "Users"} or obj.startswith("Admin") or obj.startswith("User") or obj.startswith("Authority_")):
         return "Authority"
+    if uid and uid.startswith("00000006"):
+        return "MethodID"
+    if uid and uid.startswith("00000007"):
+        return "AccessControl"
+    if uid and uid.startswith("00000008"):
+        return "ACE"
+    if uid and uid.startswith("00000401"):
+        return "ClockTime"
     if obj == "LockingInfo":
         return "LockingInfo"
     if obj and obj.startswith("Locking_"):
         return "Locking"
     if obj == "MBRControl":
         return "MBRControl"
+    if uid and uid in LOCKING_TABLE_UIDS:
+        mapped = LOCKING_TABLE_UIDS[uid]
+        if mapped in {"K_AES_128_Key", "K_AES_256_Key"}:
+            return "MediaKey"
+        return mapped
     if uid and (uid.startswith("00000805") or uid.startswith("00000806")):
         return "MediaKey"
-    if obj in {"ACE", "AccessControl", "Column", "MethodID", "Table", "SPInfo", "SPTemplates", "SecretProtect", "DataStore", "MBR"}:
+    if uid and uid.startswith("00000804"):
+        return "MBR"
+    if uid and uid.startswith("00000A01"):
+        return "Log"
+    if uid and uid.startswith("00000A02"):
+        return "LogList"
+    if uid and uid.startswith("00001001"):
+        return "DataStore"
+    if uid and uid.startswith("0000001D"):
+        return "SecretProtect"
+    if obj in {"ACE", "AccessControl", "Column", "MethodID", "Table", "SPInfo", "SPTemplates", "SecretProtect", "DataStore", "MBR", "ClockTime", "Log", "LogList"}:
         return obj
     if obj and obj.endswith("_Key"):
         return "MediaKey"
@@ -316,6 +388,12 @@ def normalize_args(args):
         required = args.get("required") if isinstance(args.get("required"), dict) else {}
         optional = args.get("optional") if isinstance(args.get("optional"), dict) else {}
         return required, optional
+    if isinstance(args, list):
+        optional = {}
+        for item in args:
+            if isinstance(item, dict):
+                optional.update(item)
+        return {}, optional
     return {}, {}
 
 
@@ -355,6 +433,16 @@ def extract_columns(value, family=None):
     return columns
 
 
+def duplicate_column_keys(value, family=None):
+    columns = []
+    for item in iter_value_dicts(value):
+        for key in item:
+            column = column_number(key, family)
+            if column is not None:
+                columns.append(column)
+    return len(columns) != len(set(columns))
+
+
 def first_value(values, column=None, family=None):
     if column is not None:
         return extract_columns(values, family).get(column)
@@ -376,29 +464,31 @@ def normalize_cellblock(cellblock, family=None):
     invalid = False
     saw_start = False
     saw_end = False
+    start_names = {"startColumn", "StartColumn", "start_column", "3", "0x03", "0x3", 3}
+    end_names = {"endColumn", "EndColumn", "end_column", "4", "0x04", "0x4", 4}
     if isinstance(cellblock, list):
         for item in cellblock:
             if not isinstance(item, dict):
                 invalid = True
                 continue
-            for key in ("startColumn", "StartColumn", "start_column"):
+            for key in start_names:
                 if key in item:
                     saw_start = True
                     start = column_number(item.get(key), family)
                     invalid = invalid or start is None
-            for key in ("endColumn", "EndColumn", "end_column"):
+            for key in end_names:
                 if key in item:
                     saw_end = True
                     end = column_number(item.get(key), family)
                     invalid = invalid or end is None
     elif isinstance(cellblock, dict):
-        if any(key in cellblock for key in ("startColumn", "StartColumn", "start_column")):
+        if any(key in cellblock for key in start_names):
             saw_start = True
-            start = column_number(cellblock.get("startColumn") or cellblock.get("StartColumn") or cellblock.get("start_column"), family)
+            start = column_number(next(cellblock[key] for key in start_names if key in cellblock), family)
             invalid = invalid or start is None
-        if any(key in cellblock for key in ("endColumn", "EndColumn", "end_column")):
+        if any(key in cellblock for key in end_names):
             saw_end = True
-            end = column_number(cellblock.get("endColumn") or cellblock.get("EndColumn") or cellblock.get("end_column"), family)
+            end = column_number(next(cellblock[key] for key in end_names if key in cellblock), family)
             invalid = invalid or end is None
 
     if start is None and end is not None:
@@ -447,6 +537,25 @@ def find_named_value(value, names):
     return None
 
 
+def byte_length(value):
+    raw = find_named_value(value, {"Bytes"})
+    if raw is None:
+        raw = value
+    if isinstance(raw, (bytes, bytearray)):
+        return len(raw)
+    if isinstance(raw, list):
+        return len(raw)
+    if isinstance(raw, str):
+        text = raw.strip()
+        if text.lower().startswith("0x"):
+            text = text[2:]
+        compact = re.sub(r"\s+", "", text)
+        if compact and len(compact) % 2 == 0 and re.fullmatch(r"[0-9A-Fa-f]+", compact):
+            return len(compact) // 2
+        return len(text)
+    return None
+
+
 def normalize_record(record):
     inp = record.get("input", {}) if isinstance(record, dict) else {}
     out = record.get("output", {}) if isinstance(record, dict) else {}
@@ -479,7 +588,7 @@ def normalize_record(record):
         event = {
             "index": index,
             "kind": "method",
-            "method": method.get("name"),
+            "method": method.get("name") or method_name_from_value(method.get("uid")),
             "method_uid": compact_uid(method.get("uid")),
             "object": obj,
             "object_family": family,
@@ -507,6 +616,8 @@ def normalize_record(record):
             "keep_global_range_key": to_bool(arg_value(required, optional, "KeepGlobalRangeKey")),
             "values": values if isinstance(values, list) else [],
             "value_columns": value_columns,
+            "value_columns_duplicate": duplicate_column_keys(values, family),
+            "value_byte_length": byte_length(values),
             "set_column_3": value_columns.get(3),
             "cellblock": cellblock["raw"],
             "cellblock_start": cellblock["start"],

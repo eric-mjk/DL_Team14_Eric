@@ -13,6 +13,8 @@ from .spec_docs import (
     method_name_from_value,
     normalize_authority_name,
     normalized_column_name,
+    reencrypt_request_value,
+    reencrypt_state_value,
 )
 
 
@@ -26,6 +28,14 @@ LOCKING_COLUMNS = {
     9: "lock_on_reset",
     10: "active_key",
     11: "next_key",
+    12: "reencrypt_state",
+    13: "reencrypt_request",
+    14: "adv_key_mode",
+    15: "verify_mode",
+    16: "cont_on_reset",
+    17: "last_reencrypt_lba",
+    18: "last_reenc_stat",
+    19: "general_status",
 }
 
 MBR_COLUMNS = {
@@ -43,6 +53,9 @@ def empty_session():
         "authorities": set(),
         "write": False,
         "had_failure": False,
+        "trusted": False,
+        "host_session_id": None,
+        "sp_session_id": None,
     }
 
 
@@ -85,6 +98,8 @@ def initial_state():
         "writes": {},
         "write_records": [],
         "reads": [],
+        "crypto_streams": {},
+        "pending_clock_lag": None,
         "history": [],
     }
 
@@ -158,6 +173,7 @@ def remember_successful_start_session(state, event):
     authority = event.get("authority")
     challenge = event.get("challenge")
     sp = event.get("sp")
+    parameters = event.get("parameters") or {}
 
     state["session"] = empty_session()
     state["session"].update(
@@ -166,6 +182,7 @@ def remember_successful_start_session(state, event):
             "sp": sp,
             "authority": authority,
             "write": bool(event.get("write")),
+            "host_session_id": to_int(parameters.get("HostSessionID")),
         }
     )
     if authority:
@@ -177,6 +194,56 @@ def remember_successful_start_session(state, event):
     # Successful authenticated session resets Tries counter for that authority
     if authority:
         state.setdefault("failed_auth_counts", {}).pop(authority, None)
+
+
+def remember_successful_sync_session(state, event):
+    parameters = event.get("parameters") or {}
+    host_session_id = to_int(parameters.get("HostSessionID"))
+    sp_session_id = to_int(parameters.get("SPSessionID"))
+    if host_session_id is not None:
+        state["session"]["host_session_id"] = host_session_id
+    if sp_session_id is not None:
+        state["session"]["sp_session_id"] = sp_session_id
+
+
+def crypto_stream_key(event):
+    return event.get("object_uid") or event.get("object")
+
+
+def apply_successful_crypto_stream_method(state, event):
+    key = crypto_stream_key(event)
+    if not key:
+        return
+    method = event.get("method")
+    streams = state.setdefault("crypto_streams", {})
+    if method == "EncryptInit":
+        streams[(key, "Encrypt")] = True
+    elif method == "DecryptInit":
+        streams[(key, "Decrypt")] = True
+    elif method == "HashInit":
+        streams[(key, "Hash")] = True
+    elif method == "HMACInit":
+        streams[(key, "HMAC")] = True
+    elif method == "EncryptFinalize":
+        streams.pop((key, "Encrypt"), None)
+    elif method == "DecryptFinalize":
+        streams.pop((key, "Decrypt"), None)
+    elif method == "HashFinalize":
+        streams.pop((key, "Hash"), None)
+    elif method == "HMACFinalize":
+        streams.pop((key, "HMAC"), None)
+
+
+def apply_successful_clock_method(state, event):
+    method = event.get("method")
+    if method == "SetClockHigh":
+        state["pending_clock_lag"] = "SetLagHigh"
+    elif method == "SetClockLow":
+        state["pending_clock_lag"] = "SetLagLow"
+    elif method in {"SetLagHigh", "SetLagLow"}:
+        state["pending_clock_lag"] = None
+    else:
+        state["pending_clock_lag"] = None
 
 
 def remember_successful_authenticate(state, event):
@@ -198,14 +265,55 @@ def remember_successful_authenticate(state, event):
         state.setdefault("failed_auth_counts", {}).pop(authority, None)
 
 
+def remember_failed_authenticate(state, event):
+    authority = event.get("authority")
+    if not authority:
+        return
+    counts = state.setdefault("failed_auth_counts", {})
+    next_count = counts.get(authority, 0) + 1
+    trylimit = state.get("trylimit_by_authority", {}).get(authority)
+    if isinstance(trylimit, int) and trylimit > 0:
+        next_count = min(next_count, trylimit)
+    counts[authority] = next_count
+
+
 def normalize_column_value(column, value):
     if column in {5, 6, 7, 8}:
         parsed = to_bool(value)
         return parsed if parsed is not None else value
-    if column in {3, 4}:
+    if column in {3, 4, 12, 13, 14, 15, 17, 18, 19}:
         parsed = to_int(value)
         return parsed if parsed is not None else value
     return value
+
+
+def apply_reencrypt_request(current, request):
+    request_value = reencrypt_request_value(request)
+    state_value = reencrypt_state_value(current.get("reencrypt_state"))
+    if state_value is None:
+        state_value = 1
+
+    if request_value == 1 and state_value == 1:
+        current["reencrypt_state"] = 2
+        current["columns"][12] = 2
+    elif request_value == 2 and state_value in {4, 5}:
+        current["reencrypt_state"] = 1
+        current["columns"][12] = 1
+        current["active_key"] = current.get("next_key")
+        current["active_key_uid"] = current.get("next_key_uid")
+        current["next_key"] = None
+        current["next_key_uid"] = None
+        current["columns"][10] = current.get("active_key")
+        current["columns"][11] = None
+    elif request_value == 3 and state_value == 5:
+        current["reencrypt_state"] = 1
+        current["columns"][12] = 1
+    elif request_value == 4 and state_value == 5:
+        current["reencrypt_state"] = 2
+        current["columns"][12] = 2
+    elif request_value == 5 and state_value in {2, 3}:
+        current["reencrypt_state"] = 5
+        current["columns"][12] = 5
 
 
 def default_locking_range(name):
@@ -218,6 +326,7 @@ def default_locking_range(name):
         "write_lock_enabled": False,
         "read_locked": False,
         "write_locked": False,
+        "reencrypt_state": 1,
     }
     return entry
 
@@ -235,6 +344,8 @@ def merge_locking_columns(state, range_name, columns):
         current[name] = normalized
         if name in {"active_key", "next_key"}:
             current[f"{name}_uid"] = compact_uid(value)
+        if name == "reencrypt_request":
+            apply_reencrypt_request(current, normalized)
 
 
 def merge_mbr_columns(state, columns):
@@ -447,6 +558,8 @@ def apply_authority_columns(state, event, columns):
     if 5 in columns:
         parsed = to_bool(columns[5])
         row["enabled"] = parsed if parsed is not None else bool(columns[5])
+    if 6 in columns:
+        row["secure"] = columns[6]
     if 9 in columns:
         row["operation"] = columns[9]
     if 10 in columns:
@@ -518,6 +631,7 @@ def apply_successful_set(state, event):
 
     if credential_authority and 3 in columns:
         state["credentials"][credential_authority] = columns[3]
+        state.setdefault("failed_auth_counts", {}).pop(credential_authority, None)
         if (
             credential_authority == "SID"
             and state["locking_sp_active"]
@@ -564,6 +678,7 @@ def apply_successful_gen_key(state, event):
         authority = event.get("credential_authority")
         if authority and authority in state["credentials"]:
             state["credentials"][authority] = None
+            state.setdefault("failed_auth_counts", {}).pop(authority, None)
 
 
 def reset_locking_sp(state, preserve_global_key=False):
@@ -781,21 +896,28 @@ def apply_event(state, event):
     if not success_like(event):
         if event["kind"] == "method" and state["session"].get("open") and event.get("method") != "EndSession":
             state["session"]["had_failure"] = True
-        # Track failed Authenticate attempts for TryLimit/lockout (spec core/3.3.7.4)
-        if event["kind"] == "method" and event.get("method") == "Authenticate":
-            authority = event.get("authority")
-            if authority:
-                counts = state.setdefault("failed_auth_counts", {})
-                counts[authority] = counts.get(authority, 0) + 1
+        # Track failed explicit and implicit authentication attempts for TryLimit/lockout.
+        if event["kind"] == "method" and event.get("method") in {"Authenticate", "StartSession"}:
+            remember_failed_authenticate(state, event)
         return
 
     if event["kind"] == "method":
         method = event.get("method")
+        if method not in {"SetClockHigh", "SetClockLow", "SetLagHigh", "SetLagLow"}:
+            state["pending_clock_lag"] = None
         if method == "StartSession":
             remember_successful_start_session(state, event)
+        elif method == "SyncSession":
+            remember_successful_sync_session(state, event)
         elif method in {"EndSession", "CloseSession"}:
             state["session"] = empty_session()
+        elif method in {"StartTrustedSession", "SyncTrustedSession"}:
+            remember_successful_sync_session(state, event)
+            state["session"]["trusted"] = True
         elif method == "Authenticate":
+            if event.get("auth_result") is False:
+                remember_failed_authenticate(state, event)
+                return
             remember_successful_authenticate(state, event)
         elif method == "Get":
             apply_successful_get(state, event)
@@ -805,7 +927,13 @@ def apply_event(state, event):
             apply_successful_activate(state, event)
         elif method == "GenKey":
             apply_successful_gen_key(state, event)
+        elif method in {"EncryptInit", "DecryptInit", "HashInit", "HMACInit", "EncryptFinalize", "DecryptFinalize", "HashFinalize", "HMACFinalize"}:
+            apply_successful_crypto_stream_method(state, event)
+            state["pending_clock_lag"] = None
+        elif method in {"ResetClock", "SetClockHigh", "SetLagHigh", "SetClockLow", "SetLagLow", "GetClock", "IncrementCounter"}:
+            apply_successful_clock_method(state, event)
         elif method == "Revert":
+            state["pending_clock_lag"] = None
             apply_successful_revert(state, event)
         elif method == "RevertSP":
             apply_successful_revert_sp(state, event)

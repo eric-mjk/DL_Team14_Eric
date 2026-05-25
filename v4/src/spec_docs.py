@@ -14,20 +14,73 @@ METHOD_NAMES = (
     "Properties",
     "StartSession",
     "SyncSession",
+    "StartTrustedSession",
+    "SyncTrustedSession",
     "CloseSession",
     "EndSession",
     "Authenticate",
+    "GetACL",
+    "AddACE",
+    "RemoveACE",
+    "DeleteMethod",
     "Get",
     "Set",
+    "Delete",
     "Next",
+    "CreateTable",
+    "CreateRow",
+    "DeleteRow",
     "GetFreeSpace",
     "GetFreeRows",
     "GenKey",
+    "GetPackage",
+    "SetPackage",
+    "DecryptInit",
+    "Decrypt",
+    "DecryptFinalize",
+    "EncryptInit",
+    "Encrypt",
+    "EncryptFinalize",
+    "HashInit",
+    "Hash",
+    "HashFinalize",
+    "HMACInit",
+    "HMAC",
+    "HMACFinalize",
+    "Sign",
+    "Verify",
+    "XOR",
     "Random",
+    "Stir",
+    "GetClock",
+    "IncrementCounter",
+    "ResetClock",
+    "SetClockHigh",
+    "SetLagHigh",
+    "SetClockLow",
+    "SetLagLow",
+    "AddLog",
+    "CreateLog",
+    "ClearLog",
+    "FlushLog",
     "Activate",
     "Revert",
     "RevertSP",
+    "DeleteSP",
 )
+
+METHOD_UID_NAMES = {
+    "0000000600000008": "Next",
+    "000000060000000D": "GetACL",
+    "0000000600000010": "GenKey",
+    "0000000600000011": "RevertSP",
+    "0000000600000016": "Get",
+    "0000000600000017": "Set",
+    "000000060000001C": "Authenticate",
+    "0000000600000202": "Revert",
+    "0000000600000203": "Activate",
+    "0000000600000601": "Random",
+}
 
 NORMATIVE_MARKERS = (
     "SHALL",
@@ -171,6 +224,8 @@ COLUMN_NAME_NUMBERS.update({
     "Table": {"uid": 0, "name": 1, "commonname": 2, "templateid": 3, "kind": 4, "column": 5, "numcolumns": 6, "rows": 7, "rowsfree": 8, "rowbytes": 9, "lastid": 10, "minsize": 11, "maxsize": 12, "mandatorywritegranularity": 13, "recommendedaccessgranularity": 14},
     "Column": {"uid": 0, "name": 1, "commonname": 2, "type": 3, "isunique": 4, "columnnumber": 5, "transactional": 6, "next": 7, "attributeflags": 8},
     "SecretProtect": {"uid": 0, "name": 1, "commonname": 2, "protect": 3, "columnnumber": 3},
+    "Log": {"uid": 0, "prev": 1, "next": 2, "session": 3, "signingauthority": 4, "signingauthname": 5, "exchangeauthority": 6, "exchangeauthname": 7, "monotonictime": 8, "exacttime": 9, "timekind": 10, "logkind": 11, "name": 12, "data": 13},
+    "LogList": {"uid": 0, "name": 1, "commonname": 2, "log": 3, "serial": 4, "highsecurity": 5},
 })
 
 COLUMN_LIMITS = {
@@ -184,15 +239,17 @@ READ_ONLY_COLUMNS = {
     "Authority": {0, 1, 2, 3},
     "ACE": {0, 1, 2},
     "AccessControl": set(COLUMN_NAME_NUMBERS["AccessControl"].values()),
-    "Locking": {0, 1, 2, 10},
+    "Locking": {0, 1, 2, 10, 12, 17, 18, 19},
     "LockingInfo": set(COLUMN_NAME_NUMBERS["LockingInfo"].values()),
     "MBRControl": {0},
     "MediaKey": {0, 1, 2},
     "SP": set(COLUMN_NAME_NUMBERS["SP"].values()),
     "MethodID": set(COLUMN_NAME_NUMBERS["MethodID"].values()),
-    "Table": {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
+    "Table": {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14},
     "Column": set(COLUMN_NAME_NUMBERS["Column"].values()),
     "SecretProtect": {0, 1, 2},
+    "Log": set(COLUMN_NAME_NUMBERS["Log"].values()),
+    "LogList": {0, 3, 4},
 }
 
 WRITE_ONLY_COLUMNS = {
@@ -203,18 +260,32 @@ WRITE_ONLY_COLUMNS = {
 RULE_REFERENCES = {
     "properties": ("opal/4.1.1.1", "core/3.2.1.2"),
     "start_session": ("opal/4.1.1.2", "core/5.2.3.1", "core/5.3.4.1.5"),
-    "sync_session": ("opal/4.1.1.3", "core/5.2.3.2", "core/3.3.7.1.4"),
-    "close_session": ("opal/4.1.1.4", "core/3.3.7.1.5"),
+    "sync_session": ("opal/4.1.1.3", "core/5.2.3.2", "core/5.2.3.2.1", "core/5.2.3.2.2", "core/3.3.7.1.4"),
+    "trusted_session": ("core/5.2.3.3", "core/5.2.3.3.1", "core/5.2.3.3.2", "core/5.2.3.4", "core/5.2.3.4.1", "core/5.2.3.4.2"),
+    "close_session": ("opal/4.1.1.4", "core/3.3.7.1.5", "core/5.2.3.5", "core/5.2.3.5.1", "core/5.2.3.5.2"),
     "authenticate": ("core/5.3.3.12", "core/5.3.4.1.14", "core/5.3.4.1.14.1"),
-    "get": ("core/5.3.3.6", "core/5.3.3.6.1", "core/5.3.4.2.2", "core/5.6.5.1"),
-    "set": ("core/5.3.3.7", "core/5.3.4.2.6"),
-    "next": ("core/5.3.3.8", "core/5.3.4.2.7"),
+    "meta_acl": ("core/5.3.3.11", "core/5.3.3.11.1", "core/5.3.3.11.2", "core/5.3.3.11.4", "core/5.3.3.13", "core/5.3.3.14", "core/5.3.3.15", "core/5.3.4.3", "core/5.3.4.3.1"),
+    "get": ("core/5.1.4.2.3", "core/5.3.3.6", "core/5.3.3.6.1", "core/5.3.3.9", "core/5.3.3.10", "core/5.3.4.2.2", "core/5.6.5.1"),
+    "set": ("core/5.3.3.7", "core/5.3.4.2.6", "opal/5.3.1.1", "opal/5.3.1.1.2", "opal/5.3.1.2"),
+    "delete": ("core/5.3.3.3", "core/5.3.3.3.1", "core/5.3.3.3.2", "core/5.3.4.2.5"),
+    "create_table": ("core/5.3.3.2", "core/5.3.3.2.1", "core/5.3.3.2.2", "core/5.3.3.2.4", "core/5.3.3.2.5", "core/5.3.3.2.6", "core/5.3.3.2.10", "core/5.3.4.2.1"),
+    "next": ("core/5.3.3.8", "core/5.3.3.8.1", "core/5.3.4.2.7"),
+    "row_management": ("core/5.3.3.4", "core/5.3.3.4.1", "core/5.3.3.4.3", "core/5.3.3.5", "core/5.3.3.5.1", "core/5.3.3.5.3", "core/5.3.4.2.3", "core/5.3.4.2.4"),
     "gen_key": ("core/5.3.3.16", "core/5.3.4.1.1.1", "opal/4.3.1.7", "opal/4.3.5.5"),
-    "random": ("opal/4.2.9.1", "opal/4.3.4.1", "core/5.6.4.1"),
+    "get_package": ("core/5.3.3.17", "core/5.3.3.17.1", "core/5.3.3.17.7"),
+    "set_package": ("core/5.3.3.18", "core/5.3.4.5"),
+    "crypto_stream": ("core/5.6.4.3", "core/5.6.4.4", "core/5.6.4.4.1.1", "core/5.6.4.4.4", "core/5.6.4.5", "core/5.6.4.6", "core/5.6.4.7", "core/5.6.4.7.1.1", "core/5.6.4.7.4", "core/5.6.4.8", "core/5.6.4.11", "core/5.6.4.12", "core/5.6.4.12.1.1", "core/5.6.4.12.3", "core/5.6.4.13", "core/5.6.4.14", "core/5.6.4.15", "core/5.6.4.15.1.1", "core/5.6.4.15.3", "core/5.6.4.16", "core/5.6.5.2", "core/5.6.5.3"),
+    "crypto_sign": ("core/5.6.4.9", "core/5.6.4.10", "core/5.6.5.5", "core/5.6.5.5.1", "core/5.6.5.5.2", "core/5.6.5.6", "core/5.6.5.6.1", "core/5.6.5.6.2"),
+    "xor": ("core/5.6.4.17", "core/5.6.4.17.1", "core/5.6.4.17.3", "core/5.6.4.17.6", "core/5.6.5.4"),
+    "random": ("opal/4.2.9.1", "opal/4.3.4.1", "core/5.6.4.1", "core/5.6.4.1.1", "core/5.6.4.1.2", "core/5.6.4.1.3"),
+    "stir": ("core/5.6.4.2", "core/5.6.4.2.1", "core/5.6.4.2.1.1", "core/5.6.4.2.1.2", "core/5.6.4.2.2", "core/5.6.4.2.3"),
+    "clock": ("core/5.5.3.1", "core/5.5.4.1", "core/5.5.4.1.2", "core/5.5.4.2", "core/5.5.4.2.2", "core/5.5.4.3", "core/5.5.4.3.3", "core/5.5.4.4", "core/5.5.4.5", "core/5.5.4.5.3", "core/5.5.4.6", "core/5.5.4.7", "core/5.5.4.7.1", "core/5.5.4.7.2"),
+    "log": ("core/5.8.2.1", "core/5.8.2.2", "core/5.8.3.1", "core/5.8.3.1.1", "core/5.8.3.1.2", "core/5.8.3.1.4", "core/5.8.3.2", "core/5.8.3.2.1", "core/5.8.3.2.2", "core/5.8.3.2.3", "core/5.8.3.2.4", "core/5.8.3.2.5", "core/5.8.3.2.8", "core/5.8.3.3", "core/5.8.3.3.2", "core/5.8.3.4", "core/5.8.3.4.2", "core/5.8.4.3", "core/5.8.4.4"),
     "activate": ("opal/5.1.1", "opal/5.1.1.1", "opal/5.1.1.2", "opal/5.2.1.2", "opal/5.2.2.2", "opal/5.2.2.2.1", "core/4.1"),
     "revert": ("opal/5.1.2", "opal/5.1.2.1", "opal/5.1.2.2", "opal/5.1.2.2.1", "opal/5.2.1.2", "opal/5.2.2.2", "opal/5.2.2.2.2", "core/4.1"),
     "revert_sp": ("opal/5.1.3", "opal/5.1.3.1", "opal/5.1.3.2", "opal/5.1.3.3"),
-    "locking_table": ("opal/4.3.5.2", "opal/4.3.5.2.1.1", "opal/4.3.5.2.1.2", "opal/4.3.5.2.2", "opal/4.3.1.7", "core/5.7.2.2", "core/5.7.3.3", "core/5.7.3.4", "core/5.7.3.5", "core/3.3.6.5.3"),
+    "delete_sp": ("core/5.3.3.1", "core/5.3.3.1.1", "core/5.3.4.4"),
+    "locking_table": ("opal/4.3.5.2", "opal/4.3.5.2.1.1", "opal/4.3.5.2.1.2", "opal/4.3.5.2.2", "opal/4.3.1.7", "core/5.7.2.2", "core/5.7.2.2.13", "core/5.7.2.2.14", "core/5.7.3.3", "core/5.7.3.4", "core/5.7.3.5", "core/5.7.3.7.1", "core/5.7.3.7.4", "core/3.3.6.5.3"),
     "locking_data": ("opal/4.3.7", "core/5.7.3.2", "core/3.3.6.5.3"),
     "locking_info": ("opal/4.3.5.1", "core/5.7.2.1", "core/3.3.6.5"),
     "mbr_control": ("opal/4.3.5.3", "opal/4.3.5.3.1", "core/5.7.2.5", "core/5.7.3.6", "core/3.3.6.5.5", "core/3.3.6.5.6"),
@@ -231,6 +302,56 @@ def compact_uid(value):
         return None
     compacted = re.sub(r"[^0-9A-Fa-f]", "", str(value)).upper()
     return compacted or None
+
+
+REENCRYPT_STATE_VALUES = {
+    "idle": 1,
+    "id": 1,
+    "pending": 2,
+    "active": 3,
+    "completed": 4,
+    "complete": 4,
+    "paused": 5,
+    "pause": 5,
+}
+
+REENCRYPT_REQUEST_VALUES = {
+    "startreq": 1,
+    "start": 1,
+    "advkeyreq": 2,
+    "advkey": 2,
+    "advancekey": 2,
+    "retidlereq": 3,
+    "retidle": 3,
+    "returntoidle": 3,
+    "contreq": 4,
+    "cont": 4,
+    "continue": 4,
+    "pausereq": 5,
+    "pause": 5,
+}
+
+
+def enum_value(value, names):
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    parsed = parse_column_number(value)
+    if parsed is not None and re.fullmatch(r"\s*(?:0x[0-9A-Fa-f]+|\d+)\s*", str(value)):
+        return parsed
+    normalized = normalized_column_name(value)
+    return names.get(normalized)
+
+
+def reencrypt_state_value(value):
+    return enum_value(value, REENCRYPT_STATE_VALUES)
+
+
+def reencrypt_request_value(value):
+    return enum_value(value, REENCRYPT_REQUEST_VALUES)
 
 
 def normalized_column_name(name):
@@ -494,6 +615,7 @@ def default_locking_ranges():
             "lock_on_reset": row.get("LockOnReset"),
             "active_key": row.get("ActiveKey"),
             "next_key": row.get("NextKey"),
+            "reencrypt_state": reencrypt_state_value(row.get("ReEncryptState")) or 1,
         }
     return ranges
 
@@ -754,6 +876,10 @@ def normalize_authority_name(value):
 
 def method_name_from_value(value):
     text = str(value or "").strip()
+    uid_text = text.split("*", 1)[0].split("(", 1)[0]
+    compact = compact_uid(uid_text)
+    if compact in METHOD_UID_NAMES:
+        return METHOD_UID_NAMES[compact]
     for method in sorted(METHOD_NAMES, key=len, reverse=True):
         if method.lower() in text.lower():
             return method
@@ -876,6 +1002,7 @@ def build_access_policy_from_index(index):
                             "is_class": bool_from_spec(row_lookup(row, "IsClass")),
                             "class": normalize_authority_name(row_lookup(row, "Class", "AuthorityClass")),
                             "enabled": bool_from_spec(row_lookup(row, "Enabled")),
+                            "secure": row_lookup(row, "Secure"),
                             "operation": row_lookup(row, "Operation"),
                             "credential": compact_uid(row_lookup(row, "Credential", "CredentialID")),
                             "credential_name": row_lookup(row, "Credential", "CredentialID"),

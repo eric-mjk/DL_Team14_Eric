@@ -1,14 +1,23 @@
 import re
 from dataclasses import dataclass
 
-from .normalizer import is_success_status, to_int
+from .normalizer import compact_uid, is_success_status, to_bool, to_int
 from .state import (
     data_command_success,
     is_error_result,
     key_generation_for_lba,
     lock_state_for_lba,
 )
-from .spec_docs import COLUMN_LIMITS, METHOD_NAMES, max_column_for_family, read_only_columns_for_family, refs_for, write_only_columns_for_family
+from .spec_docs import (
+    COLUMN_LIMITS,
+    METHOD_NAMES,
+    max_column_for_family,
+    read_only_columns_for_family,
+    reencrypt_request_value,
+    reencrypt_state_value,
+    refs_for,
+    write_only_columns_for_family,
+)
 
 
 AUTH_ERROR_STATUSES = {"not_authorized", "authority_locked_out"}
@@ -182,6 +191,19 @@ def authority_enabled(state, authority):
     if not records:
         return True
     return any(record.get("enabled") is not False for record in records)
+
+
+def secure_messaging_required(value):
+    parsed = to_int(value)
+    if parsed is not None:
+        return parsed != 0
+    normalized = normalized_policy_text(value)
+    return bool(normalized and normalized not in {"none", "null", "false", "no", "plaintext"})
+
+
+def authority_requires_secure_messaging(state, authority):
+    records = authority_records_for(state, authority)
+    return any(secure_messaging_required(record.get("secure")) for record in records if "secure" in record)
 
 
 def authority_is_class(state, authority):
@@ -588,6 +610,8 @@ def protected_columns_requested(event, public_columns=()):
 def invalid_cellblock(event):
     if event.get("cellblock_invalid"):
         return True
+    if event.get("object_family") in {"MBR", "DataStore"} and (event.get("cellblock_start") is not None or event.get("cellblock_end") is not None):
+        return True
     start = event.get("cellblock_start")
     end = event.get("cellblock_end")
     if start is None and end is None:
@@ -602,6 +626,8 @@ def invalid_cellblock(event):
 
 def invalid_set_columns(event):
     if event.get("value_columns_invalid"):
+        return True
+    if event.get("value_columns_duplicate"):
         return True
     columns = event.get("value_columns") or {}
     if not columns:
@@ -668,23 +694,145 @@ def invalid_locking_range_update(state, event):
     return False
 
 
+VALID_REENCRYPT_REQUEST_STATES = {
+    1: {1},
+    2: {4, 5},
+    3: {5},
+    4: {5},
+    5: {2, 3},
+}
+
+
+def invalid_reencrypt_request(state, event):
+    columns = event.get("value_columns") or {}
+    if event.get("object_family") != "Locking" or 13 not in columns:
+        return False
+    request = reencrypt_request_value(columns.get(13))
+    if request not in VALID_REENCRYPT_REQUEST_STATES:
+        return True
+    range_name = event.get("locking_range")
+    current = (state.get("locking_ranges") or {}).get(range_name) or {}
+    state_value = reencrypt_state_value(current.get("reencrypt_state"))
+    if state_value is None:
+        state_value = 1
+    return state_value not in VALID_REENCRYPT_REQUEST_STATES[request]
+
+
+def invalid_next_key_update(state, event):
+    columns = event.get("value_columns") or {}
+    if event.get("object_family") != "Locking" or 11 not in columns:
+        return False
+    current = (state.get("locking_ranges") or {}).get(event.get("locking_range")) or {}
+    state_value = reencrypt_state_value(current.get("reencrypt_state"))
+    if state_value is None:
+        state_value = 1
+    return state_value != 1
+
+
+def invalid_locking_reencrypt_enum(event):
+    columns = event.get("value_columns") or {}
+    if event.get("object_family") != "Locking":
+        return False
+    for column in (14, 15):
+        if column not in columns:
+            continue
+        parsed = to_int(columns[column])
+        if parsed not in {0, 1}:
+            return True
+    return False
+
+
+def byte_table_granularity(state, event):
+    if event.get("object_family") not in {"MBR", "DataStore"}:
+        return None
+    wanted = normalized_policy_text(event.get("object") or event.get("object_family"))
+    for row in (state.get("tables") or {}).values():
+        values = row.get("values") or {}
+        name = normalized_policy_text(values.get("Name") or row.get("name"))
+        if name != wanted:
+            continue
+        raw = (
+            values.get("MandatoryWriteGranularity")
+            or values.get("MandatoryWrite")
+            or values.get("mandatory_write_granularity")
+            or (row.get("columns") or {}).get(13)
+        )
+        granularity = to_int(raw)
+        if granularity and granularity > 0:
+            return granularity
+    return None
+
+
+def invalid_byte_table_granularity(state, event):
+    if event.get("method") != "Set":
+        return False
+    granularity = byte_table_granularity(state, event)
+    if not granularity or granularity <= 1:
+        return False
+    offset = to_int(event.get("where"))
+    length = event.get("value_byte_length")
+    if offset is None or length is None:
+        return False
+    return offset % granularity != 0 or length % granularity != 0
+
+
 METHOD_FAILURE_MATRIX = {
     "Properties": {"rule_key": "properties", "target": "SessionManager"},
-    "StartSession": {"rule_key": "start_session", "target": "SessionManager", "required_any": (("SPID",),)},
-    "SyncSession": {"rule_key": "sync_session", "requires_session": True, "no_session_status": "error"},
-    "CloseSession": {"rule_key": "close_session", "requires_session": True, "no_session_status": "error", "optional": True},
+    "StartSession": {"rule_key": "start_session", "target": "SessionManager", "required_any": (("HostSessionID",), ("SPID",), ("Write",))},
+    "SyncSession": {"rule_key": "sync_session", "requires_session": True, "no_session_status": "error", "required_any": (("HostSessionID",), ("SPSessionID",))},
+    "StartTrustedSession": {"rule_key": "trusted_session", "target": "SessionManager", "requires_session": True, "no_session_status": "error", "required_any": (("HostSessionID",), ("SPSessionID",))},
+    "SyncTrustedSession": {"rule_key": "trusted_session", "target": "SessionManager", "requires_session": True, "no_session_status": "error", "required_any": (("HostSessionID",), ("SPSessionID",))},
+    "CloseSession": {"rule_key": "close_session", "requires_session": True, "no_session_status": "error", "required_any": (("RemoteSessionNumber",), ("LocalSessionNumber",))},
     "EndSession": {"rule_key": "close_session", "requires_session": True, "no_session_status": "error"},
     "Authenticate": {"rule_key": "authenticate", "requires_session": True, "required_any": (("HostSigningAuthority", "Authority", "SigningAuthority"),)},
+    "GetACL": {"rule_key": "meta_acl", "requires_session": True, "required_any": (("InvokingID",), ("MethodID",))},
+    "AddACE": {"rule_key": "meta_acl", "requires_session": True, "requires_write": True, "required_any": (("InvokingID",), ("MethodID",), ("ACE",))},
+    "RemoveACE": {"rule_key": "meta_acl", "requires_session": True, "requires_write": True, "required_any": (("InvokingID",), ("MethodID",), ("ACE",))},
+    "DeleteMethod": {"rule_key": "meta_acl", "requires_session": True, "requires_write": True, "required_any": (("InvokingID",), ("MethodID",))},
     "Get": {"rule_key": "get", "requires_session": True},
     "Set": {"rule_key": "set", "requires_session": True, "requires_write": True},
+    "Delete": {"rule_key": "delete", "requires_session": True, "requires_write": True},
     "Next": {"rule_key": "next", "requires_session": True},
+    "CreateTable": {"rule_key": "create_table", "requires_session": True, "requires_write": True, "required_any": (("NewTableName",), ("Kind",), ("GetSetACL",), ("Columns",), ("MinSize",))},
+    "CreateRow": {"rule_key": "row_management", "requires_session": True, "requires_write": True, "required_any": (("Row",),)},
+    "DeleteRow": {"rule_key": "row_management", "requires_session": True, "requires_write": True, "required_any": (("Rows",),)},
     "GetFreeSpace": {"rule_key": "get", "requires_session": True},
     "GetFreeRows": {"rule_key": "get", "requires_session": True},
     "GenKey": {"rule_key": "gen_key", "requires_session": True, "requires_write": True},
-    "Random": {"rule_key": "random", "requires_session": True},
+    "GetPackage": {"rule_key": "get_package", "requires_session": True, "required_any": (("Purpose",),)},
+    "SetPackage": {"rule_key": "set_package", "requires_session": True, "requires_write": True, "required_any": (("Value",),)},
+    "DecryptInit": {"rule_key": "crypto_stream", "requires_session": True},
+    "Decrypt": {"rule_key": "crypto_stream", "requires_session": True, "required_any": (("Input",),)},
+    "DecryptFinalize": {"rule_key": "crypto_stream", "requires_session": True},
+    "EncryptInit": {"rule_key": "crypto_stream", "requires_session": True},
+    "Encrypt": {"rule_key": "crypto_stream", "requires_session": True, "required_any": (("Input",),)},
+    "EncryptFinalize": {"rule_key": "crypto_stream", "requires_session": True},
+    "HashInit": {"rule_key": "crypto_stream", "requires_session": True},
+    "Hash": {"rule_key": "crypto_stream", "requires_session": True, "required_any": (("Input",),)},
+    "HashFinalize": {"rule_key": "crypto_stream", "requires_session": True},
+    "HMACInit": {"rule_key": "crypto_stream", "requires_session": True},
+    "HMAC": {"rule_key": "crypto_stream", "requires_session": True, "required_any": (("Input",),)},
+    "HMACFinalize": {"rule_key": "crypto_stream", "requires_session": True},
+    "Sign": {"rule_key": "crypto_sign", "requires_session": True},
+    "Verify": {"rule_key": "crypto_sign", "requires_session": True},
+    "XOR": {"rule_key": "xor", "requires_session": True, "required_any": (("PatternInput",), ("DeletePattern",), ("Input",))},
+    "Random": {"rule_key": "random", "requires_session": True, "required_any": (("Count",),)},
+    "Stir": {"rule_key": "stir", "requires_session": True, "required_any": (("Value",),)},
+    "GetClock": {"rule_key": "clock", "requires_session": True},
+    "IncrementCounter": {"rule_key": "clock", "requires_session": True},
+    "ResetClock": {"rule_key": "clock", "requires_session": True, "requires_write": True},
+    "SetClockHigh": {"rule_key": "clock", "requires_session": True, "requires_write": True, "required_any": (("ExactTime",),)},
+    "SetLagHigh": {"rule_key": "clock", "requires_session": True, "requires_write": True, "required_any": (("LagTime",),)},
+    "SetClockLow": {"rule_key": "clock", "requires_session": True, "requires_write": True, "required_any": (("ExactTime",),)},
+    "SetLagLow": {"rule_key": "clock", "requires_session": True, "requires_write": True, "required_any": (("LagTime",),)},
+    "AddLog": {"rule_key": "log", "requires_session": True, "required_any": (("LogEntryName",), ("Data",))},
+    "CreateLog": {"rule_key": "log", "requires_session": True, "requires_write": True, "required_any": (("NewLogTableName",), ("HighSecurity",), ("MinSize",))},
+    "ClearLog": {"rule_key": "log", "requires_session": True, "requires_write": True},
+    "FlushLog": {"rule_key": "log", "requires_session": True},
     "Activate": {"rule_key": "activate", "requires_session": True, "requires_write": True, "target": "LockingSP"},
     "Revert": {"rule_key": "revert", "requires_session": True, "requires_write": True, "target_family": "SP"},
     "RevertSP": {"rule_key": "revert_sp", "requires_session": True, "requires_write": True},
+    "DeleteSP": {"rule_key": "delete_sp", "requires_session": True, "requires_write": True},
 }
 
 
@@ -717,9 +865,229 @@ def invalid_count_parameter(event):
     return raw is not None and event.get("count") is None
 
 
+def invalid_uinteger_parameter(event, names):
+    for name in names:
+        raw = parameter_value(event, (name,))
+        if raw is None:
+            continue
+        parsed = to_int(raw)
+        if parsed is None or parsed < 0:
+            return True
+    return False
+
+
+def invalid_boolean_parameter(event, names):
+    for name in names:
+        raw = parameter_value(event, (name,))
+        if raw is not None and to_bool(raw) is None:
+            return True
+    return False
+
+
+def invalid_host_properties(event):
+    raw = parameter_value(event, ("HostProperties",))
+    if raw is None:
+        return False
+    if isinstance(raw, dict):
+        return False
+    if isinstance(raw, list):
+        return not all(isinstance(item, dict) and bool(item) for item in raw)
+    return True
+
+
+def find_named_parameter(value, names):
+    wanted = {name.lower() for name in names}
+    if isinstance(value, dict):
+        for key, item_value in value.items():
+            if str(key).lower() in wanted:
+                return item_value
+            nested = find_named_parameter(item_value, names)
+            if nested is not None:
+                return nested
+    elif isinstance(value, list):
+        for item in value:
+            nested = find_named_parameter(item, names)
+            if nested is not None:
+                return nested
+    return None
+
+
+def stir_internal_parameter(event):
+    raw = parameter_value(event, ("Value",))
+    nested = find_named_parameter(raw, {"Internal"})
+    if nested is not None:
+        return nested
+    return parameter_value(event, ("Internal",))
+
+
+def invalid_stir_internal_parameter(event):
+    if event.get("method") != "Stir":
+        return False
+    raw = stir_internal_parameter(event)
+    return raw is not None and to_bool(raw) is None
+
+
+def stir_false_value(event):
+    if event.get("method") != "Stir":
+        return False
+    raw_value = parameter_value(event, ("Value",))
+    if to_bool(raw_value) is False:
+        return True
+    internal = stir_internal_parameter(event)
+    return internal is not None and to_bool(internal) is False
+
+
 def invalid_where_parameter(event):
     raw = parameter_value(event, ("Where",))
     return raw is not None and str(raw).strip() == ""
+
+
+def uid_parameter_value(value):
+    if isinstance(value, dict):
+        for key in ("uid", "UID", "Uid"):
+            if key in value:
+                return value[key]
+        if len(value) == 1:
+            return uid_parameter_value(next(iter(value.values())))
+        return None
+    if isinstance(value, (list, tuple)) and len(value) == 1:
+        return uid_parameter_value(value[0])
+    return value
+
+
+def row_parameter_value(value):
+    if isinstance(value, dict):
+        for key in ("row", "Row", "ROW", "offset", "Offset"):
+            if key in value:
+                return value[key]
+        if len(value) == 1:
+            return row_parameter_value(next(iter(value.values())))
+        return None
+    if isinstance(value, (list, tuple)) and len(value) == 1:
+        return row_parameter_value(value[0])
+    return value
+
+
+def invalid_next_where_parameter(event):
+    if event.get("method") != "Next":
+        return False
+    raw = parameter_value(event, ("Where",))
+    if raw is None:
+        return False
+    uid = compact_uid(uid_parameter_value(raw))
+    return uid is None or len(uid) != 16
+
+
+def table_level_invocation(event):
+    uid = compact_uid(event.get("object_uid"))
+    return bool(uid and uid.startswith("00000001"))
+
+
+def invalid_set_where_parameter(event):
+    if event.get("method") != "Set":
+        return False
+    has_where = parameter_present(event, ("Where",))
+    if event.get("object_family") in {"MBR", "DataStore"}:
+        return False
+    if table_level_invocation(event):
+        return not has_where
+    return has_where
+
+
+def invalid_set_where_type(event):
+    if event.get("method") != "Set":
+        return False
+    raw = parameter_value(event, ("Where",))
+    if raw is None:
+        return False
+    if event.get("object_family") in {"MBR", "DataStore"}:
+        row = to_int(row_parameter_value(raw))
+        return row is None or row < 0
+    if table_level_invocation(event):
+        uid = compact_uid(uid_parameter_value(raw))
+        return uid is None or len(uid) != 16
+    return False
+
+
+def invalid_get_free_target(event):
+    method = event.get("method")
+    if method == "GetFreeRows":
+        return not table_level_invocation(event)
+    if method == "GetFreeSpace":
+        family = event.get("object_family")
+        return family not in {None, "SP"}
+    return False
+
+
+def invalid_rows_parameter(event):
+    if event.get("method") != "DeleteRow":
+        return False
+    rows = parameter_value(event, ("Rows",))
+    if not isinstance(rows, list) or not rows:
+        return True
+    return any(compact_uid(uid_parameter_value(row)) is None or len(compact_uid(uid_parameter_value(row))) != 16 for row in rows)
+
+
+def invalid_set_values_shape(event):
+    if event.get("method") != "Set":
+        return False
+    raw_values = parameter_value(event, ("Values",))
+    if raw_values is None:
+        return False
+    is_byte_table = event.get("object_family") in {"MBR", "DataStore"}
+    has_bytes = find_named_parameter(raw_values, {"Bytes"}) is not None
+    has_columns = bool(event.get("value_columns") or {})
+    if is_byte_table:
+        return has_columns or not has_bytes
+    return has_bytes
+
+
+def create_table_kind(event):
+    raw = parameter_value(event, ("Kind",))
+    normalized = normalized_policy_text(raw)
+    if normalized in {"byte", "bytes", "bytetable", "1"}:
+        return "byte"
+    if normalized in {"object", "objecttable", "0"}:
+        return "object"
+    return normalized or None
+
+
+def invalid_create_table_parameters(event):
+    if event.get("method") != "CreateTable":
+        return False
+    kind = create_table_kind(event)
+    columns = parameter_value(event, ("Columns",))
+    has_max_size = parameter_present(event, ("MaxSize",))
+    if kind == "byte":
+        return has_max_size or columns not in ([], (), None)
+    return False
+
+
+def invalid_meta_acl_parameters(event):
+    if event.get("method") not in {"GetACL", "AddACE", "RemoveACE", "DeleteMethod"}:
+        return False
+    names = ("InvokingID", "MethodID") + (("ACE",) if event.get("method") in {"AddACE", "RemoveACE"} else ())
+    for name in names:
+        uid = compact_uid(uid_parameter_value(parameter_value(event, (name,))))
+        if uid is None or len(uid) != 16:
+            return True
+    return False
+
+
+def invalid_session_number_mismatch(state, event):
+    method = event.get("method")
+    if method not in {"SyncSession", "StartTrustedSession", "SyncTrustedSession"}:
+        return False
+    session = state.get("session") or {}
+    host_session_id = to_int(parameter_value(event, ("HostSessionID",)))
+    sp_session_id = to_int(parameter_value(event, ("SPSessionID",)))
+    tracked_host = session.get("host_session_id")
+    tracked_sp = session.get("sp_session_id")
+    if tracked_host is not None and host_session_id is not None and host_session_id != tracked_host:
+        return True
+    if method in {"StartTrustedSession", "SyncTrustedSession"} and tracked_sp is not None and sp_session_id is not None and sp_session_id != tracked_sp:
+        return True
+    return False
 
 
 def method_preflight(state, event):
@@ -740,8 +1108,84 @@ def method_preflight(state, event):
 
     if invalid_count_parameter(event):
         return expected_status_result(event, "invalid_parameter", f"{method} Count parameter is malformed.", rule_key=rule_key)
+    if invalid_uinteger_parameter(event, ("HostSessionID", "SPSessionID", "SessionTimeout", "TransTimeout", "InitialCredit", "RemoteSessionNumber", "LocalSessionNumber", "MinSize", "MaxSize", "HintSize")):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"{method} includes a malformed unsigned integer session parameter.",
+            rule_key=rule_key,
+        )
+    if invalid_session_number_mismatch(state, event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"{method} session number does not match the established session.",
+            rule_key=rule_key,
+        )
+    if invalid_boolean_parameter(event, ("Write", "KeepGlobalRangeKey", "DeletePattern")):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"{method} includes a malformed boolean parameter.",
+            rule_key=rule_key,
+        )
+    if method == "Properties" and invalid_host_properties(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "Properties HostProperties must be a list of name/value pairs.",
+            rule_key="properties",
+        )
+    if invalid_stir_internal_parameter(event):
+        return expected_status_result(event, "invalid_parameter", "Stir Internal must be boolean when present.", rule_key="stir")
+    if stir_false_value(event):
+        return expected_status_result(event, "error", "Stir with a false Value/Internal parameter must return non-success.", rule_key="stir")
     if invalid_where_parameter(event):
         return expected_status_result(event, "invalid_parameter", f"{method} Where parameter is malformed.", rule_key=rule_key)
+    if invalid_next_where_parameter(event):
+        return expected_status_result(event, "invalid_parameter", "Next Where parameter must be a UID reference.", rule_key="next")
+    if invalid_set_where_parameter(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "Set Where parameter does not match object-vs-table invocation requirements.",
+            rule_key="set",
+        )
+    if invalid_set_where_type(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "Set Where parameter has the wrong row/UID type for the target table kind.",
+            rule_key="set",
+        )
+    if invalid_get_free_target(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"{method} was invoked on an incompatible target object.",
+            rule_key="get",
+        )
+    if invalid_create_table_parameters(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "CreateTable byte-table parameters must omit MaxSize and use an empty Columns list.",
+            rule_key="create_table",
+        )
+    if invalid_meta_acl_parameters(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"{method} meta-ACL parameters must be UID references.",
+            rule_key="meta_acl",
+        )
+    if invalid_rows_parameter(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "DeleteRow Rows parameter must be a non-empty list of UID references.",
+            rule_key="row_management",
+        )
 
     if rule.get("target") and event.get("object") != rule["target"]:
         return expected_status_result(event, "invalid_parameter", f"{method} target must be {rule['target']}.", rule_key=rule_key)
@@ -754,8 +1198,47 @@ def method_preflight(state, event):
         raw_values = parameter_value(event, ("Values",))
         if raw_values == "":
             return expected_status_result(event, "invalid_parameter", "Set Values parameter is malformed.", rule_key="set")
+        if invalid_set_values_shape(event):
+            return expected_status_result(
+                event,
+                "error",
+                "Set Values shape must match byte-table Bytes versus object-table RowValues.",
+                rule_key="set",
+            )
         if invalid_set_columns(event):
             return expected_status_result(event, "invalid_parameter", "Set Values contain invalid columns for the target object.", rule_key="set")
+        if invalid_byte_table_granularity(state, event):
+            return expected_status_result(
+                event,
+                "invalid_parameter",
+                "Set on a byte table violates the documented MandatoryWriteGranularity.",
+                rule_key="set",
+                policy_source="table_schema",
+            )
+        if invalid_reencrypt_request(state, event):
+            return expected_status_result(
+                event,
+                "error",
+                "Locking ReEncryptRequest is not valid for the current ReEncryptState.",
+                rule_key="locking_table",
+                policy_source="table_schema",
+            )
+        if invalid_next_key_update(state, event):
+            return expected_status_result(
+                event,
+                "error",
+                "Locking NextKey is writable only while ReEncryptState is IDLE.",
+                rule_key="locking_table",
+                policy_source="table_schema",
+            )
+        if invalid_locking_reencrypt_enum(event):
+            return expected_status_result(
+                event,
+                "invalid_parameter",
+                "Locking AdvKeyMode/VerifyMode use only enumeration values 0 or 1.",
+                rule_key="locking_table",
+                policy_source="table_schema",
+            )
 
     if rule.get("requires_session") and not state["session"].get("open"):
         return expected_status_result(
@@ -877,6 +1360,15 @@ def judge_authenticate(state, event):
             f"Authority {authority} is locked out after {state.get('failed_auth_counts', {}).get(authority, 0)} failed attempts (TryLimit={state.get('trylimit_by_authority', {}).get(authority)}).",
             rule_key="authenticate",
             policy_source="C_PIN.TryLimit",
+        )
+
+    if authority_requires_secure_messaging(state, authority) and not state["session"].get("trusted"):
+        return expected_status_result(
+            event,
+            "auth_error",
+            f"Authenticate authority {authority} requires secure messaging but the current session is not trusted.",
+            rule_key="authority",
+            policy_source="Authority.Secure",
         )
 
     match = credential_matches(state, authority, event.get("proof"))
@@ -1006,6 +1498,15 @@ def judge_get(state, event):
             rule_key="mbr_control",
         )
 
+    if family == "MBR":
+        expected = session_open_for(state, "LockingSP")
+        return expected_status_result(
+            event,
+            "success" if expected else "auth_error",
+            "MBR byte-table Get requires an open LockingSP session (ACE_Anybody).",
+            rule_key="mbr_control",
+        )
+
     if family in {"Authority", "MediaKey", "ACE", "AccessControl", "SecretProtect", "DataStore"}:
         expected = session_open_for(state, target_sp) and session_has_admin_authority(state, target_sp)
         return expected_status_result(
@@ -1046,6 +1547,36 @@ def judge_set(state, event):
             coverage_status="implemented",
         )
 
+    if invalid_reencrypt_request(state, event):
+        return expected_status_result(
+            event,
+            "error",
+            "Locking ReEncryptRequest is not valid for the current ReEncryptState.",
+            rule_key="locking_table",
+            policy_source="table_schema",
+            coverage_status="implemented",
+        )
+
+    if invalid_next_key_update(state, event):
+        return expected_status_result(
+            event,
+            "error",
+            "Locking NextKey is writable only while ReEncryptState is IDLE.",
+            rule_key="locking_table",
+            policy_source="table_schema",
+            coverage_status="implemented",
+        )
+
+    if invalid_locking_reencrypt_enum(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "Locking AdvKeyMode/VerifyMode use only enumeration values 0 or 1.",
+            rule_key="locking_table",
+            policy_source="table_schema",
+            coverage_status="implemented",
+        )
+
     target_sp = object_sp(event) or state["session"].get("sp")
     if target_sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", f"{obj} Set requires an active LockingSP.", rule_key="locking_table")
@@ -1072,7 +1603,7 @@ def judge_set(state, event):
             rule_key="cpin",
         )
 
-    if family in {"Locking", "MBRControl", "MediaKey", "ACE", "AccessControl", "SecretProtect", "DataStore"}:
+    if family in {"Locking", "MBRControl", "MBR", "MediaKey", "ACE", "AccessControl", "SecretProtect", "DataStore"}:
         expected = authenticated_locking_admin_write(state)
         return expected_status_result(
             event,
@@ -1196,6 +1727,126 @@ def judge_random(state, event):
     )
 
 
+def judge_stir(state, event):
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = state["session"].get("open") and (target_sp is None or session_open_for(state, target_sp))
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        "Stir adds input/internal entropy for later Random calls and requires an open session in that SP.",
+        rule_key="stir",
+    )
+
+
+def credential_object_target(event):
+    family = event.get("object_family")
+    obj = event.get("object") or ""
+    return family == "C_PIN" or obj.startswith(("C_RSA_", "C_AES_", "C_EC_", "C_HMAC_"))
+
+
+def hash_object_target(event):
+    obj = event.get("object") or ""
+    return obj.startswith("H_SHA_")
+
+
+def judge_get_package(state, event):
+    if not credential_object_target(event):
+        return expected_status_result(event, "invalid_parameter", "GetPackage target must be a credential object.", rule_key="get_package")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        "GetPackage requires access control on the credential object and wrapping/signing credentials.",
+        rule_key="get_package",
+    )
+
+
+def judge_set_package(state, event):
+    if not credential_object_target(event):
+        return expected_status_result(event, "invalid_parameter", "SetPackage target must be a credential object.", rule_key="set_package")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        "SetPackage requires a write session and credential-object access control.",
+        rule_key="set_package",
+    )
+
+
+def crypto_stream_key(event):
+    return event.get("object_uid") or event.get("object")
+
+
+def crypto_operation(method):
+    if method.startswith("Encrypt"):
+        return "Encrypt"
+    if method.startswith("Decrypt"):
+        return "Decrypt"
+    if method.startswith("Hash"):
+        return "Hash"
+    if method.startswith("HMAC"):
+        return "HMAC"
+    return None
+
+
+def judge_crypto_stream_method(state, event):
+    method = event.get("method")
+    target_ok = hash_object_target(event) if method.startswith(("Hash", "HMAC")) else credential_object_target(event)
+    if not target_ok:
+        return expected_status_result(event, "invalid_parameter", f"{method} target must be a credential object.", rule_key="crypto_stream")
+    key = crypto_stream_key(event)
+    operation = crypto_operation(method)
+    stream_open = bool((state.get("crypto_streams") or {}).get((key, operation)))
+    if method.endswith("Init") and stream_open:
+        return expected_status_result(event, "error", f"{method} cannot open a second {operation} stream for the same credential.", rule_key="crypto_stream")
+    if method in {"Encrypt", "Decrypt", "Hash", "HMAC", "EncryptFinalize", "DecryptFinalize", "HashFinalize", "HMACFinalize"} and not stream_open:
+        return expected_status_result(event, "error", f"{method} requires an open {operation} stream for the invoking credential.", rule_key="crypto_stream")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        f"{method} requires credential-object access control in an open session.",
+        rule_key="crypto_stream",
+    )
+
+
+def judge_crypto_sign_method(state, event):
+    method = event.get("method")
+    if not (credential_object_target(event) or hash_object_target(event)):
+        return expected_status_result(event, "invalid_parameter", f"{method} target must be a public-key credential or hash object.", rule_key="crypto_sign")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        f"{method} requires access control on the invoking credential/hash object.",
+        rule_key="crypto_sign",
+    )
+
+
+def invalid_xor_pattern_input(event):
+    if event.get("method") != "XOR":
+        return False
+    uid = compact_uid(uid_parameter_value(parameter_value(event, ("PatternInput",))))
+    return uid is None or len(uid) != 16
+
+
+def judge_xor(state, event):
+    if invalid_xor_pattern_input(event):
+        return expected_status_result(event, "invalid_parameter", "XOR PatternInput must be a byte-table UID reference.", rule_key="xor")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        "XOR requires access control for the pattern/input/output references in an open session.",
+        rule_key="xor",
+    )
+
+
 def judge_free_space_or_rows(state, event):
     target_sp = object_sp(event) or state["session"].get("sp")
     if target_sp and not session_open_for(state, target_sp):
@@ -1216,10 +1867,145 @@ def judge_free_space_or_rows(state, event):
     )
 
 
+def judge_row_management(state, event):
+    method = event.get("method")
+    if not table_level_invocation(event) or event.get("object_family") in {"MBR", "DataStore"}:
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"{method} is a table method for object tables and is not valid on byte tables or object rows.",
+            rule_key="row_management",
+        )
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        f"{method} requires authorized write access to the target object table.",
+        rule_key="row_management",
+    )
+
+
+def judge_delete(state, event):
+    if event.get("object") in {None, "SessionManager"}:
+        return expected_status_result(event, "invalid_parameter", "Delete target must be an existing table/object row.", rule_key="delete")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        "Delete requires authorized write access to the invoking object.",
+        rule_key="delete",
+    )
+
+
+def judge_delete_sp(state, event):
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        "DeleteSP requires authorized write access in the SP being deleted.",
+        rule_key="delete_sp",
+    )
+
+
+def judge_create_table(state, event):
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        "CreateTable requires authorized write access in the target SP.",
+        rule_key="create_table",
+    )
+
+
+def judge_meta_acl(state, event):
+    method = event.get("method")
+    if event.get("object_family") != "AccessControl":
+        return expected_status_result(event, "invalid_parameter", f"{method} target must be the AccessControl table.", rule_key="meta_acl")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    write_required = method in {"AddACE", "RemoveACE", "DeleteMethod"}
+    expected = session_open_for(state, target_sp, write_required=write_required) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        f"{method} requires the corresponding meta-ACL authorization on the AccessControl association.",
+        rule_key="meta_acl",
+    )
+
+
+def judge_increment_counter(state, event):
+    if event.get("object_family") != "ClockTime":
+        return expected_status_result(event, "invalid_parameter", f"{event.get('method')} target must be the ClockTime table.", rule_key="clock")
+    expected = state["session"].get("open")
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        f"{event.get('method')} is permitted in a read-only session but requires an open session on the ClockTime table.",
+        rule_key="clock",
+    )
+
+
+def judge_clock_mutation(state, event):
+    method = event.get("method")
+    if event.get("object_family") != "ClockTime":
+        return expected_status_result(event, "invalid_parameter", f"{method} target must be the ClockTime table.", rule_key="clock")
+    expected_lag = state.get("pending_clock_lag")
+    if method in {"SetLagHigh", "SetLagLow"} and expected_lag != method:
+        return expected_status_result(event, "error", f"{method} must immediately follow the matching SetClock method.", rule_key="clock")
+    if method in {"SetClockHigh", "SetClockLow"} and expected_lag is not None:
+        return expected_status_result(event, "error", f"{method} cannot start a new clock update before the pending SetLag method.", rule_key="clock")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        f"{method} requires authorized write access to the ClockTime table.",
+        rule_key="clock",
+    )
+
+
+def judge_log_method(state, event):
+    method = event.get("method")
+    if method == "CreateLog":
+        if event.get("object_family") != "LogList" or not table_level_invocation(event):
+            return expected_status_result(event, "invalid_parameter", "CreateLog target must be the LogList table.", rule_key="log")
+        target_sp = object_sp(event) or state["session"].get("sp")
+        expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
+        return expected_status_result(
+            event,
+            "success" if expected else "auth_error",
+            "CreateLog requires authorized write access to the LogList table.",
+            rule_key="log",
+        )
+
+    if event.get("object_family") != "Log" or not table_level_invocation(event):
+        return expected_status_result(event, "invalid_parameter", f"{method} target must be a Log table.", rule_key="log")
+    target_sp = object_sp(event) or state["session"].get("sp")
+    write_required = method == "ClearLog"
+    expected = session_open_for(state, target_sp, write_required=write_required) and session_has_authority(state)
+    return expected_status_result(
+        event,
+        "success" if expected else "auth_error",
+        f"{method} requires access to the Log table.",
+        rule_key="log",
+    )
+
+
 def judge_next(state, event):
     count = event.get("count")
     if count is not None and count < 0:
         return expected_status_result(event, "invalid_parameter", "Next Count cannot be negative.", rule_key="next")
+    if event.get("object_family") in {"MBR", "DataStore"}:
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "Next iterates object-table UID rows and is not valid for byte tables.",
+            rule_key="next",
+            policy_source="table_schema",
+        )
     target_sp = object_sp(event) or state["session"].get("sp")
     policy_result = policy_status_result(state, event, write=False, reason="Next matched ACE/AccessControl policy.")
     if policy_result is not None:
@@ -1350,6 +2136,16 @@ def judge_sync_session(state, event):
     )
 
 
+def judge_trusted_session(state, event):
+    expected = state["session"].get("open")
+    return expected_status_result(
+        event,
+        "success" if expected else "error",
+        "StartTrustedSession/SyncTrustedSession must occur after the normal session-start exchange.",
+        rule_key="trusted_session",
+    )
+
+
 def judge_close_session(state, event):
     expected = state["session"].get("open")
     return expected_status_result(
@@ -1407,24 +2203,54 @@ def judge_final(state, event):
         return judge_start_session(state, event)
     if method == "SyncSession":
         return judge_sync_session(state, event)
+    if method in {"StartTrustedSession", "SyncTrustedSession"}:
+        return judge_trusted_session(state, event)
     if method == "Authenticate":
         return judge_authenticate(state, event)
+    if method in {"GetACL", "AddACE", "RemoveACE", "DeleteMethod"}:
+        return judge_meta_acl(state, event)
     if method == "Get":
         return judge_get(state, event)
     if method == "Set":
         return judge_set(state, event)
+    if method == "Delete":
+        return judge_delete(state, event)
+    if method == "CreateTable":
+        return judge_create_table(state, event)
     if method == "Next":
         return judge_next(state, event)
+    if method in {"CreateRow", "DeleteRow"}:
+        return judge_row_management(state, event)
     if method in {"GetFreeSpace", "GetFreeRows"}:
         return judge_free_space_or_rows(state, event)
+    if method == "GetPackage":
+        return judge_get_package(state, event)
+    if method == "SetPackage":
+        return judge_set_package(state, event)
+    if method in {"EncryptInit", "Encrypt", "EncryptFinalize", "DecryptInit", "Decrypt", "DecryptFinalize", "HashInit", "Hash", "HashFinalize", "HMACInit", "HMAC", "HMACFinalize"}:
+        return judge_crypto_stream_method(state, event)
+    if method in {"Sign", "Verify"}:
+        return judge_crypto_sign_method(state, event)
+    if method == "XOR":
+        return judge_xor(state, event)
     if method == "Random":
         return judge_random(state, event)
+    if method == "Stir":
+        return judge_stir(state, event)
+    if method in {"GetClock", "IncrementCounter"}:
+        return judge_increment_counter(state, event)
+    if method in {"ResetClock", "SetClockHigh", "SetLagHigh", "SetClockLow", "SetLagLow"}:
+        return judge_clock_mutation(state, event)
+    if method in {"AddLog", "CreateLog", "ClearLog", "FlushLog"}:
+        return judge_log_method(state, event)
     if method == "Activate":
         return judge_activate(state, event)
     if method == "Revert":
         return judge_revert(state, event)
     if method == "RevertSP":
         return judge_revert_sp(state, event)
+    if method == "DeleteSP":
+        return judge_delete_sp(state, event)
     if method == "GenKey":
         return judge_gen_key(state, event)
     if method in {"EndSession", "CloseSession"}:
