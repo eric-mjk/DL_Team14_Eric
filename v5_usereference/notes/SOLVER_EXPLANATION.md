@@ -147,13 +147,14 @@ python evaluate.py
 # 디버그 출력 활성화
 SOLVER_DEBUG=1 python evaluate.py
 
-# 합성 테스트 케이스 생성 및 정확도 확인
-python generate_synthetic.py --check
+# 합성 테스트 케이스 정확도 확인
+cd customtest_57
+python generate_synthetic.py --check-only
 ```
 
 ## Synthetic Test Cases
 
-→ `tests/` 디렉토리 아래의 [SYNTHETIC_TESTS.md](tests/SYNTHETIC_TESTS.md) 참조
+→ `customtest_57/` 디렉토리 아래의 [SYNTHETIC_TESTS.md](customtest_57/SYNTHETIC_TESTS.md) 참조
 
 ## 현재 상태
 

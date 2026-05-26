@@ -6,8 +6,10 @@ Produces pass/fail test cases in the same JSON format as tc1.json-tc20.json,
 based on real workflow patterns from TCG Opal spec and the opal-toolset reference.
 
 Usage:
-    python generate_synthetic.py           # writes to tests/synthetic_testcases/
+    python generate_synthetic.py           # writes to synthetic_testcases/
     python generate_synthetic.py --check   # also runs local solver and prints accuracy
+    python generate_synthetic.py --check-only
+                                          # checks existing generated cases/labels
 """
 from __future__ import annotations
 
@@ -18,9 +20,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parent
-SYNTHETIC_DIR = ROOT / "tests" / "synthetic_testcases"
-SYNTHETIC_LABELS = ROOT / "tests" / "synthetic_labels.jsonl"
+CUSTOMTEST_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = CUSTOMTEST_DIR.parent
+SYNTHETIC_DIR = CUSTOMTEST_DIR / "synthetic_testcases"
+SYNTHETIC_LABELS = CUSTOMTEST_DIR / "synthetic_labels.jsonl"
 
 # ---- UID constants -------------------------------------------------------
 ADMIN_SP      = "0000020500000001"
@@ -1158,7 +1161,12 @@ def generate_all() -> list[tuple[str, str]]:
 
 
 def check_accuracy() -> None:
-    sys.path.insert(0, str(ROOT))
+    if not SYNTHETIC_DIR.is_dir():
+        raise SystemExit(f"Missing synthetic testcase directory: {SYNTHETIC_DIR}")
+    if not SYNTHETIC_LABELS.is_file():
+        raise SystemExit(f"Missing synthetic labels file: {SYNTHETIC_LABELS}")
+
+    sys.path.insert(0, str(PROJECT_ROOT))
     from src.solver import Solver
 
     solver = Solver()
@@ -1195,7 +1203,16 @@ def check_accuracy() -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate synthetic TCG/Opal test cases")
     parser.add_argument("--check", action="store_true", help="Check solver accuracy on generated cases")
+    parser.add_argument(
+        "--check-only",
+        action="store_true",
+        help="Check solver accuracy using existing synthetic_testcases and synthetic_labels.jsonl",
+    )
     args = parser.parse_args()
+
+    if args.check_only:
+        check_accuracy()
+        return
 
     labels = generate_all()
     pass_count = sum(1 for _, v in labels if v == "pass")
