@@ -1,3 +1,0 @@
-5.3.3.13.1 InvokingID
-This parameter is the uidref to the SP, table, or object identified in the InvokingID portion of the access
-control association to be retrieved from the AccessControl table.

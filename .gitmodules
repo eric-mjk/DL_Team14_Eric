@@ -1,0 +1,12 @@
+[submodule "reference_git_repos/go-tcg-storage"]
+	path = reference_git_repos/go-tcg-storage
+	url = https://github.com/open-source-firmware/go-tcg-storage.git
+[submodule "reference_git_repos/opal-test-suite"]
+	path = reference_git_repos/opal-test-suite
+	url = https://github.com/crocs-muni/opal-test-suite.git
+[submodule "reference_git_repos/sedutil-TCG-OPAL-standard"]
+	path = reference_git_repos/sedutil-TCG-OPAL-standard
+	url = https://github.com/0xbadcoffe/sedutil-TCG-OPAL-standard.git
+[submodule "reference_git_repos/opal-toolset"]
+	path = reference_git_repos/opal-toolset
+	url = https://github.com/crocs-muni/opal-toolset.git

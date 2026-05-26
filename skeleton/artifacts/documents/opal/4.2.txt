@@ -1,2 +1,0 @@
-4.2 Admin SP
-The Admin SP includes the Base Template and the Admin Template.
