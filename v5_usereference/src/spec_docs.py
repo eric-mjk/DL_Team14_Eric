@@ -235,7 +235,7 @@ COLUMN_LIMITS = {
 }
 
 READ_ONLY_COLUMNS = {
-    "C_PIN": {0, 1, 2, 6},
+    "C_PIN": {0, 1, 2},
     "Authority": {0, 1, 2, 3},
     "ACE": {0, 1, 2},
     "AccessControl": set(COLUMN_NAME_NUMBERS["AccessControl"].values()),

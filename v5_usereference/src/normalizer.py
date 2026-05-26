@@ -41,6 +41,7 @@ LOCKING_TABLE_UIDS = {
 
 SID_AUTHORITY_UID = "0000000900000006"
 ADMIN1_AUTHORITY_UID = "0000000900010001"
+PSID_AUTHORITY_UID = "000000090001FF01"  # Physical Secure ID — Opal PSID Feature Set spec
 
 
 STATUS_ALIASES = {
@@ -182,6 +183,8 @@ def canonical_authority(uid):
         return "Users"
     if uid == SID_AUTHORITY_UID:
         return "SID"
+    if uid == PSID_AUTHORITY_UID:
+        return "PSID"
     if uid == ADMIN1_AUTHORITY_UID:
         return "Admin1"
     if uid and uid.startswith("000000090001"):
@@ -231,6 +234,8 @@ def media_key_range_from_uid(uid):
 def canonical_object(name, uid):
     uid = compact_uid(uid)
     if uid == SESSION_MANAGER_UID:
+        return "SessionManager"
+    if name and "session" in name.lower() and "manager" in name.lower():
         return "SessionManager"
     if uid == LOCKING_SP_UID:
         return "LockingSP"

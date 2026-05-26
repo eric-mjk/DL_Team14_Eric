@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass
 
-from .normalizer import compact_uid, is_success_status, to_bool, to_int
+from .normalizer import compact_uid, find_named_value, is_success_status, to_bool, to_int
 from .state import (
     data_command_success,
     is_error_result,
@@ -272,6 +272,34 @@ def session_has_admin_authority(state, sp=None):
     return any(is_admin_authority(authority) for authority in authorities)
 
 
+def session_has_locking_sp_user(state):
+    """Return True if any User1..User9 (or higher) authority is active in the current session.
+
+    Per opal/4.3.1.6 + 4.3.1.7, ACE_MBRControl_Set_DoneToDOR covers the Done
+    column (col 2) and its BooleanExpr is evaluated as Admins OR Users, so any
+    authenticated LockingSP user may set the Done flag.
+    """
+    auths = state["session"].get("authorities") or set()
+    return any(isinstance(a, str) and a.startswith("User") for a in auths)
+
+
+def session_has_locking_user_authority_for_range(state, range_name):
+    """UserN authority in session matches RangeN (e.g. User1 → Range1).
+
+    Per TCG Opal spec opal/4.3.5.2.x, ACE_Locking_Range{N}_Set_RdLocked and
+    ACE_Locking_Range{N}_Set_WrLocked include User{N} OR Admin1 in their
+    BooleanExpr, so User1 may access Range1, User2 may access Range2, etc.
+    """
+    auths = state["session"].get("authorities") or set()
+    for auth in auths:
+        if not isinstance(auth, str) or not auth.startswith("User"):
+            continue
+        n = auth[4:]  # e.g. "1" from "User1"
+        if range_name == f"Range{n}":
+            return True
+    return False
+
+
 def session_authority_tokens(state):
     authorities = effective_session_authorities(state)
     tokens = set(authorities)
@@ -322,7 +350,7 @@ def combine_boolean(op, values):
 def evaluate_boolean_expr(expr, state):
     tokens = session_authority_tokens(state)
     if expr is None:
-        return None
+        return False  # spec core/5.3.4.3.3: empty BooleanExpr = ACE always False
     if isinstance(expr, bool):
         return expr
     if isinstance(expr, dict):
@@ -337,7 +365,7 @@ def evaluate_boolean_expr(expr, state):
         return None
     if isinstance(expr, list):
         if not expr:
-            return None
+            return False  # spec core/5.3.4.3.3: empty list BooleanExpr always False
         op = str(expr[0]).upper()
         if op in {"OR", "AND"}:
             return combine_boolean(op, [evaluate_boolean_expr(item, state) for item in expr[1:]])
@@ -555,7 +583,14 @@ def credential_matches(state, authority, challenge):
         return True
     known = state["credentials"].get(authority)
     if known is None:
+        # If credential was invalidated by GenKey, a challenge matching the old value is wrong
+        old = (state.get("invalidated_credentials") or {}).get(authority)
+        if old is not None and (challenge == old or (not challenge and not old)):
+            return False
         return None
+    # Empty credential: None challenge or empty challenge both match
+    if known == "" or known == b"":
+        return challenge is None or challenge == "" or challenge == b""
     return challenge == known
 
 
@@ -675,10 +710,14 @@ def invalid_locking_range_update(state, event):
     if event.get("object_family") != "Locking" or not ({3, 4} & set(columns)):
         return False
     range_name = event.get("locking_range")
+    if range_name == "Global":
+        # spec opal/4.3.1.1: Global Range RangeStart and RangeLength are fixed (whole disk);
+        # any attempt to Set them is INVALID_PARAMETER
+        return True
     bounds = projected_locking_bounds(state, event)
     if bounds == "invalid":
         return True
-    if not bounds or range_name == "Global":
+    if not bounds:
         return False
     start, end = bounds
     for other_name, other in (state.get("locking_ranges") or {}).items():
@@ -1253,6 +1292,68 @@ def method_preflight(state, event):
     return None
 
 
+def _check_sync_session_ids(event):
+    """Return a fail_result if a successful StartSession response is missing valid session IDs.
+
+    TCG Core spec 5.2.3.2: A successful StartSession always yields a SyncSession response
+    from the TPer that MUST include HostSessionID (echoing the host's value) and SPSessionID
+    (a non-zero TPer-assigned value).  A response with status=SUCCESS but absent or zero
+    session IDs is a compliance failure (spec core/5.2.3.2.1, 5.2.3.2.2).
+    """
+    if actual_status_class(event) != "success":
+        return None
+
+    raw_record = event.get("raw") or {}
+    output = raw_record.get("output") or {}
+    return_values = output.get("return_values")
+    if return_values is None:
+        return fail_result(
+            "StartSession response status=SUCCESS but SyncSession return_values are absent; "
+            "HostSessionID and SPSessionID are required (spec core/5.2.3.2).",
+            confidence=0.95,
+            expected_status="success_with_session_ids",
+            actual_status="success_no_ids",
+            spec_refs=("core/5.2.3.2",),
+            policy_source="SyncSession",
+        )
+
+    host_session_id = find_named_value(return_values, {"HostSessionID", "hostsessionid"})
+    sp_session_id = find_named_value(return_values, {"SPSessionID", "spsessionid"})
+
+    host_id_int = to_int(host_session_id) if host_session_id is not None else None
+    sp_id_int = to_int(sp_session_id) if sp_session_id is not None else None
+
+    missing = []
+    if host_session_id is None:
+        missing.append("HostSessionID")
+    if sp_session_id is None:
+        missing.append("SPSessionID")
+
+    if missing:
+        return fail_result(
+            f"StartSession response status=SUCCESS but SyncSession is missing required session ID(s): "
+            f"{', '.join(missing)} (spec core/5.2.3.2).",
+            confidence=0.95,
+            expected_status="success_with_session_ids",
+            actual_status="success_no_ids",
+            spec_refs=("core/5.2.3.2",),
+            policy_source="SyncSession",
+        )
+
+    if sp_id_int == 0:
+        return fail_result(
+            "StartSession response status=SUCCESS but SPSessionID=0 is invalid; "
+            "the TPer must assign a non-zero session number (spec core/5.2.3.2.2).",
+            confidence=0.90,
+            expected_status="success_with_session_ids",
+            actual_status="success_zero_sp_id",
+            spec_refs=("core/5.2.3.2",),
+            policy_source="SyncSession",
+        )
+
+    return None
+
+
 def judge_start_session(state, event):
     sp = event.get("sp")
     authority = event.get("authority")
@@ -1276,6 +1377,23 @@ def judge_start_session(state, event):
             rule_key="start_session",
         )
 
+    if authority_is_class(state, authority):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"StartSession HostSigningAuthority {authority} is a class authority; class authorities are not valid session authorities (spec core/5.1.5.11).",
+            rule_key="start_session",
+        )
+
+    _auth_operation = next((r.get("operation") for r in authority_records_for(state, authority) if "operation" in r), None)
+    if _auth_operation in ("Exchange", "TPerExchange", "TPerSign"):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"StartSession HostSigningAuthority {authority} has Operation={_auth_operation}; key-exchange authorities cannot be used as session authorities (spec core/5.3.4.1.3).",
+            rule_key="start_session",
+        )
+
     if authority and not authority_enabled(state, authority):
         return expected_status_result(
             event,
@@ -1296,6 +1414,9 @@ def judge_start_session(state, event):
 
     match = credential_matches(state, authority, event.get("challenge"))
     if match is True:
+        id_check = _check_sync_session_ids(event)
+        if id_check is not None:
+            return id_check
         return expected_status_result(
             event,
             "success",
@@ -1312,6 +1433,9 @@ def judge_start_session(state, event):
 
     if authority:
         if actual_status_class(event) in {"success", "auth_error"}:
+            id_check = _check_sync_session_ids(event)
+            if id_check is not None:
+                return id_check
             return pass_result(
                 f"No tracked credential for {authority}; final authenticated StartSession is not contradicted by state.",
                 0.55,
@@ -1327,6 +1451,9 @@ def judge_start_session(state, event):
             spec_refs_for("start_session"),
         )
 
+    id_check = _check_sync_session_ids(event)
+    if id_check is not None:
+        return id_check
     return expected_status_result(event, "success", "Unauthenticated StartSession should succeed when the SP is available.", rule_key="start_session")
 
 
@@ -1344,6 +1471,27 @@ def judge_authenticate(state, event):
             rule_key="authenticate",
             policy_source="Authority.IsClass",
         )
+
+    _auth_records = authority_records_for(state, authority)
+    _auth_operation = next((r.get("operation") for r in _auth_records if "operation" in r), None)
+    if _auth_operation in ("Exchange", "TPerExchange", "TPerSign"):
+        # spec core/5.3.4.1.3: key-exchange authorities return SUCCESS with result=False on Authenticate
+        actual = actual_status_class(event)
+        auth_result = event.get("auth_result")
+        refs = spec_refs_for("authenticate")
+        reason = f"Authenticate on {_auth_operation} authority always returns SUCCESS with result=False (spec core/5.3.4.1.3)."
+        if actual == "success" and auth_result is False:
+            return pass_result(reason, expected_status="success_false", actual_status=actual, spec_refs=refs)
+        return fail_result(reason, expected_status="success_false", actual_status=actual, spec_refs=refs)
+
+    if _auth_operation not in (None, "Password", "Anybody") and event.get("proof") is not None:
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            f"Authenticate: Proof supplied to non-Password/non-Anybody authority (Operation={_auth_operation}) is INVALID_PARAMETER (spec core/5.3.4.1.14.1).",
+            rule_key="authenticate",
+        )
+
     if not authority_enabled(state, authority):
         actual = actual_status_class(event)
         auth_result = event.get("auth_result")
@@ -1481,11 +1629,53 @@ def judge_get(state, event):
 
     if family == "Locking":
         public = not protected_columns_requested(event, public_columns={0, 1, 2})
-        expected = session_open_for(state, "LockingSP") and (public or session_has_admin_authority(state, "LockingSP"))
+        range_name = event.get("locking_range")
+        user_authorized = (
+            range_name is not None
+            and session_has_locking_user_authority_for_range(state, range_name)
+        )
+        expected = session_open_for(state, "LockingSP") and (
+            public
+            or session_has_admin_authority(state, "LockingSP")
+            or user_authorized
+        )
+        if not expected:
+            return expected_status_result(
+                event,
+                "auth_error",
+                "Locking range Get of range/lock/key columns requires an Admin authority or the matching User authority in the LockingSP.",
+                rule_key="locking_table",
+            )
+        # If the GET should succeed, validate returned column values against tracked state.
+        # A drive reporting stale/wrong lock state is a compliance failure.
+        _LOCKING_COL_FIELDS = {5: "read_lock_enabled", 6: "write_lock_enabled", 7: "read_locked", 8: "write_locked"}
+        tracked = (state.get("locking_ranges") or {}).get(range_name) if range_name else None
+        if tracked:
+            return_cols = event.get("return_columns") or {}
+            for col_num, field in _LOCKING_COL_FIELDS.items():
+                if col_num not in return_cols:
+                    continue
+                returned_val = bool(return_cols[col_num])
+                expected_val = bool(tracked.get(field, False))
+                if returned_val != expected_val:
+                    return RuleResult(
+                        verdict="fail",
+                        confidence=0.95,
+                        reason=(
+                            f"Locking GET returned {field}={int(returned_val)} for {range_name} "
+                            f"but tracked state has {field}={int(expected_val)} "
+                            f"(opal/4.3.1 — drive must reflect authoritative lock state)."
+                        ),
+                        expected_status=None,
+                        actual_status=event.get("status"),
+                        spec_refs=["opal/4.3.1"],
+                        policy_source="rule",
+                        coverage_status="implemented",
+                    )
         return expected_status_result(
             event,
-            "success" if expected else "auth_error",
-            "Locking range Get of range/lock/key columns requires an Admin authority in the LockingSP.",
+            "success",
+            "Locking range Get is authorized and returned values match tracked state.",
             rule_key="locking_table",
         )
 
@@ -1522,6 +1712,15 @@ def judge_get(state, event):
 def judge_set(state, event):
     obj = event.get("object")
     family = event.get("object_family")
+
+    # PSID authority can only invoke Revert, not perform any table Set operations.
+    if session_has_authority(state, "PSID") and not session_has_authority(state, "SID"):
+        return expected_status_result(
+            event,
+            "auth_error",
+            "PSID authority is restricted to Revert only; table Set operations are not permitted (Opal PSID Feature Set).",
+            rule_key="psid",
+        )
 
     if invalid_set_columns(event):
         return expected_status_result(event, "invalid_parameter", "Set Values contain invalid columns for the target object.", rule_key="set")
@@ -1603,7 +1802,46 @@ def judge_set(state, event):
             rule_key="cpin",
         )
 
-    if family in {"Locking", "MBRControl", "MBR", "MediaKey", "ACE", "AccessControl", "SecretProtect", "DataStore"}:
+    if family == "Locking":
+        # Per opal/4.3.5.2.x, ACE_Locking_Range{N}_Set_RdLocked and
+        # ACE_Locking_Range{N}_Set_WrLocked allow UserN OR Admin1 to set
+        # columns 7 (ReadLocked) and 8 (WriteLocked) on Range{N}.
+        # All other Locking columns (range bounds, key management, etc.)
+        # remain Admin1-only.
+        value_cols = set((event.get("value_columns") or {}).keys())
+        user_lock_cols = value_cols & {7, 8}  # ReadLocked, WriteLocked
+        admin_only_cols = value_cols - {7, 8}
+        range_name = event.get("locking_range")
+        user_authorized = (
+            range_name is not None
+            and bool(user_lock_cols)
+            and not admin_only_cols
+            and session_open_for(state, "LockingSP", write_required=True)
+            and session_has_locking_user_authority_for_range(state, range_name)
+        )
+        expected = authenticated_locking_admin_write(state) or user_authorized
+        return expected_status_result(
+            event,
+            "success" if expected else "auth_error",
+            f"{obj} Set requires authenticated Admin1 LockingSP write session, or UserN for ReadLocked/WriteLocked on RangeN.",
+            rule_key="access_control",
+        )
+
+    if family == "MBRControl":
+        # opal/4.3.1.6 + 4.3.1.7: MBRControl Set ACL = ACE_MBRControl_Admins_Set OR ACE_MBRControl_Set_DoneToDOR.
+        # Both ACEs have BooleanExpr=Admins (opal/4.3.1.7 Table 39). All columns (Enable=1, Done=2,
+        # DoneOnReset=3) require an Admin authority in a LockingSP write session.
+        expected = authenticated_locking_admin_write(state)
+        return expected_status_result(
+            event,
+            "success" if expected else "auth_error",
+            f"{obj} Set requires authenticated Admin LockingSP write session"
+            " (ACE_MBRControl_Admins_Set, BooleanExpr=Admins, opal/4.3.1.7).",
+            rule_key="mbr_control",
+        )
+
+    if family in {"MBR", "MediaKey", "ACE", "AccessControl", "SecretProtect", "DataStore"}:
+        # MBR byte-table Set: Admin-only per ACE_Admin (opal/4.3.1.6 InvokingID=00 00 08 04)
         expected = authenticated_locking_admin_write(state)
         return expected_status_result(
             event,
@@ -1613,11 +1851,15 @@ def judge_set(state, event):
         )
 
     if family == "Authority":
-        expected = session_open_for(state, target_sp, write_required=True) and session_has_admin_authority(state, target_sp)
+        if target_sp == "AdminSP":
+            # spec opal/4.2.1.6: ACE_Set_Enabled BooleanExpr = SID only — Admin* not authorized
+            expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state, "SID")
+        else:
+            expected = session_open_for(state, target_sp, write_required=True) and session_has_admin_authority(state, target_sp)
         return expected_status_result(
             event,
             "success" if expected else "auth_error",
-            "Authority Set requires an authenticated admin write session in the owning SP.",
+            "Authority Set requires SID in AdminSP or admin authority in LockingSP.",
             rule_key="authority",
         )
 
@@ -1634,6 +1876,9 @@ def judge_activate(state, event):
     if event.get("object") != "LockingSP":
         return expected_status_result(event, "invalid_parameter", "Activate target must be the LockingSP object.", rule_key="activate")
 
+    if state.get("locking_sp_active"):
+        return expected_status_result(event, "invalid_parameter", "LockingSP is already Manufactured; Activate is only valid from Manufactured-Inactive (opal/5.2.2).", rule_key="activate")
+
     expected = session_open_for(state, "AdminSP", write_required=True) and session_has_authority(state, "SID")
     return expected_status_result(
         event,
@@ -1646,11 +1891,16 @@ def judge_activate(state, event):
 def judge_revert(state, event):
     if event.get("object_family") != "SP":
         return expected_status_result(event, "invalid_parameter", "Revert target must be an SP object in the AdminSP SP table.", rule_key="revert")
-    expected = authenticated_admin_sp_write(state)
+    # spec opal/5.1.2: Revert requires a Read-Write session to the Admin SP authenticated
+    # by SID (normal owner authority) or PSID (Physical Secure ID — Opal PSID Feature Set).
+    # PSID is the physical label credential that can factory-reset without knowing the SID PIN.
+    has_sid = session_has_authority(state, "SID")
+    has_psid = session_has_authority(state, "PSID")
+    expected = session_open_for(state, "AdminSP", write_required=True) and (has_sid or has_psid)
     return expected_status_result(
         event,
         "success" if expected else "auth_error",
-        "Revert on an SP object requires an authenticated AdminSP owner write session.",
+        "Revert on an SP object requires an authenticated AdminSP write session with SID or PSID authority (opal/5.1.2).",
         rule_key="revert",
     )
 
@@ -1717,6 +1967,8 @@ def judge_random(state, event):
     count = event.get("count")
     if count is not None and count < 0:
         return expected_status_result(event, "invalid_parameter", "Random Count cannot be negative.", rule_key="random")
+    if count is not None and count > 32:
+        return expected_status_result(event, "invalid_parameter", "Random Count SHALL NOT exceed 32 (opal/4.2.9.1).", rule_key="random")
     target_sp = object_sp(event) or state["session"].get("sp")
     expected = state["session"].get("open") and (target_sp is None or session_open_for(state, target_sp))
     return expected_status_result(

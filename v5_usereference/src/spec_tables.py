@@ -154,7 +154,7 @@ _LOCKING_WRITABLE_COLS = frozenset([
     "5", "6",              # ReadLockEnabled, WriteLockEnabled
     "7", "8",              # ReadLocked, WriteLocked
     "9",                   # LockOnReset
-    "a", "b",              # ActiveKey, NextKey
+    "b",                   # NextKey (ActiveKey col 0xa is host read-only per Opal ACE table)
     "d",                   # ReEncryptRequest (c is read-only from host)
     "e", "f",              # AdvKeyMode, VerifyMode
     "10",                  # ContOnReset

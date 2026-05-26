@@ -677,7 +677,11 @@ def apply_successful_gen_key(state, event):
     if event.get("object_family") == "C_PIN":
         authority = event.get("credential_authority")
         if authority and authority in state["credentials"]:
+            old_val = state["credentials"][authority]
             state["credentials"][authority] = None
+            if old_val is not None:
+                # Remember the old value so the oracle can reject it if used after GenKey
+                state.setdefault("invalidated_credentials", {})[authority] = old_val
             state.setdefault("failed_auth_counts", {}).pop(authority, None)
 
 
