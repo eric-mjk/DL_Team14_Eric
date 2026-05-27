@@ -1,124 +1,69 @@
 # CLAUDE.md
+Session brief for `/workspace/Eric/ws` and the DL2026 SSD protocol oracle project.
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Goal
+Build a verifier for SSD / TCG Storage command-response trajectories.
+Input is a full testcase trajectory; only the final response is judged.
+Output must be exactly lowercase `"pass"` or `"fail"`.
+A verdict judges protocol compliance, not whether the SSD returned `SUCCESS`.
 
-## Project Overview
+## Active Version
+Work is currently on `v6/`.
+`v6/src` is derived from `v5_usereference/src` and is the active edit target.
+Older folders (`skeleton/`, `v1_0520/`, `v4_ter_/`, `v5_usereference/`) are references only unless asked.
+The public dataset is in `dataset/testcases/`; labels are in `dataset/label.jsonl`.
+Parsed TCG Core / Opal documents live under root `documents/`.
 
-This is a term project (SNU Deep Learning M2177.0043, due June 8 2026) to build a **stateful test oracle** for SSD security protocol compliance. Given a trajectory of SSD command-response records, the system must predict whether the **final response** is `"pass"` or `"fail"` (lowercase required). The verdict judges protocol compliance, not whether the SSD returned SUCCESS or an error.
+## Submission Contract
+The grader expects `src/`, `setup.sh`, `pyproject.toml`, `uv.lock`, and optional `artifacts/`.
+`src/solver.py` exposes `Solver.predict(dataset)` returning `{id: "pass"|"fail"}`.
+`Solver.predict_one(steps)` handles one trajectory.
+Do not rely on network during evaluation.
+Anchor artifacts with `Path(__file__).resolve().parents[1] / "artifacts"`.
+Do not commit `.venv/`, `__pycache__/`, `predictions.jsonl`, or `scores.json`.
 
-## Repository Layout
+## v6 Layout
+`v6/src/solver.py`: grader-facing entrypoint and debug summary.
+`v6/src/normalizer.py`: raw JSON record to canonical event dict.
+`v6/src/state.py`: replays prefix events and mutates protocol state.
+`v6/src/oracle.py`: judges the final event against tracked state.
+`v6/src/spec_docs.py`: spec metadata, column maps, refs, coverage helpers.
+`v6/src/spec_tables.py`: older/static Opal table and policy constants.
+`v6/artifacts/`: `spec_index.json` and `spec_coverage_report.json`.
+`v6/customtest_57/`: synthetic regression suite and generator.
+`v6/notes/`: audit notes, solver explanation, coverage notes, changelogs.
 
-```
-/workspace/Eric/ws/
-├── project_specification.md   # Full task spec
-├── idea.md                    # Design document (Korean) — read this first
-├── dataset/
-│   ├── label.jsonl            # Ground-truth labels for public 20 cases
-│   └── testcases/tc1.json … tc20.json
-├── skeleton/                  # Original template (reference only)
-└── 0520/                      # Active working experiment (the one to modify)
-    ├── src/
-    │   ├── solver.py          # Entry point: Solver.predict(dataset) / predict_one(steps)
-    │   ├── normalizer.py      # JSON -> canonical event dicts
-    │   ├── state.py           # Stateful tracker across trajectory prefix
-    │   └── oracle.py          # Deterministic rule oracle -> RuleResult(verdict, confidence, reason)
-    ├── artifacts/documents/   # Parsed TCG spec texts (core/, opal/)
-    ├── evaluate.py            # Local evaluator: writes predictions.jsonl + scores.json
-    ├── setup.sh               # Just runs: uv sync
-    ├── pyproject.toml         # Python 3.12.3, vllm, torch, transformers, accelerate
-    └── scores.json / predictions.jsonl  # Output from last local run
-```
+## Runtime Flow
+`Solver.predict_one` calls `normalize_trajectory(steps)`.
+It tracks state over `events[:-1]` with `track_state`.
+It judges `events[-1]` with `judge_final`.
+The final `RuleResult.verdict` is returned directly.
+`SOLVER_DEBUG=1` prints event, expected/actual status, refs, state, and reason.
 
-## Common Commands
+## State Model
+State includes session, authenticated authorities, credentials, SP lifecycle, and LockingSP activity.
+It also tracks locking ranges, MBRControl, ACE/AccessControl rows, authority rows, TryLimit failures, key generations, writes, and reads.
+Only successful prefix operations mutate state.
+Failed StartSession does not open a session.
+Failed Set does not update tables or credentials.
+Failed GenKey does not change key generation.
+Failed Revert / RevertSP does not reset state.
 
-All commands run from inside the project directory (`0520/` or whichever experiment dir):
+## Oracle Surface
+`oracle.py` handles StartSession, Authenticate, Get, Set, Activate, Revert, RevertSP, GenKey, Random, crypto, clock, log, table methods, Next, Read, and Write.
+It compares status classes rather than raw strings where appropriate.
+Data `Read` and `Write` use lock state and key-generation history.
+Important hidden-test surfaces include C_PIN PIN reads, Locking range access, MBRControl access, Authority state, and ACE policy evaluation.
+Spec refs are attached through `spec_refs_for(...)` and `RULE_REFERENCES`.
 
-```bash
-# Install dependencies (Phase 1 equivalent)
-cd /workspace/Eric/ws/0520
-uv sync
+## Checks
+Compile Python with `python3 -m py_compile v6/src/*.py`.
+Run public evaluation with `python3 v6/evaluate.py`.
+Run synthetic checks with `cd v6/customtest_57 && python3 generate_synthetic.py --check-only`.
+Current baseline before v6 edits: public `score=100.00`, synthetic `57/57`.
 
-# Run local evaluation against public dataset
-python evaluate.py
-# or with custom dataset path:
-DATASET_DIR=/workspace/dataset/testcases LABEL_PATH=/workspace/dataset/label.jsonl python evaluate.py
-
-# Enable debug output per test case
-SOLVER_DEBUG=1 python evaluate.py
-
-# Use a different model
-MODEL_NAME=Qwen/Qwen3.5-0.8B python evaluate.py
-
-# Submit current directory
-submit
-submit --job-name <name>
-submit --dir /workspace/Eric/ws/0520 --job-name v2
-submit --list
-```
-
-## Architecture
-
-The pipeline is: `JSON steps → normalize → track state → oracle → "pass"/"fail"`
-
-### `normalizer.py`
-Converts raw JSON records into canonical event dicts. Key output fields:
-- `kind`: `"method"` | `"read"` | `"write"` | `"command"`
-- `method`: `"StartSession"`, `"EndSession"`, `"Get"`, `"Set"`, `"Activate"`, `"GenKey"`, etc.
-- `object`: symbolic name (`"C_PIN_SID"`, `"LockingSP"`, `"Range1_Key"`, etc.)
-- `sp`: `"AdminSP"` | `"LockingSP"`
-- `authority`: `"SID"` | `"Admin1"` | etc.
-- `status`: normalized lowercase: `"success"`, `"not_authorized"`, `"invalid_parameter"`, `"fail"`
-- `challenge`: the HostChallenge value from StartSession (raw bytes, used for credential comparison)
-
-UID mapping is centralized here (e.g., `C_PIN_SID_UID = "0000000B00000001"`).
-
-### `state.py`
-Tracks mutable protocol state using only the trajectory prefix (all events except the last). **Only successful operations mutate state.**
-
-Key state fields:
-- `session`: `{open, sp, authority, write}`
-- `credentials`: `{SID, MSID, Admin1}` — credential values (raw bytes from HostChallenge / C_PIN column 3)
-- `locking_sp_active`: bool
-- `locking_ranges`: per-range config dict
-- `key_generations`: `{"Range1_Key": count}` — incremented on successful GenKey
-- `writes`: `{lba_tuple: {pattern, key_generations_snapshot}}` — LBA write memory
-- `reads`: list of read events
-
-### `oracle.py`
-Takes `(state, final_event)` and returns `RuleResult(verdict, confidence, reason)`.
-
-Decision logic (checked in order):
-1. `read` kind → `judge_read`: compares key generation snapshot at write time vs. now
-2. `write` kind → always `pass`
-3. `method` kind → dispatched by `method` name: Properties, StartSession, Get, Set, Activate, GenKey, EndSession
-4. fallback → accepts success-like response (confidence 0.50)
-
-The `Solver.predict_one` in `solver.py` currently returns `result.verdict` directly (no LLM fallback yet). The `idea.md` describes adding an LLM fallback for `confidence < 0.90` cases.
-
-## Critical Constraints
-
-- **Output format**: must be exactly `"pass"` or `"fail"` (lowercase). The grader rejects `"PASS"`, `"True"`, etc.
-- **No network during evaluation phase**: all weights or resources must be in `artifacts/` or downloaded in `setup.sh`.
-- **Archive limit**: 12 GB compressed. Use shared HuggingFace cache (`HF_HOME=/workspace/cache/hf_cache`) for base models; put only fine-tuned adapters in `artifacts/`.
-- **Evaluation time limit**: 3 hours.
-- **Path anchoring**: use `Path(__file__).resolve().parents[1] / "artifacts"` not absolute paths (grading container uses `/workspace/submission/`).
-- **Failed commands do not mutate state**: a failed StartSession does not open a session; a failed Set does not update credentials.
-
-## Public Dataset Taxonomy (tc1–tc20)
-
-tc1–tc10 are PASS, tc11–tc20 are FAIL, and many are intentional pairs:
-
-| Pair | Concept tested |
-|---|---|
-| tc1/tc11 | Properties method response status |
-| tc2/tc12 | C_PIN Get authorization |
-| tc3/tc13 | SID credential update via C_PIN Set |
-| tc4/tc14 | Repeated credential updates (latest PIN wins) |
-| tc5/tc15 | LockingSP activation with correct object UID |
-| tc6/tc16 | Authority object Set required values |
-| tc7/tc17 | Authenticated StartSession after authority update |
-| tc8/tc18 | Locking object Get |
-| tc9/tc19 | MBRControl Get |
-| tc10/tc20 | GenKey + data Read (old plaintext readable after GenKey = FAIL) |
-
-tc10/tc20 is the most unusual: the final command is a non-TCG `Read`, but the verdict depends on whether a prior `GenKey` succeeded.
+## Hygiene
+The worktree may contain unrelated user changes; do not revert them.
+At v6 startup, `v6/` was untracked and `v5_usereference/artifacts/documents` showed as deleted.
+Leave unrelated changes alone.
+Use `rg` for search and `git diff` before handing back substantial edits.

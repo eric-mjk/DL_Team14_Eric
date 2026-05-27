@@ -10,5 +10,3 @@ __pycache__/
 # Evaluation outputs
 predictions.jsonl
 scores.json
-
-*/artifacts/documents
