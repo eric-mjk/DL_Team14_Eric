@@ -1,7 +1,7 @@
 from copy import deepcopy
 import re
 
-from .normalizer import compact_uid, is_success_status, to_bool, to_int
+from .normalizer import canonical_sp, compact_uid, is_success_status, to_bool, to_int
 from .spec_docs import (
     column_list_from_value,
     default_access_policy,
@@ -66,7 +66,7 @@ def fresh_access_policy():
 def initial_state():
     locking_ranges = default_locking_ranges()
     access_policy = fresh_access_policy()
-    return {
+    state = {
         "session": empty_session(),
         "credentials": {
             "SID": None,
@@ -77,6 +77,14 @@ def initial_state():
             "Admin3": "",
             "Admin4": "",
             "User1": "",
+            # spec opal/4.3.1.8: User2-User8 shall be implemented; initially disabled with empty PINs
+            "User2": "",
+            "User3": "",
+            "User4": "",
+            "User5": "",
+            "User6": "",
+            "User7": "",
+            "User8": "",
         },
         "sp_lifecycle": {
             "AdminSP": "Manufactured",
@@ -101,7 +109,23 @@ def initial_state():
         "crypto_streams": {},
         "pending_clock_lag": None,
         "history": [],
+        # spec core/5.8.3: log tables that exist; pre-seeded with the default Log template UID.
+        # AddLog/ClearLog/FlushLog on a UID not in this set is an error.
+        "log_tables": {"0000000100000A01"},
+        "log_table_names": set(),
     }
+    # spec opal/4.3.1.8: User2-User8 shall be implemented and are initially disabled.
+    # authority_enabled() returns True for unknown rows, so we must seed explicit disabled entries.
+    for _n in range(2, 9):
+        _user = f"User{_n}"
+        state["authority_rows"].setdefault(_user, {
+            "name": _user,
+            "enabled": False,
+            "is_class": False,
+            "operation": "Password",
+            "source": "LockingSP",
+        })
+    return state
 
 
 def normalized_result_text(result):
@@ -232,6 +256,18 @@ def apply_successful_crypto_stream_method(state, event):
         streams.pop((key, "Hash"), None)
     elif method == "HMACFinalize":
         streams.pop((key, "HMAC"), None)
+
+
+def _apply_successful_create_log(state, event):
+    name = (event.get("parameters") or {}).get("NewLogTableName")
+    if name:
+        state.setdefault("log_table_names", set()).add(str(name))
+    # If the drive returns a UID for the new table, track it too.
+    ret = event.get("return_columns") or {}
+    new_uid = ret.get("uid") or ret.get(0)
+    if new_uid:
+        from .normalizer import compact_uid
+        state.setdefault("log_tables", set()).add(compact_uid(str(new_uid)))
 
 
 def apply_successful_clock_method(state, event):
@@ -618,6 +654,42 @@ def apply_successful_get(state, event):
         merge_mbr_columns(state, columns)
 
 
+def apply_sp_lifecycle_columns(state, event, columns):
+    uid = compact_uid(event.get("object_uid"))
+    sp_name = canonical_sp(uid) if uid else None
+    if not sp_name or sp_name not in ("AdminSP", "LockingSP"):
+        return
+    lifecycle = state.setdefault("sp_lifecycle", {})
+    if 6 in columns:
+        val = to_bool(columns[6])
+        if val is False:
+            current = lifecycle.get(sp_name, "Manufactured")
+            if "Frozen" in current:
+                lifecycle[sp_name] = "Issued-Disabled-Frozen"
+            else:
+                lifecycle[sp_name] = "Issued-Disabled"
+        elif val is True:
+            current = lifecycle.get(sp_name, "Manufactured")
+            if "Frozen" in current:
+                lifecycle[sp_name] = "Issued-Frozen"
+            elif "Inactive" not in current:
+                lifecycle[sp_name] = "Manufactured"
+    if 7 in columns:
+        val = to_bool(columns[7])
+        if val is True:
+            current = lifecycle.get(sp_name, "Manufactured")
+            if "Disabled" in current:
+                lifecycle[sp_name] = "Issued-Disabled-Frozen"
+            else:
+                lifecycle[sp_name] = "Issued-Frozen"
+        elif val is False:
+            current = lifecycle.get(sp_name, "Manufactured")
+            if "Disabled" in current:
+                lifecycle[sp_name] = "Issued-Disabled"
+            elif "Inactive" not in current:
+                lifecycle[sp_name] = "Manufactured"
+
+
 def apply_successful_set(state, event):
     target = event.get("object")
     columns = event.get("value_columns") or {}
@@ -640,6 +712,10 @@ def apply_successful_set(state, event):
             state["credentials"]["Admin1"] = columns[3]
         return
 
+    if event.get("object_family") == "SP":
+        apply_sp_lifecycle_columns(state, event, columns)
+        return
+
     if event.get("object_family") == "Locking":
         merge_locking_columns(state, event.get("locking_range"), columns)
         return
@@ -651,11 +727,15 @@ def apply_successful_set(state, event):
 def apply_successful_activate(state, event):
     if event.get("object") != "LockingSP":
         return
+    already_active = state.get("locking_sp_active", False)
     state["locking_sp_active"] = True
     state["sp_lifecycle"]["LockingSP"] = "Manufactured"
-    sid_value = state["credentials"].get("SID")
-    if sid_value is not None:
-        state["credentials"]["Admin1"] = sid_value  # Always overwrite per spec opal/5.1.1.2
+    # spec opal/5.1.1.2: SID → Admin1 copy happens only on first Activate (transition out of Inactive).
+    # A repeat Activate on an already-Manufactured SP is a no-op; do not re-copy SID.
+    if not already_active:
+        sid_value = state["credentials"].get("SID")
+        if sid_value is not None:
+            state["credentials"]["Admin1"] = sid_value
 
 
 def bump_key_generation_for_range(state, range_name):
@@ -686,13 +766,17 @@ def apply_successful_gen_key(state, event):
 
 
 def reset_locking_sp(state, preserve_global_key=False):
+    # spec opal/5.1.2.2: user-data removal and key eradication only when LockingSP was active;
+    # Revert on an already-inactive LockingSP has no effect on user data or media keys.
+    locking_was_active = state.get("locking_sp_active", False)
     previous_ranges = set(state.get("locking_ranges", {})) or {"Global"}
     default_ranges = default_locking_ranges()
     affected_ranges = previous_ranges | set(default_ranges) | {"Global"}
-    for range_name in affected_ranges:
-        if preserve_global_key and range_name == "Global":
-            continue
-        bump_key_generation_for_range(state, range_name)
+    if locking_was_active:
+        for range_name in affected_ranges:
+            if preserve_global_key and range_name == "Global":
+                continue
+            bump_key_generation_for_range(state, range_name)
 
     state["locking_sp_active"] = False
     state["sp_lifecycle"]["LockingSP"] = "Manufactured-Inactive"
@@ -741,11 +825,12 @@ def apply_successful_revert(state, event):
 
 def apply_successful_revert_sp(state, event):
     sp = state["session"].get("sp") or event.get("object")
-    preserve_global = bool(event.get("keep_global_range_key"))
+    # spec opal/5.1.3.2-5.1.3.3: KeepGlobalRangeKey is defined only for LockingSP RevertSP
+    preserve_global = bool(event.get("keep_global_range_key")) and sp == "LockingSP"
     if sp == "LockingSP":
         reset_locking_sp(state, preserve_global_key=preserve_global)
     elif sp == "AdminSP":
-        reset_locking_sp(state, preserve_global_key=preserve_global)
+        reset_locking_sp(state, preserve_global_key=False)
         reset_admin_sp_credentials(state)
         state["sp_lifecycle"]["AdminSP"] = "Manufactured"
         state["tables"] = default_table_rows()
@@ -784,6 +869,10 @@ def apply_reset_like_event(state, event):
         if parsed:
             state["mbr"]["done"] = False
             state["mbr"][2] = False
+    # spec opal/3.2.3 + 3.3.5.1: any reset aborts all open sessions and clears transient state.
+    state["session"] = empty_session()
+    state["pending_clock_lag"] = None
+    state["crypto_streams"] = {}
 
 
 def range_bounds(entry):
@@ -886,6 +975,74 @@ def snapshot_key_generations(state):
     }
 
 
+def _trajectory_source(state):
+    sp = (state.get("session") or {}).get("sp")
+    if sp == "LockingSP":
+        return "opal/4.3-trajectory"
+    if sp == "AdminSP":
+        return "opal/4.2-trajectory"
+    return "trajectory"
+
+
+def _meta_acl_uids(event):
+    params = event.get("parameters") or {}
+    invoking = compact_uid(params.get("InvokingID"))
+    method_uid = compact_uid(params.get("MethodID"))
+    ace_uid = compact_uid(params.get("ACE"))
+    method_name = method_name_from_value(method_uid) if method_uid else None
+    return invoking, method_name, ace_uid
+
+
+def _find_acl_row(state, invoking_uid, method_name):
+    for row in (state.get("access_control_rows") or []):
+        if row.get("invoking_uid") != invoking_uid:
+            continue
+        if method_name is None or row.get("method") == method_name:
+            return row
+    return None
+
+
+def _apply_successful_add_ace(state, event):
+    invoking, method_name, ace_uid = _meta_acl_uids(event)
+    if not invoking or not ace_uid:
+        return
+    row = _find_acl_row(state, invoking, method_name)
+    if row is None:
+        row = {
+            "uid": None,
+            "name": None,
+            "invoking_uid": invoking,
+            "invoking_name": invoking,
+            "method": method_name or "",
+            "ace_refs": [],
+            "source": _trajectory_source(state),
+        }
+        state.setdefault("access_control_rows", []).append(row)
+    refs = row.setdefault("ace_refs", [])
+    if ace_uid not in refs:
+        refs.append(ace_uid)
+
+
+def _apply_successful_remove_ace(state, event):
+    invoking, method_name, ace_uid = _meta_acl_uids(event)
+    if not invoking or not ace_uid:
+        return
+    row = _find_acl_row(state, invoking, method_name)
+    if row is not None and ace_uid in (row.get("ace_refs") or []):
+        row["ace_refs"].remove(ace_uid)
+
+
+def _apply_successful_delete_method(state, event):
+    invoking, method_name, _ = _meta_acl_uids(event)
+    if not invoking:
+        return
+    state["access_control_rows"] = [
+        row for row in (state.get("access_control_rows") or [])
+        if not (row.get("invoking_uid") == invoking
+                and (not method_name or row.get("method") == method_name))
+    ]
+
+
 def apply_event(state, event):
     state["history"].append(
         {
@@ -941,6 +1098,14 @@ def apply_event(state, event):
             apply_successful_revert(state, event)
         elif method == "RevertSP":
             apply_successful_revert_sp(state, event)
+        elif method == "CreateLog":
+            _apply_successful_create_log(state, event)
+        elif method == "AddACE":
+            _apply_successful_add_ace(state, event)
+        elif method == "RemoveACE":
+            _apply_successful_remove_ace(state, event)
+        elif method == "DeleteMethod":
+            _apply_successful_delete_method(state, event)
         return
 
     if event["kind"] == "command" and reset_like_command(event):

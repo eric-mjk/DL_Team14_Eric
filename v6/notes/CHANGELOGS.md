@@ -1,5 +1,106 @@
 # Error Notes
 
+## v6 수정 이력 (spec 감사 DEFER tier, 2026-05-27)
+
+v6 프로젝트(`v6/src/`) 에서 spec 전체 감사의 DEFER tier 항목을 전부 구현했다.
+구현 순서: 합성 테스트 작성 → pre-impl 실패 확인 → 구현 → public 100% + synthetic 84/84 검증.
+
+### 아키텍처 전환: v5 단일파일 → v6 5파일 분리
+
+| 파일 | 역할 |
+|---|---|
+| `solver.py` | grader-facing entry point, debug summary |
+| `normalizer.py` | raw JSON → canonical event dict |
+| `state.py` | prefix event replay, protocol state mutation |
+| `oracle.py` | final event judging |
+| `spec_docs.py` | spec metadata, column maps, rule refs, coverage helpers |
+
+### IMPLEMENT / VALIDATE 항목 (검증 + 보완)
+
+**IMPLEMENT-1 — ACE/AccessControl 정책 엔진 (`oracle.py`)**
+- `spec_docs.py`의 spec_index에서 ACE/AccessControl 행을 적재
+- `judge_get`, `judge_set`, `judge_meta_acl`이 동적 policy lookup 사용
+- BooleanExpr evaluator로 Admins/Users/Anybody/SID 토큰 처리
+
+**VALIDATE-1 — 데이터플레인 Read 일관성 (`oracle.py: judge_read`)**
+- key_generations snapshot 비교로 stale key 판정
+- ReadLocked/ReadLockEnabled 검사 통합
+
+### DEFER tier 구현 목록
+
+**D-P2 — Log 메서드 지원 (AddLog / CreateLog / ClearLog / FlushLog)**
+- `oracle.py: judge_log` 추가
+- AddLog/FlushLog는 read-only session 허용; CreateLog/ClearLog는 write session 필요
+- Log/LogList UID 정규화
+
+**D-P1 — Re-encryption 컬럼 지원 (`state.py` + `oracle.py`)**
+- Locking column 12 host read-only, invalid request/state pair 거부
+- ReEncryptState 전이 추적 (IDLE → PENDING → 완료)
+- NextKey(col 11) Set은 IDLE 상태에서만 허용
+- AdvKeyMode/VerifyMode reserved enum 거부 (columns 14-15)
+- progress/status columns 17-19 host read-only
+
+**E-P1 — RevertSP/Reset state 처리 개선 (`state.py`)**
+- KeepGlobalRangeKey 파라미터 처리 완성
+- LockingInfo/SP/Admin credential reset 적용
+- DoneOnReset 논리 수정 (반전 버그 수정: DoneOnReset=True → reset 시 Done=False)
+
+**C-P0-1 — 2단계 인증: StartSession + Authenticate (`state.py`)**
+- 세션 오픈 시 권한 없는 상태로 시작
+- Authenticate로 추가 인증 시 authority set 업데이트
+- SyncSession/StartTrustedSession authority 추적
+- Authority.Secure: secure-messaging 전에 trusted session 필요
+
+**A-P1 — SP lifecycle 완전 구현 (Activate / Revert / RevertSP)**
+- Activate 시점에 SID → Admin1 PIN 항상 복사 (is None guard 제거 — spec opal/5.1.1.2)
+- RevertSP KeepGlobalRangeKey 처리
+- SP lifecycle 전이 검증 완성
+
+**C-P0-5 — AddACE / RemoveACE / DeleteMethod (`oracle.py: judge_meta_acl`)**
+- required InvokingID/MethodID UID parameter 검증
+- AccessControl table target 강제
+- write session 필요; DeleteMethod: 4번째 meta-ACL 메서드로 통합
+
+**F-P0 — DataRemoval / TPerInfo (`oracle.py`)**
+- DataRemoval: write session + Admins 인증 필요
+- TPerInfo: read-only, open session만 필요
+
+**F-P0 — AccessControl (N) 컬럼 접근 제한 (`oracle.py` + `spec_docs.py`)**
+- `NOT_READABLE_VIA_GET = {"AccessControl": {1, 2, 4, 8}}` 추가
+- `judge_get`에서 policy check 이전에 (N) 컬럼 체크 삽입 → `auth_error` 반환
+- GetACLACL: Opal SSC에서 ACE_Anybody 기본값 → open session만 있으면 GetACL 가능
+- `judge_meta_acl` GetACL 분기를 `write_required=False`로 수정
+- 합성 케이스: syn_pass_43, syn_fail_43, syn_pass_44, syn_fail_44
+
+**E-P1 — Level 0 Discovery (`normalizer.py` + `oracle.py`)**
+- IF_RECV command → `kind="discovery"` 이벤트로 정규화
+- required feature descriptors: 0x0001(TPer), 0x0002(Locking), 0x0203(Opal SSC V2)
+- TPer sync/streaming bit, Locking supported/media_enc/mbr_shadow 검증
+- LockingEnabled vs locking_sp_active 일치 검증
+- Opal V2 admin/user/comid count 검증 (None 가드 적용)
+- 합성 케이스: syn_pass_45, syn_fail_45(missing v2), syn_fail_46(locking_enabled mismatch), syn_fail_47(too few admins)
+
+검증: public score=100.00, synthetic 84/84 (100%) 유지.
+
+### 외부 리뷰 기반 추가 수정 (2026-05-27)
+
+외부 에이전트의 코드 리뷰에서 지적된 2건의 실제 버그를 수정했다.
+
+**Bug A — 반복 Activate 시 SID→Admin1 재복사 (`state.py: apply_successful_activate`)**
+- spec opal/5.1.1.2: SID→Admin1 복사는 LockingSP가 Inactive에서 처음 Activate될 때만 발생
+- 기존 코드는 `already_active` 여부와 무관하게 매번 복사했음
+- 결과: Activate → Set(C_PIN_SID) → Activate(no-op) 시 Admin1이 새 SID 값으로 잘못 덮어씌워짐
+- 수정: `already_active = state.get("locking_sp_active", False)` 추가 후 `if not already_active:` guard 적용
+
+**Bug B — AccessControl 전체 행 Get 시 (N) 컬럼 체크 우회 (`oracle.py: judge_get`)**
+- `cellblock_columns`가 None/빈 리스트(전체 컬럼 요청)일 때 `set([]) & {1,2,4,8} = {}` 라서 (N) 체크가 발동 안 됨
+- 수정: `explicit_cols = event.get("cellblock_columns")`; 명시 컬럼 없으면 `requested_cols = not_readable`로 설정
+- 전체 행 Get은 (N) 컬럼을 묵시적으로 포함하는 것으로 처리 → `auth_error` 반환
+
+검증: public score=100.00, synthetic 84/84 (100%) 유지.
+
+---
+
 ## v5 수정 이력 (spec 감사 기반, 2026-05-26)
 
 v5 프로젝트(`v5_usereference/`) 전환 후 Opal spec 전체 감사를 통해 발견한 버그 4건.

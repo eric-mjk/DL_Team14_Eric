@@ -11,6 +11,7 @@ from .state import (
 from .spec_docs import (
     COLUMN_LIMITS,
     METHOD_NAMES,
+    NOT_READABLE_VIA_GET,
     max_column_for_family,
     read_only_columns_for_family,
     reencrypt_request_value,
@@ -714,6 +715,16 @@ def invalid_locking_range_update(state, event):
         # spec opal/4.3.1.1: Global Range RangeStart and RangeLength are fixed (whole disk);
         # any attempt to Set them is INVALID_PARAMETER
         return True
+    # spec core/5.7.3.7: RangeStart/RangeLength modification fails when the row is not IDLE.
+    def _reencrypt_idle(rname):
+        current = (state.get("locking_ranges") or {}).get(rname) or {}
+        sv = reencrypt_state_value(current.get("reencrypt_state"))
+        return (sv is None) or sv == 1  # None treated as IDLE
+    if not _reencrypt_idle(range_name):
+        return True
+    # spec core/5.7.2.2.12: if Global Range is not IDLE, no range geometry change is permitted.
+    if not _reencrypt_idle("Global"):
+        return True
     bounds = projected_locking_bounds(state, event)
     if bounds == "invalid":
         return True
@@ -779,6 +790,16 @@ def invalid_locking_reencrypt_enum(event):
         if parsed not in {0, 1}:
             return True
     return False
+
+
+def invalid_data_removal_enum(event):
+    if event.get("object_family") != "DataRemovalMechanism":
+        return False
+    columns = event.get("value_columns") or {}
+    if 1 not in columns:
+        return False
+    val = to_int(columns[1])
+    return val is not None and val not in {0, 1, 2, 5}
 
 
 def byte_table_granularity(state, event):
@@ -1369,6 +1390,22 @@ def judge_start_session(state, event):
             rule_key="start_session",
         )
 
+    _sp_lifecycle = (state.get("sp_lifecycle") or {}).get(sp, "Manufactured")
+    if "Disabled" in _sp_lifecycle:
+        return expected_status_result(
+            event,
+            "error",
+            f"StartSession to {sp} must fail: SP lifecycle is {_sp_lifecycle} (spec core/4.3.6).",
+            rule_key="start_session",
+        )
+    if "Frozen" in _sp_lifecycle:
+        return expected_status_result(
+            event,
+            "error",
+            f"StartSession to {sp} must fail: SP lifecycle is {_sp_lifecycle} (spec core/4.3.7).",
+            rule_key="start_session",
+        )
+
     if sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(
             event,
@@ -1484,12 +1521,25 @@ def judge_authenticate(state, event):
             return pass_result(reason, expected_status="success_false", actual_status=actual, spec_refs=refs)
         return fail_result(reason, expected_status="success_false", actual_status=actual, spec_refs=refs)
 
-    if _auth_operation not in (None, "Password", "Anybody") and event.get("proof") is not None:
-        return expected_status_result(
-            event,
-            "invalid_parameter",
-            f"Authenticate: Proof supplied to non-Password/non-Anybody authority (Operation={_auth_operation}) is INVALID_PARAMETER (spec core/5.3.4.1.14.1).",
-            rule_key="authenticate",
+    if _auth_operation in ("Sign", "SymK", "HMAC"):
+        # Two-step challenge-response: first call returns SUCCESS with a challenge,
+        # second call (with Proof) returns SUCCESS with result True/False.
+        # The SSD must return SUCCESS for either step; INVALID_PARAMETER is never correct
+        # (spec core/5.3.4.1.14).
+        actual = actual_status_class(event)
+        refs = spec_refs_for("authenticate")
+        if actual == "success":
+            return pass_result(
+                f"Authenticate on {_auth_operation} authority (two-step challenge-response): SUCCESS is correct (spec core/5.3.4.1.14).",
+                expected_status="success",
+                actual_status=actual,
+                spec_refs=refs,
+            )
+        return fail_result(
+            f"Authenticate on {_auth_operation} authority (two-step challenge-response): SUCCESS expected but got {actual} (spec core/5.3.4.1.14).",
+            expected_status="success",
+            actual_status=actual,
+            spec_refs=refs,
         )
 
     if not authority_enabled(state, authority):
@@ -1590,8 +1640,44 @@ def judge_get(state, event):
     if target_sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", f"{obj} Get requires an active LockingSP.", rule_key="locking_table")
 
+    # (N) columns: not readable via Get at all, regardless of ACE policy (opal/4.2.6.1).
+    # When no columns are explicitly requested (whole-row Get), treat it as requesting all columns
+    # including the (N) ones — the same block applies.
+    if family in NOT_READABLE_VIA_GET:
+        not_readable = NOT_READABLE_VIA_GET[family]
+        explicit_cols = event.get("cellblock_columns")
+        requested_cols = set(explicit_cols) if explicit_cols else not_readable  # no filter = all cols
+        if requested_cols & not_readable:
+            return expected_status_result(
+                event,
+                "auth_error",
+                f"{family} columns {sorted(requested_cols & not_readable)} have (N) access — "
+                f"not readable via Get (opal/4.2.6.1).",
+                rule_key="access_control",
+                coverage_status="implemented",
+            )
+
+    # spec core/5.3.4.2.2: byte tables vs object tables differ on unauthorized access.
+    # byte tables (MBR, DataStore) return auth_error; object tables omit unauthorized cells and return SUCCESS.
+    # Families with write-only (NOPIN) columns (C_PIN, MediaKey) keep auth_error — those columns cannot be leaked.
+    _CELL_OMIT_FAMILIES = frozenset({"Authority", "ACE", "AccessControl", "SecretProtect"})
+    is_byte_table = family in {"MBR", "DataStore"}
+
     policy_result = policy_status_result(state, event, write=False, reason="Get matched ACE/AccessControl policy.")
     if policy_result is not None:
+        # For object-table Get in cell-omit families, ACE denial means cells are omitted (SUCCESS).
+        # Only override when there IS an open session — no-session auth_error remains correct.
+        if (family in _CELL_OMIT_FAMILIES
+                and policy_result.expected_status == "auth_error"
+                and session_open_for(state, target_sp or state["session"].get("sp"))):
+            return expected_status_result(
+                event,
+                {"success", "auth_error"},
+                policy_result.reason + " (core/5.3.4.2.2: unauthorized object-table cells omitted from result)",
+                rule_key="access_control",
+                policy_source=policy_result.policy_source,
+                coverage_status=policy_result.coverage_status,
+            )
         return policy_result
 
     # Enforce write-only / hidden columns (NOPIN constraint) before family-level fallback.
@@ -1630,20 +1716,17 @@ def judge_get(state, event):
     if family == "Locking":
         public = not protected_columns_requested(event, public_columns={0, 1, 2})
         range_name = event.get("locking_range")
-        user_authorized = (
-            range_name is not None
-            and session_has_locking_user_authority_for_range(state, range_name)
-        )
+        # spec opal/4.3.1.7: Locking range Get ACEs (cols 3–ActiveKey) use BooleanExpr=Admins only.
+        # No 4.3 ACE grants UserN read access to protected Locking columns.
         expected = session_open_for(state, "LockingSP") and (
             public
             or session_has_admin_authority(state, "LockingSP")
-            or user_authorized
         )
         if not expected:
             return expected_status_result(
                 event,
                 "auth_error",
-                "Locking range Get of range/lock/key columns requires an Admin authority or the matching User authority in the LockingSP.",
+                "Locking range Get of range/lock/key columns requires an Admin authority in the LockingSP (opal/4.3.1.7).",
                 rule_key="locking_table",
             )
         # If the GET should succeed, validate returned column values against tracked state.
@@ -1698,10 +1781,13 @@ def judge_get(state, event):
         )
 
     if family in {"Authority", "MediaKey", "ACE", "AccessControl", "SecretProtect", "DataStore"}:
-        expected = session_open_for(state, target_sp) and session_has_admin_authority(state, target_sp)
+        authorized = session_open_for(state, target_sp) and session_has_admin_authority(state, target_sp)
+        # spec core/5.3.4.2.2: cell-omit families return SUCCESS on unauthorized Get (cells omitted).
+        # Excluded: DataStore (byte table), MediaKey (write-only key material in col 3).
+        unauth_status = {"success", "auth_error"} if family in _CELL_OMIT_FAMILIES else "auth_error"
         return expected_status_result(
             event,
-            "success" if expected else "auth_error",
+            "success" if authorized else unauth_status,
             f"{family} Get is protected by template access-control rows.",
             rule_key="access_control",
         )
@@ -1776,6 +1862,16 @@ def judge_set(state, event):
             coverage_status="implemented",
         )
 
+    if invalid_data_removal_enum(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "ActiveDataRemovalMechanism reserved value is not allowed (opal/4.2.6.1).",
+            rule_key="set",
+            policy_source="table_schema",
+            coverage_status="implemented",
+        )
+
     target_sp = object_sp(event) or state["session"].get("sp")
     if target_sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", f"{obj} Set requires an active LockingSP.", rule_key="locking_table")
@@ -1803,27 +1899,13 @@ def judge_set(state, event):
         )
 
     if family == "Locking":
-        # Per opal/4.3.5.2.x, ACE_Locking_Range{N}_Set_RdLocked and
-        # ACE_Locking_Range{N}_Set_WrLocked allow UserN OR Admin1 to set
-        # columns 7 (ReadLocked) and 8 (WriteLocked) on Range{N}.
-        # All other Locking columns (range bounds, key management, etc.)
-        # remain Admin1-only.
-        value_cols = set((event.get("value_columns") or {}).keys())
-        user_lock_cols = value_cols & {7, 8}  # ReadLocked, WriteLocked
-        admin_only_cols = value_cols - {7, 8}
-        range_name = event.get("locking_range")
-        user_authorized = (
-            range_name is not None
-            and bool(user_lock_cols)
-            and not admin_only_cols
-            and session_open_for(state, "LockingSP", write_required=True)
-            and session_has_locking_user_authority_for_range(state, range_name)
-        )
-        expected = authenticated_locking_admin_write(state) or user_authorized
+        # spec opal/4.3.1.7 lines 177-231: all Locking range Set ACEs use BooleanExpr=Admins.
+        # ReadLocked and WriteLocked ACE rows are also Admins-only, not UserN.
+        expected = authenticated_locking_admin_write(state)
         return expected_status_result(
             event,
             "success" if expected else "auth_error",
-            f"{obj} Set requires authenticated Admin1 LockingSP write session, or UserN for ReadLocked/WriteLocked on RangeN.",
+            f"{obj} Set requires an authenticated Admin LockingSP write session (opal/4.3.1.7).",
             rule_key="access_control",
         )
 
@@ -1876,10 +1958,17 @@ def judge_activate(state, event):
     if event.get("object") != "LockingSP":
         return expected_status_result(event, "invalid_parameter", "Activate target must be the LockingSP object.", rule_key="activate")
 
-    if state.get("locking_sp_active"):
-        return expected_status_result(event, "invalid_parameter", "LockingSP is already Manufactured; Activate is only valid from Manufactured-Inactive (opal/5.2.2).", rule_key="activate")
-
+    # spec opal/5.1.1: invocation in any non-inactive lifecycle state shall complete successfully
+    # (no-op) if access control is satisfied — not INVALID_PARAMETER
     expected = session_open_for(state, "AdminSP", write_required=True) and session_has_authority(state, "SID")
+    if state.get("locking_sp_active"):
+        return expected_status_result(
+            event,
+            "success" if expected else "auth_error",
+            "Activate on already-Manufactured LockingSP is a no-op if access control is satisfied (opal/5.1.1).",
+            rule_key="activate",
+        )
+
     return expected_status_result(
         event,
         "success" if expected else "auth_error",
@@ -1891,9 +1980,25 @@ def judge_activate(state, event):
 def judge_revert(state, event):
     if event.get("object_family") != "SP":
         return expected_status_result(event, "invalid_parameter", "Revert target must be an SP object in the AdminSP SP table.", rule_key="revert")
+
+    # spec opal/5.1.2: Revert SHALL NOT be permitted on issued SP objects.
+    # Only AdminSP and LockingSP are known manufactured SPs in this Opal model.
+    target = event.get("object")
+    known_sps = {"AdminSP", "LockingSP"}
+    tracked_manufactured = {
+        sp for sp, lc in state.get("sp_lifecycle", {}).items()
+        if lc and "manufactured" in str(lc).lower()
+    }
+    if target not in (known_sps | tracked_manufactured):
+        return expected_status_result(
+            event,
+            "error",
+            "Revert is not permitted on issued or unknown SP objects (opal/5.1.2).",
+            rule_key="revert",
+        )
+
     # spec opal/5.1.2: Revert requires a Read-Write session to the Admin SP authenticated
     # by SID (normal owner authority) or PSID (Physical Secure ID — Opal PSID Feature Set).
-    # PSID is the physical label credential that can factory-reset without knowing the SID PIN.
     has_sid = session_has_authority(state, "SID")
     has_psid = session_has_authority(state, "PSID")
     expected = session_open_for(state, "AdminSP", write_required=True) and (has_sid or has_psid)
@@ -1910,14 +2015,15 @@ def judge_revert_sp(state, event):
     if sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", "RevertSP on LockingSP requires the LockingSP to be manufactured/active.", rule_key="revert_sp")
 
-    # spec opal/5.1.3.2: KeepGlobalRangeKey=True fails with FAIL if Global Range is both Read and Write Locked
-    if event.get("keep_global_range_key"):
+    # spec opal/5.1.3.2: KeepGlobalRangeKey=True fails with FAIL if Global Range is both Read and Write Locked.
+    # This behavior is defined only for LockingSP; do not apply it to AdminSP RevertSP.
+    if sp == "LockingSP" and event.get("keep_global_range_key"):
         global_range = (state.get("locking_ranges") or {}).get("Global") or {}
         if bool(global_range.get("read_locked")) and bool(global_range.get("write_locked")):
             return expected_status_result(
                 event,
                 "error",
-                "RevertSP with KeepGlobalRangeKey=True fails because Global Range is both Read Locked and Write Locked.",
+                "RevertSP with KeepGlobalRangeKey=True fails because Global Range is both Read Locked and Write Locked (opal/5.1.3.2).",
                 rule_key="revert_sp",
             )
 
@@ -1937,6 +2043,20 @@ def judge_gen_key(state, event):
     # LockingSP must be active for any GenKey that targets it
     if target_sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", "GenKey requires an active LockingSP.", rule_key="gen_key")
+
+    # spec core/5.7.3.7: GenKey on a media key fails when the associated range is not IDLE.
+    # Check this BEFORE the ACE policy (the range state constraint is independent of ACL).
+    key_range = event.get("key_range")
+    if key_range:
+        current = (state.get("locking_ranges") or {}).get(key_range) or {}
+        sv = reencrypt_state_value(current.get("reencrypt_state"))
+        if sv is not None and sv != 1:
+            return expected_status_result(
+                event,
+                "invalid_parameter",
+                f"GenKey on {key_range} key is not permitted while re-encryption is in progress (core/5.7.3.7).",
+                rule_key="gen_key",
+            )
 
     # Check ACE/AccessControl policy before family fallbacks
     policy_result = policy_status_result(state, event, write=True, reason="GenKey matched ACE/AccessControl policy.")
@@ -2128,6 +2248,17 @@ def judge_row_management(state, event):
             f"{method} is a table method for object tables and is not valid on byte tables or object rows.",
             rule_key="row_management",
         )
+    # spec core/5.7.2.2.12: CreateRow/DeleteRow on Locking family fails if Global Range is not IDLE.
+    if event.get("object_family") == "Locking":
+        global_range = (state.get("locking_ranges") or {}).get("Global") or {}
+        sv = reencrypt_state_value(global_range.get("reencrypt_state"))
+        if sv is not None and sv != 1:
+            return expected_status_result(
+                event,
+                "invalid_parameter",
+                f"{method} on Locking table is not permitted while Global Range re-encryption is in progress (core/5.7.2.2.12).",
+                rule_key="row_management",
+            )
     target_sp = object_sp(event) or state["session"].get("sp")
     expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
     return expected_status_result(
@@ -2179,11 +2310,18 @@ def judge_meta_acl(state, event):
         return expected_status_result(event, "invalid_parameter", f"{method} target must be the AccessControl table.", rule_key="meta_acl")
     target_sp = object_sp(event) or state["session"].get("sp")
     write_required = method in {"AddACE", "RemoveACE", "DeleteMethod"}
-    expected = session_open_for(state, target_sp, write_required=write_required) and session_has_authority(state)
+    if method == "GetACL":
+        # GetACL authorization is governed by the row's GetACLACL column, which defaults to
+        # ACE_Anybody in Opal SSC — any open session may call GetACL (opal/4.2.1.6, opal/4.3.1.7).
+        expected = session_open_for(state, target_sp, write_required=False)
+        reason = "GetACL requires an open session; GetACLACL defaults to ACE_Anybody in Opal SSC."
+    else:
+        expected = session_open_for(state, target_sp, write_required=write_required) and session_has_authority(state)
+        reason = f"{method} requires the corresponding meta-ACL authorization on the AccessControl association."
     return expected_status_result(
         event,
         "success" if expected else "auth_error",
-        f"{method} requires the corresponding meta-ACL authorization on the AccessControl association.",
+        reason,
         rule_key="meta_acl",
     )
 
@@ -2225,6 +2363,15 @@ def judge_log_method(state, event):
         if event.get("object_family") != "LogList" or not table_level_invocation(event):
             return expected_status_result(event, "invalid_parameter", "CreateLog target must be the LogList table.", rule_key="log")
         target_sp = object_sp(event) or state["session"].get("sp")
+        # spec core/5.8.4: CreateLog fails with INVALID_PARAMETER if the name already exists.
+        log_name = (event.get("parameters") or {}).get("NewLogTableName")
+        if log_name and str(log_name) in (state.get("log_table_names") or set()):
+            return expected_status_result(
+                event,
+                "invalid_parameter",
+                f"CreateLog duplicate name '{log_name}' must fail with INVALID_PARAMETER (core/5.8.4).",
+                rule_key="log",
+            )
         expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
         return expected_status_result(
             event,
@@ -2235,6 +2382,16 @@ def judge_log_method(state, event):
 
     if event.get("object_family") != "Log" or not table_level_invocation(event):
         return expected_status_result(event, "invalid_parameter", f"{method} target must be a Log table.", rule_key="log")
+    # spec core/5.8.3: AddLog/ClearLog/FlushLog must target a Log table that exists.
+    log_uid = compact_uid(event.get("object_uid"))
+    known_logs = state.get("log_tables") or set()
+    if log_uid not in known_logs:
+        return expected_status_result(
+            event,
+            "error",
+            f"{method} targets log table '{log_uid}' which does not exist (core/5.8.3).",
+            rule_key="log",
+        )
     target_sp = object_sp(event) or state["session"].get("sp")
     write_required = method == "ClearLog"
     expected = session_open_for(state, target_sp, write_required=write_required) and session_has_authority(state)
@@ -2305,10 +2462,64 @@ def find_prior_write(state, lba):
     return None
 
 
+def _mbr_shadow_active(state):
+    mbr = state.get("mbr") or {}
+    return bool(mbr.get("enable")) and not bool(mbr.get("done"))
+
+
+def _mbr_shadow_overlap(state, lba):
+    """Return (overlaps, fully_in) for lba vs. the MBR shadow region [0, shadow_last_lba]."""
+    if lba is None:
+        return False, False
+    mbr = state.get("mbr") or {}
+    shadow_last_lba = mbr.get("table_size_lbas", 0)
+    lba_start, lba_end = lba
+    overlaps = lba_start <= shadow_last_lba
+    fully_in = overlaps and lba_end <= shadow_last_lba
+    return overlaps, fully_in
+
+
 def judge_read(state, event):
     lba = event.get("lba")
-    lock = lock_state_for_lba(state, lba, "read")
     actual = actual_status_class(event)
+
+    # spec opal/4.3.4 Table 230: when MBR shadow is active (Enable=True, Done=False),
+    # reads to shadow LBAs return MBR table data; mixed-region reads return Data Protection Error.
+    if _mbr_shadow_active(state):
+        overlaps, fully_in = _mbr_shadow_overlap(state, lba)
+        if overlaps and not fully_in:
+            # Mixed: read spans shadow and user regions → Data Protection Error
+            if actual == "data_error":
+                return pass_result(
+                    "Mixed MBR-shadow/user read correctly returned Data Protection Error (opal/4.3.4).",
+                    expected_status="data_error",
+                    actual_status=actual,
+                    spec_refs=spec_refs_for("locking_data"),
+                )
+            return fail_result(
+                "Read spanning MBR shadow and user regions must return Data Protection Error (opal/4.3.4).",
+                expected_status="data_error",
+                actual_status=actual,
+                spec_refs=spec_refs_for("locking_data"),
+            )
+        if fully_in:
+            # Fully inside shadow: drive returns MBR table data (not user data)
+            if actual == "data_error":
+                return fail_result(
+                    "Read fully within MBR shadow region must succeed with MBR table data (opal/4.3.4).",
+                    expected_status="data_success",
+                    actual_status=actual,
+                    spec_refs=spec_refs_for("locking_data"),
+                )
+            return pass_result(
+                "Read within active MBR shadow region returned data (MBR table contents, opal/4.3.4).",
+                0.7,
+                expected_status="data_success",
+                actual_status=actual,
+                spec_refs=spec_refs_for("locking_data"),
+            )
+
+    lock = lock_state_for_lba(state, lba, "read")
     if lock.get("mixed") or lock.get("locked"):
         if actual == "data_error" or is_zero_data(event.get("result")):
             return pass_result(
@@ -2358,8 +2569,28 @@ def judge_read(state, event):
 
 def judge_write(state, event):
     lba = event.get("lba")
-    lock = lock_state_for_lba(state, lba, "write")
     actual = actual_status_class(event)
+
+    # spec opal/4.3.4 Table 231: when MBR shadow is active (Enable=True, Done=False),
+    # writes to the shadow region must be rejected.
+    if _mbr_shadow_active(state):
+        overlaps, _ = _mbr_shadow_overlap(state, lba)
+        if overlaps:
+            if actual == "data_error":
+                return pass_result(
+                    "Write to active MBR shadow region was correctly rejected (opal/4.3.4).",
+                    expected_status="data_error",
+                    actual_status=actual,
+                    spec_refs=spec_refs_for("locking_data"),
+                )
+            return fail_result(
+                "Write to active MBR shadow region must be rejected (opal/4.3.4).",
+                expected_status="data_error",
+                actual_status=actual,
+                spec_refs=spec_refs_for("locking_data"),
+            )
+
+    lock = lock_state_for_lba(state, lba, "write")
     if lock.get("mixed") or lock.get("locked"):
         if actual == "data_error":
             return pass_result(
@@ -2430,11 +2661,121 @@ def fallback(event, state):
     )
 
 
+def judge_discovery(state, event):
+    """Judge a Level 0 Discovery response for spec compliance (opal/3.1.1.*)."""
+    TPER_CODE    = 0x0001
+    LOCKING_CODE = 0x0002
+    OPAL_V2_CODE = 0x0203
+
+    features = event.get("features") or {}
+
+    # Required descriptors must all be present.
+    for code, name in ((TPER_CODE, "TPer"), (LOCKING_CODE, "Locking"), (OPAL_V2_CODE, "Opal SSC V2")):
+        if code not in features:
+            return fail_result(
+                f"Level 0 Discovery missing required {name} descriptor (feature 0x{code:04X}) (opal/3.1.1).",
+                0.95, "success", "discovery_missing_descriptor",
+                spec_refs_for("discovery"), "spec", "implemented",
+            )
+
+    # TPer descriptor (opal/3.1.1.2): StreamingSupported=1, SyncSupported=1
+    tper = features[TPER_CODE]
+    sync_ok = to_bool(tper.get("sync_supported") if "sync_supported" in tper else tper.get("sync")) is not False
+    stream_ok = to_bool(tper.get("streaming_supported") if "streaming_supported" in tper else tper.get("streaming")) is not False
+    if not sync_ok:
+        return fail_result(
+            "TPer descriptor SyncSupported must be 1 (opal/3.1.1.2).",
+            0.90, "success", "discovery_tper_sync",
+            spec_refs_for("discovery"), "spec", "implemented",
+        )
+    if not stream_ok:
+        return fail_result(
+            "TPer descriptor StreamingSupported must be 1 (opal/3.1.1.2).",
+            0.90, "success", "discovery_tper_streaming",
+            spec_refs_for("discovery"), "spec", "implemented",
+        )
+
+    # Locking descriptor (opal/3.1.1.3): LockingSupported=1, MediaEncryption=1, MBRShadowingNotSupported=0
+    locking = features[LOCKING_CODE]
+    supported = to_bool(locking.get("locking_supported") if "locking_supported" in locking else locking.get("supported"))
+    media_enc = to_bool(locking.get("media_encryption"))
+    mbr_shadow_not = to_bool(locking.get("mbr_shadowing_not_supported") if "mbr_shadowing_not_supported" in locking else locking.get("mbr_not_supported"))
+    if supported is False:
+        return fail_result(
+            "Locking descriptor LockingSupported must be 1 (opal/3.1.1.3).",
+            0.90, "success", "discovery_locking",
+            spec_refs_for("discovery"), "spec", "implemented",
+        )
+    if media_enc is False:
+        return fail_result(
+            "Locking descriptor MediaEncryption must be 1 (opal/3.1.1.3).",
+            0.90, "success", "discovery_locking",
+            spec_refs_for("discovery"), "spec", "implemented",
+        )
+    if mbr_shadow_not is True:
+        return fail_result(
+            "Locking descriptor MBRShadowingNotSupported must be 0 (opal/3.1.1.3).",
+            0.90, "success", "discovery_locking",
+            spec_refs_for("discovery"), "spec", "implemented",
+        )
+
+    # LockingEnabled must match SP lifecycle state (opal/3.1.1.3.1).
+    locking_enabled_reported = to_bool(
+        locking.get("locking_enabled") if "locking_enabled" in locking else locking.get("enabled")
+    )
+    locking_sp_active = state.get("locking_sp_active", False)
+    if locking_enabled_reported is not None:
+        if locking_sp_active and not locking_enabled_reported:
+            return fail_result(
+                "LockingEnabled must be 1 when LockingSP is active (opal/3.1.1.3.1).",
+                0.90, "success", "discovery_locking_enabled",
+                spec_refs_for("discovery"), "spec", "implemented",
+            )
+        if not locking_sp_active and locking_enabled_reported:
+            return fail_result(
+                "LockingEnabled must be 0 when LockingSP is inactive (opal/3.1.1.3.1).",
+                0.90, "success", "discovery_locking_enabled",
+                spec_refs_for("discovery"), "spec", "implemented",
+            )
+
+    # Opal SSC V2 descriptor (opal/3.1.1.5): >=4 admins, >=8 users, >=1 ComID
+    opal = features[OPAL_V2_CODE]
+    num_admins = to_int(opal.get("number_of_admins_supported") or opal.get("admin_auth_count") or opal.get("num_admins"))
+    num_users = to_int(opal.get("number_of_users_supported") or opal.get("user_auth_count") or opal.get("num_users"))
+    num_comids = to_int(opal.get("num_comids") or opal.get("number_of_comids"))
+    if num_admins is not None and num_admins < 4:
+        return fail_result(
+            f"Opal SSC V2 must support at least 4 Locking SP admin authorities; reported {num_admins} (opal/3.1.1.5).",
+            0.90, "success", "discovery_opal_v2",
+            spec_refs_for("discovery"), "spec", "implemented",
+        )
+    if num_users is not None and num_users < 8:
+        return fail_result(
+            f"Opal SSC V2 must support at least 8 Locking SP user authorities; reported {num_users} (opal/3.1.1.5).",
+            0.90, "success", "discovery_opal_v2",
+            spec_refs_for("discovery"), "spec", "implemented",
+        )
+    if num_comids is not None and num_comids < 1:
+        return fail_result(
+            "Opal SSC V2 must have at least one ComID (opal/3.1.1.5).",
+            0.90, "success", "discovery_opal_v2",
+            spec_refs_for("discovery"), "spec", "implemented",
+        )
+
+    return pass_result(
+        "Level 0 Discovery response is compliant: required descriptors present and field values valid (opal/3.1.1).",
+        0.95, "success", "success",
+        spec_refs_for("discovery"), "spec", "implemented",
+    )
+
+
 def judge_final(state, event):
     if event["kind"] == "read":
         return judge_read(state, event)
     if event["kind"] == "write":
         return judge_write(state, event)
+    if event["kind"] == "discovery":
+        return judge_discovery(state, event)
     if event["kind"] != "method":
         return fallback(event, state)
 

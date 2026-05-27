@@ -219,11 +219,36 @@ COLUMN_NAME_NUMBERS.update({
         "logto": 14,
     },
     "DataStore": {"uid": 0, "name": 1, "commonname": 2, "startrow": 3, "endrow": 4, "value": 5},
+    "TPerInfo": {
+        "uid": 0, "name": 1, "commonname": 2, "guid": 3, "protocolversion": 4,
+        "firmwareversion": 5, "generation": 6, "spaceforissuance": 7,
+        "programmaticresetenable": 8,
+    },
+    "DataRemovalMechanism": {
+        "uid": 0,
+        "activedataremovalmechanism": 1,
+    },
     "SP": {"uid": 0, "name": 1, "org": 2, "owningauthority": 2, "effectiveauth": 3, "dateofissue": 4, "bytes": 5, "lifecycle": 6, "lifecyclestate": 6, "enabled": 6, "frozen": 7},
     "MethodID": {"uid": 0, "name": 1, "commonname": 2, "templateid": 3},
     "Table": {"uid": 0, "name": 1, "commonname": 2, "templateid": 3, "kind": 4, "column": 5, "numcolumns": 6, "rows": 7, "rowsfree": 8, "rowbytes": 9, "lastid": 10, "minsize": 11, "maxsize": 12, "mandatorywritegranularity": 13, "recommendedaccessgranularity": 14},
     "Column": {"uid": 0, "name": 1, "commonname": 2, "type": 3, "isunique": 4, "columnnumber": 5, "transactional": 6, "next": 7, "attributeflags": 8},
-    "SecretProtect": {"uid": 0, "name": 1, "commonname": 2, "protect": 3, "columnnumber": 3},
+    "SecretProtect": {"uid": 0, "table": 1, "columnnumber": 2, "protectmechanisms": 3},
+    "ClockTime": {
+        "uid": 0,
+        "name": 1,
+        "commonname": 2,
+        "havehigh": 3,
+        "highbywhom": 4,
+        "highinitialtimer": 5,
+        "highlag": 6,
+        "havelow": 7,
+        "lowbywhom": 8,
+        "lowsettime": 9,
+        "lowinitialtimer": 10,
+        "lowlag": 11,
+        "monotonicbase": 12,
+        "monotonicreserve": 13,
+    },
     "Log": {"uid": 0, "prev": 1, "next": 2, "session": 3, "signingauthority": 4, "signingauthname": 5, "exchangeauthority": 6, "exchangeauthname": 7, "monotonictime": 8, "exacttime": 9, "timekind": 10, "logkind": 11, "name": 12, "data": 13},
     "LogList": {"uid": 0, "name": 1, "commonname": 2, "log": 3, "serial": 4, "highsecurity": 5},
 })
@@ -239,7 +264,7 @@ READ_ONLY_COLUMNS = {
     "Authority": {0, 1, 2, 3},
     "ACE": {0, 1, 2},
     "AccessControl": set(COLUMN_NAME_NUMBERS["AccessControl"].values()),
-    "Locking": {0, 1, 2, 10, 12, 17, 18, 19},
+    "Locking": {0, 1, 2, 12, 17, 18, 19},
     "LockingInfo": set(COLUMN_NAME_NUMBERS["LockingInfo"].values()),
     "MBRControl": {0},
     "MediaKey": {0, 1, 2},
@@ -247,9 +272,18 @@ READ_ONLY_COLUMNS = {
     "MethodID": set(COLUMN_NAME_NUMBERS["MethodID"].values()),
     "Table": {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14},
     "Column": set(COLUMN_NAME_NUMBERS["Column"].values()),
-    "SecretProtect": {0, 1, 2},
+    "SecretProtect": {0},
+    "ClockTime": set(range(14)),
     "Log": set(COLUMN_NAME_NUMBERS["Log"].values()),
     "LogList": {0, 3, 4},
+    "TPerInfo": {0, 1, 2, 3, 4, 5, 6, 7},  # only ProgrammaticResetEnable (col 8) is writable
+    "DataRemovalMechanism": {0},  # only ActiveDataRemovalMechanism (col 1) is writable
+}
+
+# Columns that have (N) access for the Get method — not readable via Get at all, regardless of ACE policy.
+# ACL (4) is only accessible via GetACL. InvokingID (1), MethodID (2), GetACLACL (8) are never readable.
+NOT_READABLE_VIA_GET = {
+    "AccessControl": {1, 2, 4, 8},
 }
 
 WRITE_ONLY_COLUMNS = {
@@ -294,6 +328,7 @@ RULE_REFERENCES = {
     "access_control": ("opal/4.2.1.5", "opal/4.2.1.6", "opal/4.3.1.6", "opal/4.3.1.7", "core/3.4.2", "core/3.4.2.1", "core/3.4.2.2", "core/3.4.2.3", "core/5.3.2.7", "core/5.3.2.9", "core/5.3.4.3"),
     "status": ("core/3.3.4.1", "core/5.1.5", "core/5.1.5.1", "core/5.1.5.2", "core/5.1.5.3", "core/5.1.5.4", "core/5.1.5.5", "core/5.1.5.6", "core/5.1.5.7", "core/5.1.5.8", "core/5.1.5.9", "core/5.1.5.10", "core/5.1.5.11", "core/5.1.5.12", "core/5.1.5.13", "core/5.1.5.14", "core/5.1.5.15", "core/5.1.5.16", "core/5.3.3"),
     "fallback": ("core/5.3.3", "core/5.3.4"),
+    "discovery": ("opal/3.1.1", "opal/3.1.1.2", "opal/3.1.1.3", "opal/3.1.1.3.1", "opal/3.1.1.5"),
 }
 
 

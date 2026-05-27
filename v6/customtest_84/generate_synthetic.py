@@ -47,6 +47,14 @@ RANGE1        = "0000080200030001"
 K_AES_GLOBAL  = "0000080500000001"
 K_AES_RANGE1  = "0000080500030001"
 MBRCONTROL    = "0000080300000001"
+LOG_TABLE_UID        = "0000000100000A01"  # default pre-existing Log table (template UID)
+LOG_LIST_UID         = "0000000100000A02"  # LogList table (for CreateLog)
+LOG_FAKE_UID         = "0000000100000A05"  # non-existent log UID (never created)
+ACCESS_CONTROL_TABLE_UID = "0000000100000007"  # AccessControl table (target for AddACE/RemoveACE)
+ACE_ANYBODY_UID      = "0000000800000001"  # ACE_Anybody: BooleanExpr=Anybody, columns=all
+SET_METHOD_UID       = "0000000600000017"  # Method UID for Set
+TPERINFO_UID         = "0000020100030001"  # TPerInfo object (AdminSP)
+DATARMV_UID          = "0000110100000001"  # DataRemovalMechanism object (AdminSP)
 
 # ---- Low-level step builders ---------------------------------------------
 
@@ -192,6 +200,31 @@ def set_locking(range_uid: str, values: dict, status: str = "SUCCESS") -> dict:
 
 def set_authority(auth_uid: str, enabled: bool, status: str = "SUCCESS") -> dict:
     return make_step("Set", auth_uid, {}, {"Values": [{"5": int(enabled)}]}, status)
+
+
+def set_authority_operation(auth_uid: str, operation: str, status: str = "SUCCESS") -> dict:
+    """Set an authority's Operation column (column 9) to a given value."""
+    return make_step("Set", auth_uid, {}, {"Values": [{9: operation}]}, status)
+
+
+def authenticate_step(authority_uid: str, proof: str | None = None,
+                      auth_result: bool | None = None, status: str = "SUCCESS") -> dict:
+    """Authenticate step inside an open session."""
+    optional: dict = {"Authority": authority_uid}
+    if proof is not None:
+        optional["Proof"] = proof
+    rv: dict = {}
+    if auth_result is not None:
+        rv["Result"] = auth_result
+    return make_step("Authenticate", "0000000000000001", {}, optional, status,
+                     return_values=rv, invoking_name="Session Manager UID")
+
+
+def add_ace_step(invoking_uid: str, method_uid: str, ace_uid: str, status: str = "SUCCESS") -> dict:
+    """AddACE on the AccessControl table: grants ace_uid authority over invoking_uid.method_uid."""
+    return make_step("AddACE", ACCESS_CONTROL_TABLE_UID, {},
+                     {"InvokingID": invoking_uid, "MethodID": method_uid, "ACE": ace_uid},
+                     status, invoking_name="AccessControl")
 
 
 def gen_key(target_uid: str, status: str = "SUCCESS", invoking_name: str = "K_AES_256") -> dict:
@@ -1042,6 +1075,252 @@ def tc_activate_wrong_uid_fail() -> tuple[list[dict], str]:
     return steps, "fail"
 
 
+# ---- D-P2: Log table existence and CreateLog uniqueness ------------------
+
+def tc_addlog_default_exists_pass() -> tuple[list[dict], str]:
+    """AddLog to default pre-existing Log table → SUCCESS is PASS (table exists)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    # Final step is AddLog; no end_session so it is the judged event.
+    steps = setup_tper(msid, sid) + [
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        make_step("AddLog", LOG_TABLE_UID, {"LogEntryName": "entry1", "Data": "test entry"}, {}, "SUCCESS", invoking_name="Log"),
+    ]
+    return steps, "pass"
+
+
+def tc_addlog_nonexistent_fail() -> tuple[list[dict], str]:
+    """AddLog to non-existent log UID → SUCCESS is FAIL (table was never created)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    # LOG_FAKE_UID is template-level (starts "00000001") but not seeded in log_tables.
+    steps = setup_tper(msid, sid) + [
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        make_step("AddLog", LOG_FAKE_UID, {"LogEntryName": "entry1", "Data": "test entry"}, {}, "SUCCESS", invoking_name="Log"),
+    ]
+    return steps, "fail"
+
+
+def tc_createlog_duplicate_fail() -> tuple[list[dict], str]:
+    """CreateLog same name twice; second returns SUCCESS → FAIL (duplicate not rejected)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    # First CreateLog is a prefix event (succeeds). Final step is the duplicate attempt.
+    steps = setup_tper(msid, sid) + [
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        make_step("CreateLog", LOG_LIST_UID, {"NewLogTableName": "AuditLog"}, {}, "SUCCESS", invoking_name="LogList"),
+        end_session(),
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        make_step("CreateLog", LOG_LIST_UID, {"NewLogTableName": "AuditLog"}, {}, "SUCCESS", invoking_name="LogList"),
+    ]
+    return steps, "fail"
+
+
+def tc_createlog_duplicate_pass() -> tuple[list[dict], str]:
+    """CreateLog same name twice; second returns INVALID_PARAMETER → PASS (correctly rejected)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    steps = setup_tper(msid, sid) + [
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        make_step("CreateLog", LOG_LIST_UID, {"NewLogTableName": "AuditLog"}, {}, "SUCCESS", invoking_name="LogList"),
+        end_session(),
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        make_step("CreateLog", LOG_LIST_UID, {"NewLogTableName": "AuditLog"}, {}, "INVALID_PARAMETER", invoking_name="LogList"),
+    ]
+    return steps, "pass"
+
+
+# ---- D-P1: Re-encryption range geometry and key restrictions -------------
+
+def tc_reencrypt_set_geometry_fail() -> tuple[list[dict], str]:
+    """Set RangeStart while re-encryption pending → SUCCESS = FAIL (non-IDLE range)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    admin1 = "ADMIN1PIN"
+    steps = setup_tper(msid, sid) + activate_locking_sp(sid) + [
+        # Move Range1 to non-IDLE state: ReEncryptRequest=1 (StartReq) from IDLE → Pending
+        start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=admin1),
+        set_locking(RANGE1, {13: 1}),   # col 13 = ReEncryptRequest=1 → triggers Pending state
+        end_session(),
+        # Final step: try to change geometry while non-IDLE — drive incorrectly succeeds
+        start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=admin1),
+        set_locking(RANGE1, {3: 100}),  # col 3 = RangeStart — forbidden while non-IDLE
+    ]
+    return steps, "fail"
+
+
+def tc_reencrypt_genkey_fail() -> tuple[list[dict], str]:
+    """GenKey on a range key while re-encryption pending → SUCCESS = FAIL."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    admin1 = "ADMIN1PIN"
+    steps = setup_tper(msid, sid) + activate_locking_sp(sid) + [
+        start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=admin1),
+        set_locking(RANGE1, {13: 1}),   # ReEncryptRequest=1 → Range1 non-IDLE
+        end_session(),
+        start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=admin1),
+        gen_key(K_AES_RANGE1, status="SUCCESS"),  # GenKey while non-IDLE — must fail
+    ]
+    return steps, "fail"
+
+
+def tc_reencrypt_idle_set_ok() -> tuple[list[dict], str]:
+    """Set RangeStart when range is IDLE → SUCCESS = PASS (normal case)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    admin1 = "ADMIN1PIN"
+    steps = setup_tper(msid, sid) + activate_locking_sp(sid) + [
+        start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=admin1),
+        set_locking(RANGE1, {3: 100, 4: 1024}),  # RangeStart + RangeLength — IDLE → allowed
+    ]
+    return steps, "pass"
+
+
+# ---- E-P1: Reset events must abort sessions ------------------------------
+
+def _power_cycle_step() -> dict:
+    """Synthesize a Power Cycle command event."""
+    return {
+        "index": _next_idx(),
+        "input": {"command": "Power Cycle", "args": {}},
+        "output": {"result": "pass"},
+    }
+
+
+def tc_reset_session_survives_fail() -> tuple[list[dict], str]:
+    """Open session → Power Cycle → Get that requires the session returns SUCCESS = FAIL."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    steps = setup_tper(msid, sid) + [
+        # Open AdminSP session as SID
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        # Power cycle — must abort the session
+        _power_cycle_step(),
+        # Get on C_PIN_MSID: only needs open AdminSP session (Anybody).
+        # After reset the session is gone; drive incorrectly returns SUCCESS.
+        make_step("Get", C_PIN_MSID, {"Cellblock": [{"startColumn": 0}, {"endColumn": 2}]}, {}, "SUCCESS", invoking_name="C_PIN"),
+    ]
+    return steps, "fail"
+
+
+def tc_reset_session_aborted_pass() -> tuple[list[dict], str]:
+    """Open session → Power Cycle → Get returns NOT_AUTHORIZED = PASS (session correctly aborted)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    steps = setup_tper(msid, sid) + [
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        _power_cycle_step(),
+        make_step("Get", C_PIN_MSID, {"Cellblock": [{"startColumn": 0}, {"endColumn": 2}]}, {}, "NOT_AUTHORIZED", invoking_name="C_PIN"),
+    ]
+    return steps, "pass"
+
+
+# ---- C-P0-1: Two-step Authenticate (Sign/SymK/HMAC challenge-response) ----
+
+def tc_sign_auth_proof_pass() -> tuple[list[dict], str]:
+    """Sign authority Authenticate with proof returning SUCCESS → PASS (core/5.3.4.1.14)."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP),
+        # Enable User1 and set operation=Sign (columns 5=enabled, 9=operation)
+        make_step("Set", USER1_UID, {}, {"Values": [{5: 1, 9: "Sign"}]}, "SUCCESS"),
+        # Final: second-step Authenticate, proof provided, SSD returns SUCCESS with result=True
+        authenticate_step(USER1_UID, proof="testproof", auth_result=True, status="SUCCESS"),
+    ]
+    return steps, "pass"
+
+
+def tc_sign_auth_proof_inv_param_fail() -> tuple[list[dict], str]:
+    """Sign authority Authenticate with proof returning INVALID_PARAMETER → FAIL (core/5.3.4.1.14)."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP),
+        make_step("Set", USER1_UID, {}, {"Values": [{5: 1, 9: "Sign"}]}, "SUCCESS"),
+        authenticate_step(USER1_UID, proof="testproof", auth_result=None, status="INVALID_PARAMETER"),
+    ]
+    return steps, "fail"
+
+
+# ---- A-P1: SP Disabled/Frozen lifecycle state blocks StartSession -----------
+
+def tc_disabled_sp_session_fail() -> tuple[list[dict], str]:
+    """Disable LockingSP then StartSession to it returns SUCCESS → FAIL (core/4.3.6)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    steps = setup_tper(msid, sid) + activate_locking_sp(sid) + [
+        # In AdminSP, set LockingSP row column 6 (lifecycle/enabled) = 0 (disabled)
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        make_step("Set", LOCKING_SP, {}, {"Values": [{6: 0}]}, "SUCCESS", invoking_name="SP"),
+        end_session(),
+        # StartSession to disabled LockingSP → SSD incorrectly returns SUCCESS → FAIL
+        start_session(LOCKING_SP, status="SUCCESS"),
+    ]
+    return steps, "fail"
+
+
+def tc_disabled_sp_session_pass() -> tuple[list[dict], str]:
+    """Disable LockingSP then StartSession to it returns SP_DISABLED → PASS (core/4.3.6)."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    steps = setup_tper(msid, sid) + activate_locking_sp(sid) + [
+        start_session(ADMIN_SP, authority=SID_UID, challenge=sid),
+        make_step("Set", LOCKING_SP, {}, {"Values": [{6: 0}]}, "SUCCESS", invoking_name="SP"),
+        end_session(),
+        # StartSession to disabled LockingSP → SSD correctly returns SP_DISABLED → PASS
+        start_session(LOCKING_SP, status="SP_DISABLED"),
+    ]
+    return steps, "pass"
+
+
+# ---- C-P0-5: AddACE/RemoveACE/DeleteMethod ACL state mutations ---------------
+
+def tc_add_ace_grants_anyone_set_pass() -> tuple[list[dict], str]:
+    """AddACE(Range1, Set, ACE_Anybody) then unauthenticated Set → SUCCESS = PASS."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    admin1 = "ADMIN1PIN"
+    steps = setup_tper(msid, sid) + activate_locking_sp(sid) + [
+        # Admin1 grants Anybody access to Range1 Set
+        start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=admin1),
+        add_ace_step(RANGE1, SET_METHOD_UID, ACE_ANYBODY_UID),
+        end_session(),
+        # Unauthenticated write session to LockingSP
+        start_session(LOCKING_SP),
+        # Final: unauthenticated Set on Range1 → SUCCESS (ACE_Anybody grants access) → PASS
+        set_locking(RANGE1, {5: 1}),
+    ]
+    return steps, "pass"
+
+
+def tc_add_ace_grants_anyone_set_fail() -> tuple[list[dict], str]:
+    """AddACE(Range1, Set, ACE_Anybody) then unauthenticated Set returns AUTH_ERROR → FAIL."""
+    _reset_idx()
+    msid = "MSIDVAL"
+    sid = "SIDVAL"
+    admin1 = "ADMIN1PIN"
+    steps = setup_tper(msid, sid) + activate_locking_sp(sid) + [
+        start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=admin1),
+        add_ace_step(RANGE1, SET_METHOD_UID, ACE_ANYBODY_UID),
+        end_session(),
+        start_session(LOCKING_SP),
+        # Final: AUTH_ERROR even though ACE_Anybody should authorize → FAIL
+        set_locking(RANGE1, {5: 1}, status="NOT_AUTHORIZED"),
+    ]
+    return steps, "fail"
+
+
 def tc_read_locked_range_fail() -> tuple[list[dict], str]:
     """ReadLocked range read returns data (not error) → FAIL."""
     _reset_idx()
@@ -1070,6 +1349,191 @@ def tc_read_locked_range_pass() -> tuple[list[dict], str]:
         read_step("0-1023", "DATA_PROTECTION_ERROR", interface_result="FAIL"),
     ]
     return steps, "pass"
+
+
+# ---- F-P0: TPerInfo ProgrammaticResetEnable column is SID-only writable -----
+
+def tc_tperinfo_set_admin1_fail() -> tuple[list[dict], str]:
+    """Admin1 (not SID) Set on TPerInfo col-8 returning SUCCESS → FAIL (SID only per opal/4.2.3.1)."""
+    _reset_idx()
+    steps = [
+        # AdminSP session as Admin1 (not SID)
+        start_session(ADMIN_SP, authority=ADMIN1_UID, challenge="ADMIN1PIN"),
+        # Final: Set TPerInfo column 8 (ProgrammaticResetEnable) → SUCCESS
+        make_step("Set", TPERINFO_UID, {}, {"Values": [{8: True}]}, "SUCCESS", invoking_name="TPerInfo"),
+    ]
+    return steps, "fail"
+
+
+def tc_tperinfo_set_admin1_pass() -> tuple[list[dict], str]:
+    """Admin1 Set on TPerInfo col-8 returning NOT_AUTHORIZED → PASS (SID only; Admin1 correctly rejected)."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP, authority=ADMIN1_UID, challenge="ADMIN1PIN"),
+        make_step("Set", TPERINFO_UID, {}, {"Values": [{8: True}]}, "NOT_AUTHORIZED", invoking_name="TPerInfo"),
+    ]
+    return steps, "pass"
+
+
+def tc_datarmv_reserved_enum_fail() -> tuple[list[dict], str]:
+    """Set DataRemovalMechanism col-1 with reserved value 3 returning SUCCESS → FAIL (opal/4.2.6.1)."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP, authority=SID_UID, challenge="SIDPIN"),
+        # Final: Set ActiveDataRemovalMechanism = 3 (reserved) → SUCCESS (wrong; should be INVALID_PARAMETER)
+        make_step("Set", DATARMV_UID, {}, {"Values": [{1: 3}]}, "SUCCESS", invoking_name="DataRemovalMechanism"),
+    ]
+    return steps, "fail"
+
+
+def tc_datarmv_reserved_enum_pass() -> tuple[list[dict], str]:
+    """Set DataRemovalMechanism col-1 with reserved value 3 returning INVALID_PARAMETER → PASS (opal/4.2.6.1)."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP, authority=SID_UID, challenge="SIDPIN"),
+        # Final: INVALID_PARAMETER for reserved value 3 → correct SSD behavior → PASS
+        make_step("Set", DATARMV_UID, {}, {"Values": [{1: 3}]}, "INVALID_PARAMETER",
+                  invoking_name="DataRemovalMechanism"),
+    ]
+    return steps, "pass"
+
+
+# ---- F-P0: AccessControl (N) columns (InvokingID=1, MethodID=2, ACL=4, GetACLACL=8) ----
+
+AC_ROW_UID = "0000000700000001"  # a generic AccessControl row UID (normalizes to "AccessControl")
+GET_METHOD_UID = "0000000600000006"  # Method UID for Get
+
+
+def tc_access_control_get_n_col_pass() -> tuple[list[dict], str]:
+    """Get on AccessControl row with ACL column (col 4, (N)) returns NOT_AUTHORIZED → PASS."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP),
+        # Final: Get on AccessControl row requesting ACL col (4) — (N) means not readable via Get
+        make_step(
+            "Get", AC_ROW_UID,
+            {"Cellblock": [{"startColumn": 4}, {"endColumn": 4}]},
+            {},
+            "NOT_AUTHORIZED",
+            invoking_name="AccessControl",
+        ),
+    ]
+    return steps, "pass"
+
+
+def tc_access_control_get_n_col_fail() -> tuple[list[dict], str]:
+    """Get on AccessControl row with ACL column (col 4, (N)) returns SUCCESS → FAIL."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP),
+        # Final: Get on AccessControl row requesting ACL col (4) — device incorrectly returns SUCCESS
+        make_step(
+            "Get", AC_ROW_UID,
+            {"Cellblock": [{"startColumn": 4}, {"endColumn": 4}]},
+            {},
+            "SUCCESS",
+            invoking_name="AccessControl",
+        ),
+    ]
+    return steps, "fail"
+
+
+def tc_getacl_unauth_pass() -> tuple[list[dict], str]:
+    """GetACL in unauthenticated AdminSP session returns SUCCESS → PASS (GetACLACL=ACE_Anybody)."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP),
+        # Final: GetACL — GetACLACL defaults to ACE_Anybody so any open session may call it
+        make_step(
+            "GetACL", ACCESS_CONTROL_TABLE_UID,
+            {},
+            {"InvokingID": RANGE1, "MethodID": SET_METHOD_UID},
+            "SUCCESS",
+            invoking_name="AccessControl",
+        ),
+    ]
+    return steps, "pass"
+
+
+def tc_getacl_unauth_fail() -> tuple[list[dict], str]:
+    """GetACL in unauthenticated AdminSP session returns NOT_AUTHORIZED → FAIL (wrongly rejected)."""
+    _reset_idx()
+    steps = [
+        start_session(ADMIN_SP),
+        # Final: GetACL returns NOT_AUTHORIZED — wrong; device should allow it via ACE_Anybody
+        make_step(
+            "GetACL", ACCESS_CONTROL_TABLE_UID,
+            {},
+            {"InvokingID": RANGE1, "MethodID": SET_METHOD_UID},
+            "NOT_AUTHORIZED",
+            invoking_name="AccessControl",
+        ),
+    ]
+    return steps, "fail"
+
+
+# ---- E-P1: Level 0 Discovery (IF_RECV) normalization and judging ----------
+
+def _compliant_features(locking_enabled: int = 0, num_admins: int = 4, num_users: int = 8) -> list:
+    return [
+        {"feature_code": 1, "sync_supported": 1, "streaming_supported": 1},
+        {
+            "feature_code": 2, "locking_supported": 1, "locking_enabled": locking_enabled,
+            "locked": 0, "media_encryption": 1, "mbr_shadowing_not_supported": 0,
+            "mbr_enabled": 0, "mbr_done": 0,
+        },
+        {"feature_code": 515, "num_comids": 1, "num_admins": num_admins, "num_users": num_users},
+    ]
+
+
+def discovery_step(features: list, result: str = "pass") -> dict:
+    return {
+        "index": _next_idx(),
+        "input": {
+            "command": "IF_RECV",
+            "args": {"SecurityProtocol": "01", "SecurityProtocolSpecific": "0001"},
+        },
+        "output": {
+            "command": "IF_RECV",
+            "result": result,
+            "discovery": {"features": features},
+        },
+    }
+
+
+def tc_discovery_compliant_pass() -> tuple[list[dict], str]:
+    """Compliant Level 0 Discovery (inactive LockingSP) returns pass → PASS."""
+    _reset_idx()
+    steps = [discovery_step(_compliant_features(locking_enabled=0))]
+    return steps, "pass"
+
+
+def tc_discovery_missing_opal_v2_fail() -> tuple[list[dict], str]:
+    """Level 0 Discovery missing Opal SSC V2 descriptor → FAIL (opal/3.1.1)."""
+    _reset_idx()
+    features = [
+        {"feature_code": 1, "sync_supported": 1, "streaming_supported": 1},
+        {"feature_code": 2, "locking_supported": 1, "locking_enabled": 0, "media_encryption": 1},
+        # Opal SSC V2 (code 515) intentionally absent
+    ]
+    steps = [discovery_step(features)]
+    return steps, "fail"
+
+
+def tc_discovery_locking_enabled_before_activation_fail() -> tuple[list[dict], str]:
+    """Discovery reports LockingEnabled=1 but LockingSP not yet activated → FAIL (opal/3.1.1.3.1)."""
+    _reset_idx()
+    steps = [
+        discovery_step(_compliant_features(locking_enabled=1)),
+    ]
+    return steps, "fail"
+
+
+def tc_discovery_too_few_admins_fail() -> tuple[list[dict], str]:
+    """Discovery reports only 2 admin authorities (< 4 required) → FAIL (opal/3.1.1.5)."""
+    _reset_idx()
+    steps = [discovery_step(_compliant_features(num_admins=2))]
+    return steps, "fail"
 
 
 # ---- All scenarios -------------------------------------------------------
@@ -1137,6 +1601,43 @@ SCENARIOS = [
     ("syn_fail_31_activate_no_sid",           tc_activate_with_wrong_authority_fail),
     ("syn_pass_31_activate_rejected",         tc_activate_with_wrong_authority_pass),
     ("syn_fail_32_activate_wrong_uid",        tc_activate_wrong_uid_fail),
+    # D-P2: Log table existence and CreateLog uniqueness
+    ("syn_pass_33_addlog_default",            tc_addlog_default_exists_pass),
+    ("syn_fail_33_addlog_nonexistent",        tc_addlog_nonexistent_fail),
+    ("syn_fail_34_createlog_duplicate",       tc_createlog_duplicate_fail),
+    ("syn_pass_34_createlog_duplicate_ok",    tc_createlog_duplicate_pass),
+    # D-P1: Re-encryption range geometry and key restrictions
+    ("syn_fail_35_reencrypt_set_geometry",    tc_reencrypt_set_geometry_fail),
+    ("syn_fail_36_reencrypt_genkey",          tc_reencrypt_genkey_fail),
+    ("syn_pass_35_reencrypt_idle_set",        tc_reencrypt_idle_set_ok),
+    # E-P1: Reset events must abort sessions
+    ("syn_fail_37_reset_session_survives",    tc_reset_session_survives_fail),
+    ("syn_pass_37_reset_session_aborted",     tc_reset_session_aborted_pass),
+    # C-P0-1: Two-step Authenticate (Sign/SymK/HMAC challenge-response)
+    ("syn_pass_38_sign_auth_proof",           tc_sign_auth_proof_pass),
+    ("syn_fail_38_sign_auth_inv_param",       tc_sign_auth_proof_inv_param_fail),
+    # A-P1: SP Disabled lifecycle blocks StartSession
+    ("syn_fail_39_disabled_sp_session",       tc_disabled_sp_session_fail),
+    ("syn_pass_39_disabled_sp_session",       tc_disabled_sp_session_pass),
+    # C-P0-5: AddACE/RemoveACE/DeleteMethod ACL state mutations
+    ("syn_pass_40_addace_anybody_set",        tc_add_ace_grants_anyone_set_pass),
+    ("syn_fail_40_addace_anybody_set",        tc_add_ace_grants_anyone_set_fail),
+    # F-P0: TPerInfo ProgrammaticResetEnable is SID-only writable
+    ("syn_fail_41_tperinfo_admin1_set",       tc_tperinfo_set_admin1_fail),
+    ("syn_pass_41_tperinfo_admin1_rejected",  tc_tperinfo_set_admin1_pass),
+    # F-P0: DataRemovalMechanism ActiveDataRemovalMechanism reserved enum validation
+    ("syn_fail_42_datarmv_reserved_enum",     tc_datarmv_reserved_enum_fail),
+    ("syn_pass_42_datarmv_reserved_enum",     tc_datarmv_reserved_enum_pass),
+    # F-P0: AccessControl (N) columns — not readable via Get; GetACL uses GetACLACL (ACE_Anybody)
+    ("syn_pass_43_ac_get_n_col",              tc_access_control_get_n_col_pass),
+    ("syn_fail_43_ac_get_n_col",              tc_access_control_get_n_col_fail),
+    ("syn_pass_44_getacl_unauth",             tc_getacl_unauth_pass),
+    ("syn_fail_44_getacl_unauth",             tc_getacl_unauth_fail),
+    # E-P1: Level 0 Discovery normalization and judging
+    ("syn_pass_45_discovery_compliant",       tc_discovery_compliant_pass),
+    ("syn_fail_45_discovery_missing_v2",      tc_discovery_missing_opal_v2_fail),
+    ("syn_fail_46_discovery_locking_enabled", tc_discovery_locking_enabled_before_activation_fail),
+    ("syn_fail_47_discovery_few_admins",      tc_discovery_too_few_admins_fail),
 ]
 
 

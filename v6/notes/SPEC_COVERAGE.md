@@ -60,10 +60,12 @@ Current indexed corpus:
 | Item | Count |
 |---|---:|
 | Indexed spec sections | 1376 |
-| Method groups | 16 |
-| Table schemas | 14 |
+| Method groups | 56 |
+| Table schemas | 19 |
 | AccessControl rows | 114 |
 | Preconfiguration tables | 50 |
+| Rule reference keys | 36 |
+| Column name schemas | 19 |
 
 ## What `spec_coverage.md` Is
 
@@ -88,21 +90,21 @@ Current coverage status:
 
 | Coverage status | Count | Meaning |
 |---|---:|---|
-| `implemented` | 97 | A code rule or rule group directly references this section. |
-| `partial` | 142 | Some behavior is represented, but the full section is broader than current rules. |
-| `indexed_only` | 222 | Parsed and classified, but no executable rule currently points to it. |
-| `schema_metadata_only` | 346 | Table/column/schema metadata, useful for normalization and validation. |
+| `implemented` | 240 | A code rule or rule group directly references this section. |
+| `partial` | 103 | Some behavior is represented, but the full section is broader than current rules. |
+| `indexed_only` | 212 | Parsed and classified, but no executable rule currently points to it. |
+| `schema_metadata_only` | 343 | Table/column/schema metadata, useful for normalization and validation. |
 | `transport_layer_only` | 174 | Transport/packet details mostly outside final-response judging. |
 | `type_definition_only` | 129 | Data type/encoding definitions rather than direct behavior rules. |
-| `non_executable` | 166 | Background, explanatory, or reference text not implemented as a rule. |
-| `vendor_optional` | 100 | Optional/vendor-specific behavior not generalized into the oracle. |
+| `non_executable` | 94 | Background, explanatory, or reference text not implemented as a rule. |
+| `vendor_optional` | 81 | Optional/vendor-specific behavior not generalized into the oracle. |
 
 Additional checks:
 
 | Check | Current value |
 |---|---:|
-| Normative gaps | 171 |
-| Implemented refs | 97 |
+| Normative gaps | ~120 |
+| Implemented refs | 240 |
 | Rules without refs | 0 |
 | Unresolved rule refs | 0 |
 | All sections classified | true |
@@ -151,7 +153,7 @@ of these rule groups, so changes can be regression-tested without regenerating
 the dataset:
 
 ```bash
-cd v5_usereference/customtest_57
+cd v6/customtest_57
 python generate_synthetic.py --check-only
 ```
 

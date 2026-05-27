@@ -37,6 +37,8 @@ LOCKING_TABLE_UIDS = {
     "0000000100000A01": "Log",
     "0000000100000A02": "LogList",
     "0000000100001001": "DataStore",
+    "0000000100000201": "TPerInfo",
+    "0000000100001101": "DataRemovalMechanism",
 }
 
 SID_AUTHORITY_UID = "0000000900000006"
@@ -289,6 +291,10 @@ def canonical_object(name, uid):
         return "DataStore"
     if uid and uid.startswith("0000001D"):
         return "SecretProtect"
+    if uid and uid.startswith("00000201"):
+        return "TPerInfo"
+    if uid and uid.startswith("00001101"):
+        return "DataRemovalMechanism"
 
     if name:
         normalized_name = str(name).strip().replace(" ", "_")
@@ -370,7 +376,11 @@ def object_family(uid, obj):
         return "DataStore"
     if uid and uid.startswith("0000001D"):
         return "SecretProtect"
-    if obj in {"ACE", "AccessControl", "Column", "MethodID", "Table", "SPInfo", "SPTemplates", "SecretProtect", "DataStore", "MBR", "ClockTime", "Log", "LogList"}:
+    if uid and uid.startswith("00000201"):
+        return "TPerInfo"
+    if uid and uid.startswith("00001101"):
+        return "DataRemovalMechanism"
+    if obj in {"ACE", "AccessControl", "Column", "MethodID", "Table", "SPInfo", "SPTemplates", "SecretProtect", "DataStore", "MBR", "ClockTime", "Log", "LogList", "TPerInfo", "DataRemovalMechanism"}:
         return obj
     if obj and obj.endswith("_Key"):
         return "MediaKey"
@@ -561,6 +571,55 @@ def byte_length(value):
     return None
 
 
+def _parse_feature_code(val):
+    """Return feature code as int, accepting int or hex/decimal string."""
+    if isinstance(val, int):
+        return val
+    if isinstance(val, str):
+        s = val.strip()
+        try:
+            return int(s, 16) if s.startswith("0x") or s.startswith("0X") else int(s)
+        except ValueError:
+            pass
+    return None
+
+
+def _normalize_discovery(record, index, inp, out, in_args, disc_raw):
+    """Normalize an IF_RECV Level 0 Discovery record into a 'discovery' kind event."""
+    # disc_raw may be a dict with a 'features' list, or directly a list of feature dicts.
+    if isinstance(disc_raw, dict):
+        features_raw = disc_raw.get("features") or []
+    elif isinstance(disc_raw, list):
+        features_raw = disc_raw
+    else:
+        features_raw = []
+
+    features = {}
+    for feat in features_raw:
+        if not isinstance(feat, dict):
+            continue
+        code = _parse_feature_code(
+            feat.get("feature_code") or feat.get("feature") or feat.get("code")
+        )
+        if code is not None:
+            features[code] = feat
+
+    result = out.get("result") if isinstance(out, dict) else None
+    result_ok = str(result or "").strip().lower() in {"pass", "success", "ok", ""}
+    return {
+        "index": index,
+        "kind": "discovery",
+        "command": inp.get("command"),
+        "result": result,
+        "result_ok": result_ok,
+        "features": features,
+        "input_status": normalize_status(inp.get("status_codes")),
+        "output_status": normalize_status(out.get("status_codes")),
+        "status": status_from(inp, out),
+        "raw": record,
+    }
+
+
 def normalize_record(record):
     inp = record.get("input", {}) if isinstance(record, dict) else {}
     out = record.get("output", {}) if isinstance(record, dict) else {}
@@ -645,6 +704,15 @@ def normalize_record(record):
     command = inp.get("command")
     in_args = inp.get("args") if isinstance(inp.get("args"), dict) else {}
     out_args = out.get("args") if isinstance(out.get("args"), dict) else {}
+
+    # Level 0 Discovery: IF_RECV with a "discovery" payload in the output.
+    if str(command or "").strip().upper() in {"IF_RECV", "IFRECEIVE", "IF-RECV"}:
+        disc = out.get("discovery") if isinstance(out, dict) else None
+        if disc is None:
+            disc = out.get("descriptors") if isinstance(out, dict) else None
+        if disc is not None:
+            return _normalize_discovery(record, index, inp, out, in_args, disc)
+
     kind = str(command).strip().lower() if command else "unknown"
     if kind not in {"read", "write"}:
         kind = "command"

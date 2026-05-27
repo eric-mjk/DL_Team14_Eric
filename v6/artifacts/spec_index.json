@@ -1442,7 +1442,9 @@
       },
       "0000000800030003": {
         "boolean_expr": "SID",
-        "columns": null,
+        "columns": [
+          8
+        ],
         "name": "ACE_TPerInfo_Set_ProgrammaticResetEnable",
         "source": "opal/4.2.1.6",
         "uid": "0000000800030003"
@@ -1689,7 +1691,9 @@
       },
       "0000000800050001": {
         "boolean_expr": "Admins OR SID",
-        "columns": null,
+        "columns": [
+          1
+        ],
         "name": "ACE_DataRemovalMechanism_Set_ActiveDataRemovalMechanism",
         "source": "opal/4.2.1.6",
         "uid": "0000000800050001"
@@ -1770,6 +1774,7 @@
         "is_class": false,
         "name": "Admin1",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": "0000000900010001"
       },
@@ -1781,6 +1786,7 @@
         "is_class": false,
         "name": "Admin2",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": "0000000900010002"
       },
@@ -1792,6 +1798,7 @@
         "is_class": false,
         "name": "Admin3",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": "0000000900010003"
       },
@@ -1803,6 +1810,7 @@
         "is_class": false,
         "name": "Admin4",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": "0000000900010004"
       },
@@ -1814,6 +1822,7 @@
         "is_class": false,
         "name": "AdminXX",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.2.1.7",
         "uid": null
       },
@@ -1825,6 +1834,7 @@
         "is_class": false,
         "name": "AdminXXXX",
         "operation": "",
+        "secure": "",
         "source": "opal/4.3.1.8",
         "uid": null
       },
@@ -1836,6 +1846,7 @@
         "is_class": true,
         "name": "Admins",
         "operation": "None",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": "0000000900000002"
       },
@@ -1847,6 +1858,7 @@
         "is_class": false,
         "name": "Anybody",
         "operation": "None",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": "0000000900000001"
       },
@@ -1858,6 +1870,7 @@
         "is_class": true,
         "name": "Makers",
         "operation": "None",
+        "secure": "None",
         "source": "opal/4.2.1.7",
         "uid": "0000000900000003"
       },
@@ -1869,6 +1882,7 @@
         "is_class": false,
         "name": "Admin1",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.2.1.7",
         "uid": "0000000900000201"
       },
@@ -1880,6 +1894,7 @@
         "is_class": false,
         "name": "SID",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.2.1.7",
         "uid": "0000000900000006"
       },
@@ -1891,6 +1906,7 @@
         "is_class": false,
         "name": "User1",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": "0000000900030001"
       },
@@ -1902,6 +1918,7 @@
         "is_class": false,
         "name": "UserMMMM",
         "operation": "Password",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": null
       },
@@ -1913,6 +1930,7 @@
         "is_class": true,
         "name": "Users",
         "operation": "None",
+        "secure": "None",
         "source": "opal/4.3.1.8",
         "uid": "0000000900030000"
       }
@@ -1931,11 +1949,11 @@
   "category_counts": {
     "auth/access control": 301,
     "data command behavior": 54,
-    "method rule": 94,
-    "non-executable reference": 235,
-    "normative reference": 109,
+    "method rule": 223,
+    "non-executable reference": 174,
+    "normative reference": 104,
     "state transition": 59,
-    "table schema": 524
+    "table schema": 461
   },
   "column_name_numbers": {
     "ACE": {
@@ -2004,6 +2022,22 @@
       "trylimit": 5,
       "uid": 0
     },
+    "ClockTime": {
+      "commonname": 2,
+      "havehigh": 3,
+      "havelow": 7,
+      "highbywhom": 4,
+      "highinitialtimer": 5,
+      "highlag": 6,
+      "lowbywhom": 8,
+      "lowinitialtimer": 10,
+      "lowlag": 11,
+      "lowsettime": 9,
+      "monotonicbase": 12,
+      "monotonicreserve": 13,
+      "name": 1,
+      "uid": 0
+    },
     "Column": {
       "attributeflags": 8,
       "columnnumber": 5,
@@ -2013,6 +2047,10 @@
       "next": 7,
       "transactional": 6,
       "type": 3,
+      "uid": 0
+    },
+    "DataRemovalMechanism": {
+      "activedataremovalmechanism": 1,
       "uid": 0
     },
     "DataStore": {
@@ -2060,6 +2098,30 @@
       "uid": 0,
       "version": 2
     },
+    "Log": {
+      "data": 13,
+      "exacttime": 9,
+      "exchangeauthname": 7,
+      "exchangeauthority": 6,
+      "logkind": 11,
+      "monotonictime": 8,
+      "name": 12,
+      "next": 2,
+      "prev": 1,
+      "session": 3,
+      "signingauthname": 5,
+      "signingauthority": 4,
+      "timekind": 10,
+      "uid": 0
+    },
+    "LogList": {
+      "commonname": 2,
+      "highsecurity": 5,
+      "log": 3,
+      "name": 1,
+      "serial": 4,
+      "uid": 0
+    },
     "MBRControl": {
       "done": 2,
       "doneonreset": 3,
@@ -2094,10 +2156,20 @@
       "uid": 0
     },
     "SecretProtect": {
-      "columnnumber": 3,
+      "columnnumber": 2,
+      "protectmechanisms": 3,
+      "table": 1,
+      "uid": 0
+    },
+    "TPerInfo": {
       "commonname": 2,
+      "firmwareversion": 5,
+      "generation": 6,
+      "guid": 3,
       "name": 1,
-      "protect": 3,
+      "programmaticresetenable": 8,
+      "protocolversion": 4,
+      "spaceforissuance": 7,
       "uid": 0
     },
     "Table": {
@@ -2130,6 +2202,25 @@
       "opal/5.2.2.2.1",
       "opal/5.2.2.2"
     ],
+    "AddACE": [
+      "core/5.1.5.2",
+      "core/5.3.2.7.11",
+      "core/5.3.2.7.5",
+      "core/5.3.2.7.7",
+      "core/5.3.3.14.4.1",
+      "core/5.3.3.14.4",
+      "core/5.3.3.14",
+      "core/5.3.4.3.1",
+      "core/5.3.4.6"
+    ],
+    "AddLog": [
+      "core/3.2.1.2",
+      "core/5.8.3.1.3.1",
+      "core/5.8.3.1.3",
+      "core/5.8.3.1",
+      "core/5.8.3.4",
+      "core/5.8.4.1"
+    ],
     "Authenticate": [
       "core/3.4.2.2",
       "core/4.5.2",
@@ -2152,6 +2243,12 @@
       "opal/4.3.1.5",
       "opal/4.3.1.6"
     ],
+    "ClearLog": [
+      "core/5.8.3.3.1.1",
+      "core/5.8.3.3.1",
+      "core/5.8.3.3",
+      "core/5.8.4.6"
+    ],
     "CloseSession": [
       "core/3.3.10",
       "core/3.3.4.7.5",
@@ -2163,7 +2260,160 @@
       "opal/5.1.2",
       "opal/5.1.3"
     ],
+    "CreateLog": [
+      "core/5.3.4.2.3",
+      "core/5.8.2.1",
+      "core/5.8.3.2.7",
+      "core/5.8.3.2"
+    ],
+    "CreateRow": [
+      "core/3.2.5.1",
+      "core/5.1.1",
+      "core/5.1.5.11",
+      "core/5.3.2.5.5",
+      "core/5.3.2.5",
+      "core/5.3.2.7",
+      "core/5.3.3.4.2.1",
+      "core/5.3.3.4.2",
+      "core/5.3.3.4",
+      "core/5.3.4.2.1",
+      "core/5.3.4.2.3",
+      "core/5.3.4.6",
+      "core/5.7.3.3",
+      "core/5.8.3.2",
+      "opal/4.3.5.2.1.1",
+      "opal/4.3.5.2.1.2"
+    ],
+    "CreateTable": [
+      "core/5.1.3.2",
+      "core/5.1.5.8",
+      "core/5.3.3.2.9",
+      "core/5.3.3.2",
+      "core/5.3.4.2.1",
+      "core/5.3.4.2.3",
+      "core/5.3.4.6"
+    ],
+    "Decrypt": [
+      "core/5.3.2.15.7",
+      "core/5.3.2.16.7",
+      "core/5.4.2.3.4",
+      "core/5.6.4.4.1.2",
+      "core/5.6.4.4.2",
+      "core/5.6.4.4.3",
+      "core/5.6.4.4.4",
+      "core/5.6.4.4",
+      "core/5.6.4.5.1.1",
+      "core/5.6.5.8",
+      "core/5.6.5.9"
+    ],
+    "DecryptFinalize": [
+      "core/5.6.4.4",
+      "core/5.6.4.5.1",
+      "core/5.6.4.5",
+      "core/5.6.5.8",
+      "core/5.6.5.9"
+    ],
+    "DecryptInit": [
+      "core/5.3.2.15.7",
+      "core/5.3.2.16.7",
+      "core/5.6.4.3.2.1",
+      "core/5.6.4.3",
+      "core/5.6.4.4",
+      "core/5.6.5.8",
+      "core/5.6.5.9"
+    ],
+    "Delete": [
+      "core/4.3",
+      "core/4.5.2",
+      "core/4.5.5",
+      "core/5.3.2.5",
+      "core/5.3.2.7",
+      "core/5.3.3.3.1.1",
+      "core/5.3.3.3.1",
+      "core/5.3.3.3",
+      "core/5.3.4.2.4",
+      "core/5.3.4.2.5",
+      "core/5.3.4.4",
+      "core/5.3.4.6",
+      "core/5.4.4.2",
+      "core/5.6.5.9",
+      "core/5.7.2.2.12",
+      "core/5.7.3.8",
+      "core/5.8.4.4",
+      "core/5.8.4.6"
+    ],
+    "DeleteMethod": [
+      "core/5.1.5.2",
+      "core/5.3.2.7.10",
+      "core/5.3.2.7.14",
+      "core/5.3.2.7",
+      "core/5.3.3.11.3.1",
+      "core/5.3.3.11.3",
+      "core/5.3.3.11",
+      "core/5.3.4.3.1",
+      "core/5.3.4.6"
+    ],
+    "DeleteRow": [
+      "core/3.2.5.1",
+      "core/5.3.2.5",
+      "core/5.3.2.7",
+      "core/5.3.3.5.2.1",
+      "core/5.3.3.5.2",
+      "core/5.3.3.5",
+      "core/5.3.4.2.4",
+      "core/5.3.4.2.5",
+      "core/5.3.4.6",
+      "core/5.7.2.2.12",
+      "core/5.7.3.8"
+    ],
+    "DeleteSP": [
+      "core/4.3",
+      "core/4.5.2",
+      "core/5.3.3.1.1.1",
+      "core/5.3.3.1.1",
+      "core/5.3.3.1",
+      "core/5.3.4.4",
+      "core/5.3.4.6",
+      "core/5.3.5.1"
+    ],
+    "Encrypt": [
+      "core/3.2.1.2",
+      "core/5.3.2.15.7",
+      "core/5.3.2.16.7",
+      "core/5.3.3.17",
+      "core/5.4.2.3.4",
+      "core/5.6.4.7.1.2",
+      "core/5.6.4.7.2",
+      "core/5.6.4.7.3",
+      "core/5.6.4.7.4",
+      "core/5.6.4.7",
+      "core/5.6.4.8.1.1",
+      "core/5.6.5.7",
+      "core/5.6.5.9"
+    ],
+    "EncryptFinalize": [
+      "core/5.6.4.7",
+      "core/5.6.4.8.1",
+      "core/5.6.4.8",
+      "core/5.6.5.7",
+      "core/5.6.5.9"
+    ],
+    "EncryptInit": [
+      "core/5.3.2.15.7",
+      "core/5.3.2.16.7",
+      "core/5.6.4.6.2.1",
+      "core/5.6.4.6.2",
+      "core/5.6.4.6",
+      "core/5.6.4.7",
+      "core/5.6.5.7",
+      "core/5.6.5.9"
+    ],
     "EndSession": [],
+    "FlushLog": [
+      "core/5.8.3.4.1.1",
+      "core/5.8.3.4.1",
+      "core/5.8.3.4"
+    ],
     "GenKey": [
       "core/5.3.2.12.5",
       "core/5.3.3.16.2",
@@ -2232,6 +2482,28 @@
       "opal/5.3.1.2.2",
       "opal/5.3.1.2"
     ],
+    "GetACL": [
+      "core/5.1.5.2",
+      "core/5.3.2.7.13",
+      "core/5.3.2.7.5",
+      "core/5.3.2.7.9",
+      "core/5.3.3.13.3",
+      "core/5.3.3.13",
+      "core/5.3.4.3.1",
+      "opal/4.2.1.4",
+      "opal/4.2.1.5",
+      "opal/4.3.1.5",
+      "opal/4.3.1.6"
+    ],
+    "GetClock": [
+      "core/5.1.4.2.4",
+      "core/5.5.2",
+      "core/5.5.4.1.1",
+      "core/5.5.4.1",
+      "core/5.5.5.2",
+      "core/5.5.5.4",
+      "core/5.5.5.7"
+    ],
     "GetFreeRows": [
       "core/5.3.3.10",
       "core/5.3.4.2.1"
@@ -2239,6 +2511,184 @@
     "GetFreeSpace": [
       "core/5.3.3.9.1",
       "core/5.3.3.9"
+    ],
+    "GetPackage": [
+      "core/5.1.4.2.12",
+      "core/5.3.3.17.6",
+      "core/5.3.3.17",
+      "core/5.3.3.18.1",
+      "core/5.3.4.5"
+    ],
+    "HMAC": [
+      "core/1.3",
+      "core/3.3.7.1.4",
+      "core/5.1.3.8",
+      "core/5.1.4.2.12",
+      "core/5.3.2.10",
+      "core/5.3.2.26.4",
+      "core/5.3.2.26.5",
+      "core/5.3.2.27.4",
+      "core/5.3.2.27.5",
+      "core/5.3.2.28.4",
+      "core/5.3.2.28.5",
+      "core/5.3.2.29.4",
+      "core/5.3.2.29.5",
+      "core/5.3.4.1.10",
+      "core/5.3.4.1.14",
+      "core/5.3.4.1.3",
+      "core/5.3.4.1.8",
+      "core/5.3.4.1.9",
+      "core/5.6.1",
+      "core/5.6.2",
+      "core/5.6.3.1.5",
+      "core/5.6.3.1.6",
+      "core/5.6.3.1",
+      "core/5.6.3.2.5",
+      "core/5.6.3.2.6",
+      "core/5.6.3.2",
+      "core/5.6.3.3.5",
+      "core/5.6.3.3.6",
+      "core/5.6.3.3",
+      "core/5.6.3.4.5",
+      "core/5.6.3.4.6",
+      "core/5.6.3.4",
+      "core/5.6.4.13.2",
+      "core/5.6.4.14.1",
+      "core/5.6.4.14.3",
+      "core/5.6.4.14",
+      "core/5.6.4.15.1.1",
+      "core/5.6.4.15.1.2",
+      "core/5.6.4.15.1",
+      "core/5.6.4.15.2.1",
+      "core/5.6.4.15.2",
+      "core/5.6.4.15.3",
+      "core/5.6.4.15",
+      "core/5.6.4.16.1.1",
+      "core/5.6.4.16.2",
+      "core/5.6.4.16",
+      "core/5.6.5.3",
+      "core/5.6.5.9"
+    ],
+    "HMACFinalize": [
+      "core/5.6.3.1",
+      "core/5.6.3.2",
+      "core/5.6.3.3",
+      "core/5.6.3.4",
+      "core/5.6.4.13.2",
+      "core/5.6.4.15",
+      "core/5.6.4.16.1",
+      "core/5.6.4.16.2",
+      "core/5.6.4.16",
+      "core/5.6.5.3",
+      "core/5.6.5.9"
+    ],
+    "HMACInit": [
+      "core/5.6.3.1",
+      "core/5.6.3.2",
+      "core/5.6.3.3",
+      "core/5.6.3.4",
+      "core/5.6.4.14.2.1",
+      "core/5.6.4.14.2",
+      "core/5.6.4.14",
+      "core/5.6.4.15.2.1",
+      "core/5.6.4.15",
+      "core/5.6.5.3",
+      "core/5.6.5.9"
+    ],
+    "Hash": [
+      "core/1.3",
+      "core/3.2.1.1",
+      "core/5.1.4.2.12",
+      "core/5.3.2.13.13",
+      "core/5.3.2.13",
+      "core/5.3.2.14.13",
+      "core/5.3.2.14",
+      "core/5.3.2.15.8",
+      "core/5.3.2.15",
+      "core/5.3.2.16.8",
+      "core/5.3.2.16",
+      "core/5.3.2.17.12",
+      "core/5.3.2.17",
+      "core/5.3.2.18.12",
+      "core/5.3.2.18",
+      "core/5.3.2.19.12",
+      "core/5.3.2.19",
+      "core/5.3.2.20",
+      "core/5.3.2.21.12",
+      "core/5.3.2.21",
+      "core/5.3.2.22.12",
+      "core/5.3.2.22",
+      "core/5.3.2.23.15",
+      "core/5.3.2.23",
+      "core/5.3.2.24.13",
+      "core/5.3.2.24",
+      "core/5.3.2.25.15",
+      "core/5.3.2.25",
+      "core/5.3.2.26.5",
+      "core/5.3.2.26",
+      "core/5.3.2.27.5",
+      "core/5.3.2.27",
+      "core/5.3.2.28.5",
+      "core/5.3.2.28",
+      "core/5.3.2.29.5",
+      "core/5.3.2.29",
+      "core/5.3.4.1.8",
+      "core/5.4.2.3.4",
+      "core/5.6.3.1.5",
+      "core/5.6.3.1",
+      "core/5.6.3.2.5",
+      "core/5.6.3.2",
+      "core/5.6.3.3.5",
+      "core/5.6.3.3",
+      "core/5.6.3.4.5",
+      "core/5.6.3.4",
+      "core/5.6.4.11.1",
+      "core/5.6.4.11",
+      "core/5.6.4.12.1.2",
+      "core/5.6.4.12.2.1",
+      "core/5.6.4.12.2",
+      "core/5.6.4.12.3",
+      "core/5.6.4.12",
+      "core/5.6.4.13.1.1",
+      "core/5.6.4.13",
+      "core/5.6.4.16",
+      "core/5.6.5.2",
+      "core/5.6.5.5.2",
+      "core/5.6.5.6.2",
+      "core/5.6.5.9"
+    ],
+    "HashFinalize": [
+      "core/5.6.3.1",
+      "core/5.6.3.2",
+      "core/5.6.3.3",
+      "core/5.6.3.4",
+      "core/5.6.4.12",
+      "core/5.6.4.13.1",
+      "core/5.6.4.13",
+      "core/5.6.5.2",
+      "core/5.6.5.9"
+    ],
+    "HashInit": [
+      "core/5.6.3.1",
+      "core/5.6.3.2",
+      "core/5.6.3.3",
+      "core/5.6.3.4",
+      "core/5.6.4.11.2.1",
+      "core/5.6.4.11.2",
+      "core/5.6.4.11",
+      "core/5.6.4.12.2.1",
+      "core/5.6.4.12",
+      "core/5.6.4.13.1.1",
+      "core/5.6.4.13",
+      "core/5.6.4.16.1.1",
+      "core/5.6.5.2",
+      "core/5.6.5.9"
+    ],
+    "IncrementCounter": [
+      "core/5.5.4.7.1",
+      "core/5.5.4.7",
+      "core/5.5.5.2",
+      "core/5.5.5.9"
     ],
     "Next": [
       "core/5.3.2.4.8",
@@ -2305,6 +2755,25 @@
       "opal/4.3.1.5",
       "opal/4.3.1.6",
       "opal/4.3.4.1"
+    ],
+    "RemoveACE": [
+      "core/5.1.5.2",
+      "core/5.3.2.7.12",
+      "core/5.3.2.7.5",
+      "core/5.3.2.7.8",
+      "core/5.3.3.15.4.1",
+      "core/5.3.3.15.4",
+      "core/5.3.3.15",
+      "core/5.3.4.3.1",
+      "core/5.3.4.6"
+    ],
+    "ResetClock": [
+      "core/5.5.4.2.1.1",
+      "core/5.5.4.2.1",
+      "core/5.5.4.2",
+      "core/5.5.5.4",
+      "core/5.5.5.8",
+      "core/5.5.5.9"
     ],
     "Revert": [
       "opal/3.1.1.5",
@@ -2420,6 +2889,90 @@
       "opal/5.3.1.2",
       "opal/5.3"
     ],
+    "SetClockHigh": [
+      "core/5.5.2",
+      "core/5.5.3.1.4",
+      "core/5.5.3.1.5",
+      "core/5.5.3.1.6",
+      "core/5.5.4.3.2.1",
+      "core/5.5.4.3.2",
+      "core/5.5.4.3.3",
+      "core/5.5.4.3",
+      "core/5.5.5.1.1",
+      "core/5.5.5.1.2",
+      "core/5.5.5.3",
+      "core/5.5.5.9"
+    ],
+    "SetClockLow": [
+      "core/5.5.2",
+      "core/5.5.3.1.10",
+      "core/5.5.3.1.11",
+      "core/5.5.3.1.9",
+      "core/5.5.4.5.2.1",
+      "core/5.5.4.5.2",
+      "core/5.5.4.5.3",
+      "core/5.5.4.5",
+      "core/5.5.5.1.1",
+      "core/5.5.5.1.3",
+      "core/5.5.5.3",
+      "core/5.5.5.9"
+    ],
+    "SetLagHigh": [
+      "core/5.5.4.3.3",
+      "core/5.5.4.4.2",
+      "core/5.5.4.4",
+      "core/5.5.5.1.2"
+    ],
+    "SetLagLow": [
+      "core/5.5.4.5.3",
+      "core/5.5.4.6.2.1",
+      "core/5.5.4.6.2",
+      "core/5.5.4.6",
+      "core/5.5.5.1.3"
+    ],
+    "SetPackage": [
+      "core/5.1.4.2.12",
+      "core/5.3.3.18.4",
+      "core/5.3.3.18",
+      "core/5.3.4.1.1.2",
+      "core/5.3.4.5"
+    ],
+    "Sign": [
+      "core/3.2.2.1",
+      "core/3.2.2.3.1.1",
+      "core/3.2.2.3.1.2",
+      "core/3.2.2.3.1.3",
+      "core/3.2.2.3.1.4",
+      "core/5.1.3.8",
+      "core/5.3.2.10",
+      "core/5.3.3.17",
+      "core/5.3.4.1.14",
+      "core/5.3.4.1.2",
+      "core/5.3.4.1.3",
+      "core/5.4.2.3.4",
+      "core/5.4.4.4",
+      "core/5.6.3.1.4",
+      "core/5.6.3.1.6",
+      "core/5.6.3.1",
+      "core/5.6.3.2.4",
+      "core/5.6.3.2.6",
+      "core/5.6.3.2",
+      "core/5.6.3.3.4",
+      "core/5.6.3.3.6",
+      "core/5.6.3.3",
+      "core/5.6.3.4.4",
+      "core/5.6.3.4.6",
+      "core/5.6.3.4",
+      "core/5.6.4.9.1.2",
+      "core/5.6.4.9.1",
+      "core/5.6.4.9.2",
+      "core/5.6.4.9.3",
+      "core/5.6.4.9.4",
+      "core/5.6.4.9",
+      "core/5.6.5.5.1",
+      "core/5.6.5.5.2",
+      "core/5.6.5.9"
+    ],
     "StartSession": [
       "core/3.3.4.5",
       "core/3.3.7.1.2",
@@ -2453,6 +3006,27 @@
       "core/5.3.4.2.3",
       "opal/4.1.1.2"
     ],
+    "StartTrustedSession": [
+      "core/3.3.4.5",
+      "core/3.3.7.1.2",
+      "core/3.3.7.1.4",
+      "core/5.2.3.3.1",
+      "core/5.2.3.3.2",
+      "core/5.2.3.3",
+      "core/5.2.3.4",
+      "core/5.3.2.10",
+      "core/5.3.4.1.10",
+      "core/5.3.4.1.5",
+      "core/5.3.4.1.7",
+      "core/5.3.4.1.9"
+    ],
+    "Stir": [
+      "core/5.6.4.2.1.1",
+      "core/5.6.4.2.1.2",
+      "core/5.6.4.2.3.1",
+      "core/5.6.4.2.3",
+      "core/5.6.4.2"
+    ],
     "SyncSession": [
       "core/3.3.4.5",
       "core/3.3.7.1.2",
@@ -2483,6 +3057,57 @@
       "core/5.3.4.1.7",
       "core/5.3.4.1.9",
       "opal/4.1.1.3"
+    ],
+    "SyncTrustedSession": [
+      "core/3.3.4.5",
+      "core/3.3.7.1.2",
+      "core/3.3.7.1.4",
+      "core/3.3.7.1.6",
+      "core/5.2.3.3",
+      "core/5.2.3.4.1",
+      "core/5.2.3.4.2",
+      "core/5.2.3.4",
+      "core/5.3.2.10",
+      "core/5.3.4.1.10",
+      "core/5.3.4.1.5",
+      "core/5.3.4.1.7",
+      "core/5.3.4.1.9"
+    ],
+    "Verify": [
+      "core/5.1.3.45",
+      "core/5.1.3.98",
+      "core/5.4.2.3.4",
+      "core/5.6.3.1.4",
+      "core/5.6.3.1.6",
+      "core/5.6.3.1",
+      "core/5.6.3.2.4",
+      "core/5.6.3.2.6",
+      "core/5.6.3.2",
+      "core/5.6.3.3.4",
+      "core/5.6.3.3.6",
+      "core/5.6.3.3",
+      "core/5.6.3.4.4",
+      "core/5.6.3.4.6",
+      "core/5.6.3.4",
+      "core/5.6.4.10",
+      "core/5.6.5.6.1",
+      "core/5.6.5.6.2",
+      "core/5.6.5.9",
+      "core/5.7.2.2.16"
+    ],
+    "XOR": [
+      "core/5.6.1",
+      "core/5.6.4.17.1",
+      "core/5.6.4.17.2",
+      "core/5.6.4.17.3.1",
+      "core/5.6.4.17.3.2",
+      "core/5.6.4.17.4",
+      "core/5.6.4.17.5.1",
+      "core/5.6.4.17.5",
+      "core/5.6.4.17",
+      "core/5.6.5.1",
+      "core/5.6.5.4",
+      "core/5.6.5.9"
     ]
   },
   "preconfiguration_tables": [
@@ -8244,8 +8869,12 @@
     ],
     "activate": [
       "opal/5.1.1",
+      "opal/5.1.1.1",
       "opal/5.1.1.2",
-      "opal/5.2.2.2.1"
+      "opal/5.2.1.2",
+      "opal/5.2.2.2",
+      "opal/5.2.2.2.1",
+      "core/4.1"
     ],
     "authenticate": [
       "core/5.3.3.12",
@@ -8260,9 +8889,28 @@
       "core/5.3.4.1.3",
       "core/5.3.4.1.4"
     ],
+    "clock": [
+      "core/5.5.3.1",
+      "core/5.5.4.1",
+      "core/5.5.4.1.2",
+      "core/5.5.4.2",
+      "core/5.5.4.2.2",
+      "core/5.5.4.3",
+      "core/5.5.4.3.3",
+      "core/5.5.4.4",
+      "core/5.5.4.5",
+      "core/5.5.4.5.3",
+      "core/5.5.4.6",
+      "core/5.5.4.7",
+      "core/5.5.4.7.1",
+      "core/5.5.4.7.2"
+    ],
     "close_session": [
       "opal/4.1.1.4",
-      "core/3.3.7.1.5"
+      "core/3.3.7.1.5",
+      "core/5.2.3.5",
+      "core/5.2.3.5.1",
+      "core/5.2.3.5.2"
     ],
     "cpin": [
       "opal/4.2.1.8",
@@ -8271,20 +8919,84 @@
       "core/5.3.4.1.1",
       "core/5.3.4.1.1.2"
     ],
+    "create_table": [
+      "core/5.3.3.2",
+      "core/5.3.3.2.1",
+      "core/5.3.3.2.2",
+      "core/5.3.3.2.4",
+      "core/5.3.3.2.5",
+      "core/5.3.3.2.6",
+      "core/5.3.3.2.10",
+      "core/5.3.4.2.1"
+    ],
+    "crypto_sign": [
+      "core/5.6.4.9",
+      "core/5.6.4.10",
+      "core/5.6.5.5",
+      "core/5.6.5.5.1",
+      "core/5.6.5.5.2",
+      "core/5.6.5.6",
+      "core/5.6.5.6.1",
+      "core/5.6.5.6.2"
+    ],
+    "crypto_stream": [
+      "core/5.6.4.3",
+      "core/5.6.4.4",
+      "core/5.6.4.4.1.1",
+      "core/5.6.4.4.4",
+      "core/5.6.4.5",
+      "core/5.6.4.6",
+      "core/5.6.4.7",
+      "core/5.6.4.7.1.1",
+      "core/5.6.4.7.4",
+      "core/5.6.4.8",
+      "core/5.6.4.11",
+      "core/5.6.4.12",
+      "core/5.6.4.12.1.1",
+      "core/5.6.4.12.3",
+      "core/5.6.4.13",
+      "core/5.6.4.14",
+      "core/5.6.4.15",
+      "core/5.6.4.15.1.1",
+      "core/5.6.4.15.3",
+      "core/5.6.4.16",
+      "core/5.6.5.2",
+      "core/5.6.5.3"
+    ],
+    "delete": [
+      "core/5.3.3.3",
+      "core/5.3.3.3.1",
+      "core/5.3.3.3.2",
+      "core/5.3.4.2.5"
+    ],
+    "delete_sp": [
+      "core/5.3.3.1",
+      "core/5.3.3.1.1",
+      "core/5.3.4.4"
+    ],
     "fallback": [
       "core/5.3.3",
       "core/5.3.4"
     ],
     "gen_key": [
       "core/5.3.3.16",
+      "core/5.3.4.1.1.1",
       "opal/4.3.1.7",
       "opal/4.3.5.5"
     ],
     "get": [
+      "core/5.1.4.2.3",
       "core/5.3.3.6",
       "core/5.3.3.6.1",
+      "core/5.3.3.9",
+      "core/5.3.3.10",
       "core/5.3.4.2.2",
       "core/5.6.5.1"
+    ],
+    "get_package": [
+      "core/5.3.3.17",
+      "core/5.3.3.17.1",
+      "core/5.3.3.17.7"
     ],
     "locking_data": [
       "opal/4.3.7",
@@ -8303,10 +9015,35 @@
       "opal/4.3.5.2.2",
       "opal/4.3.1.7",
       "core/5.7.2.2",
+      "core/5.7.2.2.13",
+      "core/5.7.2.2.14",
       "core/5.7.3.3",
       "core/5.7.3.4",
       "core/5.7.3.5",
+      "core/5.7.3.7.1",
+      "core/5.7.3.7.4",
       "core/3.3.6.5.3"
+    ],
+    "log": [
+      "core/5.8.2.1",
+      "core/5.8.2.2",
+      "core/5.8.3.1",
+      "core/5.8.3.1.1",
+      "core/5.8.3.1.2",
+      "core/5.8.3.1.4",
+      "core/5.8.3.2",
+      "core/5.8.3.2.1",
+      "core/5.8.3.2.2",
+      "core/5.8.3.2.3",
+      "core/5.8.3.2.4",
+      "core/5.8.3.2.5",
+      "core/5.8.3.2.8",
+      "core/5.8.3.3",
+      "core/5.8.3.3.2",
+      "core/5.8.3.4",
+      "core/5.8.3.4.2",
+      "core/5.8.4.3",
+      "core/5.8.4.4"
     ],
     "mbr_control": [
       "opal/4.3.5.3",
@@ -8316,8 +9053,20 @@
       "core/3.3.6.5.5",
       "core/3.3.6.5.6"
     ],
+    "meta_acl": [
+      "core/5.3.3.11",
+      "core/5.3.3.11.1",
+      "core/5.3.3.11.2",
+      "core/5.3.3.11.4",
+      "core/5.3.3.13",
+      "core/5.3.3.14",
+      "core/5.3.3.15",
+      "core/5.3.4.3",
+      "core/5.3.4.3.1"
+    ],
     "next": [
       "core/5.3.3.8",
+      "core/5.3.3.8.1",
       "core/5.3.4.2.7"
     ],
     "properties": [
@@ -8327,21 +9076,47 @@
     "random": [
       "opal/4.2.9.1",
       "opal/4.3.4.1",
-      "core/5.6.4.1"
+      "core/5.6.4.1",
+      "core/5.6.4.1.1",
+      "core/5.6.4.1.2",
+      "core/5.6.4.1.3"
     ],
     "revert": [
       "opal/5.1.2",
+      "opal/5.1.2.1",
       "opal/5.1.2.2",
-      "opal/5.2.2.2.2"
+      "opal/5.1.2.2.1",
+      "opal/5.2.1.2",
+      "opal/5.2.2.2",
+      "opal/5.2.2.2.2",
+      "core/4.1"
     ],
     "revert_sp": [
       "opal/5.1.3",
+      "opal/5.1.3.1",
       "opal/5.1.3.2",
       "opal/5.1.3.3"
     ],
+    "row_management": [
+      "core/5.3.3.4",
+      "core/5.3.3.4.1",
+      "core/5.3.3.4.3",
+      "core/5.3.3.5",
+      "core/5.3.3.5.1",
+      "core/5.3.3.5.3",
+      "core/5.3.4.2.3",
+      "core/5.3.4.2.4"
+    ],
     "set": [
       "core/5.3.3.7",
-      "core/5.3.4.2.6"
+      "core/5.3.4.2.6",
+      "opal/5.3.1.1",
+      "opal/5.3.1.1.2",
+      "opal/5.3.1.2"
+    ],
+    "set_package": [
+      "core/5.3.3.18",
+      "core/5.3.4.5"
     ],
     "start_session": [
       "opal/4.1.1.2",
@@ -8369,10 +9144,35 @@
       "core/5.1.5.16",
       "core/5.3.3"
     ],
+    "stir": [
+      "core/5.6.4.2",
+      "core/5.6.4.2.1",
+      "core/5.6.4.2.1.1",
+      "core/5.6.4.2.1.2",
+      "core/5.6.4.2.2",
+      "core/5.6.4.2.3"
+    ],
     "sync_session": [
       "opal/4.1.1.3",
       "core/5.2.3.2",
+      "core/5.2.3.2.1",
+      "core/5.2.3.2.2",
       "core/3.3.7.1.4"
+    ],
+    "trusted_session": [
+      "core/5.2.3.3",
+      "core/5.2.3.3.1",
+      "core/5.2.3.3.2",
+      "core/5.2.3.4",
+      "core/5.2.3.4.1",
+      "core/5.2.3.4.2"
+    ],
+    "xor": [
+      "core/5.6.4.17",
+      "core/5.6.4.17.1",
+      "core/5.6.4.17.3",
+      "core/5.6.4.17.6",
+      "core/5.6.5.4"
     ]
   },
   "section_count": 1376,
@@ -8421,7 +9221,9 @@
       "json_block_count": 0,
       "line_count": 58,
       "methods": [
-        "Set"
+        "Set",
+        "Hash",
+        "HMAC"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -8694,12 +9496,14 @@
       "title": "Document Data Formats"
     },
     "core/3.2.1.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 48,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/3.2.1.1.txt",
@@ -8718,7 +9522,9 @@
       "line_count": 76,
       "methods": [
         "Properties",
-        "Random"
+        "Encrypt",
+        "Random",
+        "AddLog"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -8777,12 +9583,14 @@
       "title": "Data Stream Encoding"
     },
     "core/3.2.2.1": {
-      "category": "normative reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 13,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "All items in the list must be"
@@ -8843,12 +9651,14 @@
       "title": "Simple Tokens \u2013 Atoms Overview"
     },
     "core/3.2.2.3.1.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 2,
       "line_count": 33,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/3.2.2.3.1.1.txt",
@@ -8860,12 +9670,14 @@
       "title": "Tiny atoms"
     },
     "core/3.2.2.3.1.2": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 3,
       "line_count": 55,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "A length of 0 SHALL only be permitted for non-continued bytes tokens."
@@ -8880,12 +9692,14 @@
       "title": "Short atoms"
     },
     "core/3.2.2.3.1.3": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 36,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/3.2.2.3.1.3.txt",
@@ -8897,12 +9711,14 @@
       "title": "Medium atoms"
     },
     "core/3.2.2.3.1.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 20,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "| reserved | These bits are reserved and SHALL be set to 0b."
@@ -10082,12 +10898,15 @@
       "title": "Tables"
     },
     "core/3.2.5.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 15,
-      "methods": [],
+      "methods": [
+        "CreateRow",
+        "DeleteRow"
+      ],
       "normative_count": 4,
       "normative_extracts": [
         "of all cells in a byte table SHALL be 0x00.",
@@ -10465,7 +11284,9 @@
       "line_count": 24,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "StartTrustedSession",
+        "SyncTrustedSession"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -11158,6 +11979,8 @@
         "Properties",
         "StartSession",
         "SyncSession",
+        "StartTrustedSession",
+        "SyncTrustedSession",
         "CloseSession"
       ],
       "normative_count": 3,
@@ -11203,7 +12026,10 @@
       "line_count": 62,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "StartTrustedSession",
+        "SyncTrustedSession",
+        "HMAC"
       ],
       "normative_count": 7,
       "normative_extracts": [
@@ -11254,7 +12080,8 @@
       "methods": [
         "Properties",
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "SyncTrustedSession"
       ],
       "normative_count": 7,
       "normative_extracts": [
@@ -11731,7 +12558,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 43,
-      "methods": [],
+      "methods": [
+        "Delete",
+        "DeleteSP"
+      ],
       "normative_count": 6,
       "normative_extracts": [
         "The SP SHALL be created in this state",
@@ -11799,7 +12629,9 @@
       "line_count": 22,
       "methods": [
         "Authenticate",
-        "Set"
+        "Set",
+        "Delete",
+        "DeleteSP"
       ],
       "normative_count": 11,
       "normative_extracts": [
@@ -11857,7 +12689,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "Delete"
+      ],
       "normative_count": 3,
       "normative_extracts": [
         "When an SP is in the Failed state, session startup methods to the SP SHALL respond with an error",
@@ -11891,7 +12725,8 @@
       "line_count": 179,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "CreateRow"
       ],
       "normative_count": 36,
       "normative_extracts": [
@@ -12154,7 +12989,8 @@
       "json_block_count": 0,
       "line_count": 28,
       "methods": [
-        "Set"
+        "Set",
+        "CreateTable"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -12613,12 +13449,14 @@
       "title": "lag"
     },
     "core/5.1.3.45": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 18,
-      "methods": [],
+      "methods": [
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.1.3.45.txt",
@@ -13256,7 +14094,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 24,
-      "methods": [],
+      "methods": [
+        "HMAC",
+        "Sign"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "This enumeration type is used to represent the authentication methods that MAY be used to"
@@ -13574,12 +14415,14 @@
       "title": "uinteger_8"
     },
     "core/5.1.3.98": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 15,
-      "methods": [],
+      "methods": [
+        "Verify"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "This enumeration type defines the verification operation the TPer SHALL perform during the re-"
@@ -13705,7 +14548,12 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 36,
-      "methods": [],
+      "methods": [
+        "GetPackage",
+        "SetPackage",
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "The WrappingKey credential MAY be a symmetric key or the public key of a",
@@ -13850,12 +14698,14 @@
       "title": "cell_block"
     },
     "core/5.1.4.2.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 10,
-      "methods": [],
+      "methods": [
+        "GetClock"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.1.4.2.4.txt",
@@ -14001,7 +14851,8 @@
       "line_count": 19,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "CreateRow"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -14098,7 +14949,11 @@
       "line_count": 26,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "GetACL",
+        "AddACE",
+        "RemoveACE",
+        "DeleteMethod"
       ],
       "normative_count": 7,
       "normative_extracts": [
@@ -14196,12 +15051,14 @@
       "title": "NO_SESSIONS_AVAILABLE"
     },
     "core/5.1.5.8": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "CreateTable"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "MAY be received when attempting to create a table, when a table already exists with the Name-"
@@ -15123,7 +15980,9 @@
       "line_count": 14,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "StartTrustedSession",
+        "SyncTrustedSession"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -15142,7 +16001,8 @@
       "json_block_count": 0,
       "line_count": 3,
       "methods": [
-        "StartSession"
+        "StartSession",
+        "StartTrustedSession"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -15160,7 +16020,8 @@
       "json_block_count": 0,
       "line_count": 3,
       "methods": [
-        "SyncSession"
+        "SyncSession",
+        "StartTrustedSession"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -15228,12 +16089,15 @@
       "title": "SignedHash"
     },
     "core/5.2.3.4": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "StartTrustedSession",
+        "SyncTrustedSession"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.2.3.4.txt",
@@ -15248,7 +16112,8 @@
       "json_block_count": 0,
       "line_count": 3,
       "methods": [
-        "StartSession"
+        "StartSession",
+        "SyncTrustedSession"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -15266,7 +16131,8 @@
       "json_block_count": 0,
       "line_count": 3,
       "methods": [
-        "SyncSession"
+        "SyncSession",
+        "SyncTrustedSession"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -15641,7 +16507,11 @@
       "line_count": 193,
       "methods": [
         "SyncSession",
-        "Authenticate"
+        "StartTrustedSession",
+        "SyncTrustedSession",
+        "Authenticate",
+        "HMAC",
+        "Sign"
       ],
       "normative_count": 45,
       "normative_extracts": [
@@ -15991,7 +16861,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 21,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.13.txt",
@@ -16065,7 +16937,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.13.13.txt",
@@ -16196,7 +17070,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 19,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.14.txt",
@@ -16270,7 +17146,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.14.13.txt",
@@ -16401,7 +17279,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 15,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.15.txt",
@@ -16507,12 +17387,17 @@
       "title": "FeedbackSize"
     },
     "core/5.3.2.15.7": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 8,
-      "methods": [],
+      "methods": [
+        "DecryptInit",
+        "Decrypt",
+        "EncryptInit",
+        "Encrypt"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.15.7.txt",
@@ -16526,7 +17411,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 18,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.15.8.txt",
@@ -16542,7 +17429,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 16,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.16.txt",
@@ -16648,12 +17537,17 @@
       "title": "FeedbackSize"
     },
     "core/5.3.2.16.7": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "DecryptInit",
+        "Decrypt",
+        "EncryptInit",
+        "Encrypt"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.16.7.txt",
@@ -16667,7 +17561,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.16.8.txt",
@@ -16681,7 +17577,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 20,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.17.txt",
@@ -16713,7 +17611,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.17.12.txt",
@@ -16822,7 +17722,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 21,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.18.txt",
@@ -16854,7 +17756,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.18.12.txt",
@@ -16963,7 +17867,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 21,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.19.txt",
@@ -16995,7 +17901,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.19.12.txt",
@@ -17188,7 +18096,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 18,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.20.txt",
@@ -17204,7 +18114,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 18,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.21.txt",
@@ -17236,7 +18148,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.21.12.txt",
@@ -17345,7 +18259,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 18,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.22.txt",
@@ -17377,7 +18293,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.22.12.txt",
@@ -17486,7 +18404,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 20,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.23.txt",
@@ -17532,7 +18452,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.23.15.txt",
@@ -17671,7 +18593,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 19,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.24.txt",
@@ -17717,7 +18641,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.24.13.txt",
@@ -17813,7 +18739,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 22,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.25.txt",
@@ -17859,7 +18787,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.25.15.txt",
@@ -17998,7 +18928,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 9,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.26.txt",
@@ -18063,7 +18995,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.26.4.txt",
@@ -18077,7 +19011,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.26.5.txt",
@@ -18091,7 +19028,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.27.txt",
@@ -18156,7 +19095,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.27.4.txt",
@@ -18170,7 +19111,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.27.5.txt",
@@ -18184,7 +19128,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.28.txt",
@@ -18249,7 +19195,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.28.4.txt",
@@ -18263,7 +19211,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.28.5.txt",
@@ -18277,7 +19228,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 9,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.29.txt",
@@ -18342,7 +19295,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.29.4.txt",
@@ -18356,7 +19311,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.29.5.txt",
@@ -18931,12 +19889,16 @@
       "title": "AttributeFlags"
     },
     "core/5.3.2.5": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 22,
-      "methods": [],
+      "methods": [
+        "Delete",
+        "CreateRow",
+        "DeleteRow"
+      ],
       "normative_count": 4,
       "normative_extracts": [
         "Any of the types predefined in the Core Specification MAY be included by default in the table for an SP.",
@@ -19017,12 +19979,14 @@
       "title": "Format"
     },
     "core/5.3.2.5.5": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 7,
-      "methods": [],
+      "methods": [
+        "CreateRow"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This value SHALL be 0 for a base type (integer, uinteger,",
@@ -19262,7 +20226,12 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 35,
-      "methods": [],
+      "methods": [
+        "DeleteMethod",
+        "Delete",
+        "CreateRow",
+        "DeleteRow"
+      ],
       "normative_count": 4,
       "normative_extracts": [
         "New rows SHALL NOT be created in or deleted from the AccessControl table directly (i.e.",
@@ -19299,7 +20268,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "DeleteMethod"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.7.10.txt",
@@ -19313,7 +20284,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "AddACE"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This column SHALL be disregarded if the Log Template has not",
@@ -19330,7 +20303,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "RemoveACE"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This column SHALL be disregarded if the Log Template has not",
@@ -19347,7 +20322,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "GetACL"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This column SHALL be disregarded if the Log Template has not",
@@ -19364,7 +20341,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "DeleteMethod"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This column SHALL be disregarded if the Log Template has not",
@@ -19448,6 +20427,9 @@
       "json_block_count": 0,
       "line_count": 4,
       "methods": [
+        "GetACL",
+        "AddACE",
+        "RemoveACE",
         "Set"
       ],
       "normative_count": 1,
@@ -19481,7 +20463,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "AddACE"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.7.7.txt",
@@ -19495,7 +20479,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "RemoveACE"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.7.8.txt",
@@ -19509,7 +20495,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "GetACL"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.2.7.9.txt",
@@ -19777,12 +20765,14 @@
       "title": "Methods"
     },
     "core/5.3.3.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "DeleteSP"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.1.txt",
@@ -19791,12 +20781,14 @@
       "title": "SP Method Group - DeleteSP (SP Method)"
     },
     "core/5.3.3.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "DeleteSP"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.1.1.txt",
@@ -19805,12 +20797,14 @@
       "title": "DeleteSP Result"
     },
     "core/5.3.3.1.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "DeleteSP"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.1.1.1.txt",
@@ -19843,7 +20837,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 20,
-      "methods": [],
+      "methods": [
+        "DeleteMethod"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.11.txt",
@@ -19880,12 +20876,14 @@
       "title": "MethodID"
     },
     "core/5.3.3.11.3": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "DeleteMethod"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.11.3.txt",
@@ -19894,12 +20892,14 @@
       "title": "DeleteMethod Result"
     },
     "core/5.3.3.11.3.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "DeleteMethod"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.11.3.1.txt",
@@ -20029,7 +21029,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 11,
-      "methods": [],
+      "methods": [
+        "GetACL"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.13.txt",
@@ -20066,12 +21068,14 @@
       "title": "MethodID"
     },
     "core/5.3.3.13.3": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "GetACL"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.13.3.txt",
@@ -20113,7 +21117,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "AddACE"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.14.txt",
@@ -20164,12 +21170,14 @@
       "title": "ACE"
     },
     "core/5.3.3.14.4": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "AddACE"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.14.4.txt",
@@ -20178,12 +21186,14 @@
       "title": "AddACE Result"
     },
     "core/5.3.3.14.4.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "AddACE"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.14.4.1.txt",
@@ -20211,7 +21221,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "RemoveACE"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.15.txt",
@@ -20262,12 +21274,14 @@
       "title": "ACE"
     },
     "core/5.3.3.15.4": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "RemoveACE"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.15.4.txt",
@@ -20276,12 +21290,14 @@
       "title": "RemoveACE Result"
     },
     "core/5.3.3.15.4.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "RemoveACE"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.15.4.1.txt",
@@ -20405,7 +21421,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 18,
-      "methods": [],
+      "methods": [
+        "GetPackage",
+        "Encrypt",
+        "Sign"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "addition to fulfilling the access control restrictions for invoking GetPackage, this method should only"
@@ -20490,12 +21510,14 @@
       "title": "Log"
     },
     "core/5.3.3.17.6": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "GetPackage"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.17.6.txt",
@@ -20537,7 +21559,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 15,
-      "methods": [],
+      "methods": [
+        "SetPackage"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.18.txt",
@@ -20546,12 +21570,14 @@
       "title": "Key Related Method Group - SetPackage Method (Object Method)"
     },
     "core/5.3.3.18.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 2,
-      "methods": [],
+      "methods": [
+        "GetPackage"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.18.1.txt",
@@ -20592,12 +21618,14 @@
       "title": "SigningKey"
     },
     "core/5.3.3.18.4": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "SetPackage"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.18.4.txt",
@@ -20620,12 +21648,14 @@
       "title": "Fails"
     },
     "core/5.3.3.2": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 22,
-      "methods": [],
+      "methods": [
+        "CreateTable"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.2.txt",
@@ -20771,12 +21801,14 @@
       "title": "CommonName"
     },
     "core/5.3.3.2.9": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "CreateTable"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.2.9.txt",
@@ -20813,12 +21845,14 @@
       "title": "Rows"
     },
     "core/5.3.3.3": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 2,
-      "methods": [],
+      "methods": [
+        "Delete"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.3.txt",
@@ -20827,12 +21861,14 @@
       "title": "Basic Table Method Group - Delete (Object Method)"
     },
     "core/5.3.3.3.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "Delete"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.3.1.txt",
@@ -20841,12 +21877,14 @@
       "title": "Delete Result"
     },
     "core/5.3.3.3.1.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "Delete"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "associated objects in other tables SHALL be deleted, or the method SHALL return FAIL status and",
@@ -20872,12 +21910,14 @@
       "title": "Fails"
     },
     "core/5.3.3.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 9,
-      "methods": [],
+      "methods": [
+        "CreateRow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.4.txt",
@@ -20900,12 +21940,14 @@
       "title": "Row"
     },
     "core/5.3.3.4.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "CreateRow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.4.2.txt",
@@ -20914,12 +21956,14 @@
       "title": "CreateRow Result"
     },
     "core/5.3.3.4.2.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "CreateRow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.4.2.1.txt",
@@ -20942,12 +21986,14 @@
       "title": "Fails"
     },
     "core/5.3.3.5": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 10,
-      "methods": [],
+      "methods": [
+        "DeleteRow"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "This method SHALL NOT be able to be successfully invoked"
@@ -20972,12 +22018,14 @@
       "title": "Rows"
     },
     "core/5.3.3.5.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "DeleteRow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.3.5.2.txt",
@@ -20986,12 +22034,14 @@
       "title": "DeleteRow Result"
     },
     "core/5.3.3.5.2.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "DeleteRow"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "all of its associated objects in other tables SHALL be deleted, or the method SHALL return FAIL status",
@@ -21504,7 +22554,8 @@
       "methods": [
         "Authenticate",
         "Set",
-        "GenKey"
+        "GenKey",
+        "SetPackage"
       ],
       "normative_count": 9,
       "normative_extracts": [
@@ -21530,7 +22581,10 @@
       "line_count": 27,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "StartTrustedSession",
+        "SyncTrustedSession",
+        "HMAC"
       ],
       "normative_count": 13,
       "normative_extracts": [
@@ -21600,7 +22654,9 @@
       "line_count": 39,
       "methods": [
         "Properties",
-        "Authenticate"
+        "Authenticate",
+        "HMAC",
+        "Sign"
       ],
       "normative_count": 15,
       "normative_extracts": [
@@ -21643,7 +22699,8 @@
       "json_block_count": 0,
       "line_count": 85,
       "methods": [
-        "Authenticate"
+        "Authenticate",
+        "Sign"
       ],
       "normative_count": 7,
       "normative_extracts": [
@@ -21760,7 +22817,9 @@
       "json_block_count": 0,
       "line_count": 68,
       "methods": [
-        "Authenticate"
+        "Authenticate",
+        "HMAC",
+        "Sign"
       ],
       "normative_count": 32,
       "normative_extracts": [
@@ -21808,7 +22867,9 @@
       "line_count": 30,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "StartTrustedSession",
+        "SyncTrustedSession"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -21844,7 +22905,9 @@
       "line_count": 33,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "StartTrustedSession",
+        "SyncTrustedSession"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -21859,7 +22922,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 18,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 3,
       "normative_extracts": [
         "Session startup SHALL fail if an authority indicates that hashing and signing the session startup",
@@ -21879,7 +22945,10 @@
       "line_count": 37,
       "methods": [
         "StartSession",
-        "SyncSession"
+        "SyncSession",
+        "StartTrustedSession",
+        "SyncTrustedSession",
+        "HMAC"
       ],
       "normative_count": 11,
       "normative_extracts": [
@@ -21921,6 +22990,8 @@
         "Get",
         "Set",
         "Next",
+        "CreateTable",
+        "CreateRow",
         "GetFreeRows"
       ],
       "normative_count": 26,
@@ -21967,7 +23038,10 @@
       "json_block_count": 0,
       "line_count": 46,
       "methods": [
-        "StartSession"
+        "StartSession",
+        "CreateTable",
+        "CreateRow",
+        "CreateLog"
       ],
       "normative_count": 14,
       "normative_extracts": [
@@ -21991,7 +23065,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 21,
-      "methods": [],
+      "methods": [
+        "Delete",
+        "DeleteRow"
+      ],
       "normative_count": 5,
       "normative_extracts": [
         "Rows MAY be deleted from a table in two ways:",
@@ -22011,7 +23088,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 13,
-      "methods": [],
+      "methods": [
+        "Delete",
+        "DeleteRow"
+      ],
       "normative_count": 5,
       "normative_extracts": [
         "As indicated in Section 5.3.4.2.4, a table SHALL be deleted by successful invocation of the Delete",
@@ -22091,7 +23171,12 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 18,
-      "methods": [],
+      "methods": [
+        "GetACL",
+        "AddACE",
+        "RemoveACE",
+        "DeleteMethod"
+      ],
       "normative_count": 3,
       "normative_extracts": [
         "authorization required to add or remove ACEs from ACLs MAY be different from the authorization",
@@ -22139,12 +23224,15 @@
       "title": "Modifying the BooleanExpr Column"
     },
     "core/5.3.4.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "Delete",
+        "DeleteSP"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "The SP SHALL NOT be deleted until the session is successfully closed."
@@ -22160,7 +23248,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "GetPackage",
+        "SetPackage"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.3.4.5.txt",
@@ -22176,8 +23267,16 @@
       "line_count": 20,
       "methods": [
         "Authenticate",
+        "AddACE",
+        "RemoveACE",
+        "DeleteMethod",
         "Set",
-        "GenKey"
+        "Delete",
+        "CreateTable",
+        "CreateRow",
+        "DeleteRow",
+        "GenKey",
+        "DeleteSP"
       ],
       "normative_count": 6,
       "normative_extracts": [
@@ -22215,7 +23314,8 @@
       "line_count": 11,
       "methods": [
         "Authenticate",
-        "Set"
+        "Set",
+        "DeleteSP"
       ],
       "normative_count": 4,
       "normative_extracts": [
@@ -22555,12 +23655,18 @@
       "title": "CryptoLen"
     },
     "core/5.4.2.3.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Decrypt",
+        "Encrypt",
+        "Hash",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "This column SHALL NOT be modifiable by the host."
@@ -23065,12 +24171,14 @@
       "title": "Templates and the Admin SP"
     },
     "core/5.4.4.2": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 13,
-      "methods": [],
+      "methods": [
+        "Delete"
+      ],
       "normative_count": 3,
       "normative_extracts": [
         "This method SHALL only operate within a Read-Write session to the Admin SP.",
@@ -23122,7 +24230,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 27,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 3,
       "normative_extracts": [
         "The authorities that SHALL be required by the Admin Template are enumerated in Table 216.",
@@ -23220,7 +24330,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 14,
-      "methods": [],
+      "methods": [
+        "GetClock",
+        "SetClockHigh",
+        "SetClockLow"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "| IncrementalClock | Each Clock Template-enabled SP SHALL have an incremental clock that is accessible from the TPer and is used to measure time intervals."
@@ -23281,12 +24395,14 @@
       "title": "UID"
     },
     "core/5.5.3.1.10": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "SetClockLow"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "True; otherwise it SHOULD be zeroes.",
@@ -23298,12 +24414,14 @@
       "title": "LowInitialTimer"
     },
     "core/5.5.3.1.11": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "SetClockLow"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "True; otherwise it SHOULD be zeroes.",
@@ -23395,12 +24513,14 @@
       "title": "HighByWhom"
     },
     "core/5.5.3.1.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "SetClockHigh"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "otherwise it should be zeroes."
@@ -23411,12 +24531,14 @@
       "title": "HighSetTime"
     },
     "core/5.5.3.1.5": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "SetClockHigh"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "should be zeroes.",
@@ -23428,12 +24550,14 @@
       "title": "HighInitialTimer"
     },
     "core/5.5.3.1.6": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "SetClockHigh"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "to True; otherwise it should be zeroes.",
@@ -23479,12 +24603,14 @@
       "title": "LowByWhom"
     },
     "core/5.5.3.1.9": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "SetClockLow"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "otherwise it SHOULD be zeroes.",
@@ -23510,12 +24636,14 @@
       "title": "Methods"
     },
     "core/5.5.4.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 8,
-      "methods": [],
+      "methods": [
+        "GetClock"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.1.txt",
@@ -23524,12 +24652,14 @@
       "title": "GetClock (Table Method)"
     },
     "core/5.5.4.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "GetClock"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.1.1.txt",
@@ -23608,12 +24738,14 @@
       "title": "Fails"
     },
     "core/5.5.4.2": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 8,
-      "methods": [],
+      "methods": [
+        "ResetClock"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.2.txt",
@@ -23622,12 +24754,14 @@
       "title": "ResetClock (Table Method)"
     },
     "core/5.5.4.2.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "ResetClock"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.2.1.txt",
@@ -23636,12 +24770,14 @@
       "title": "ResetClock Result"
     },
     "core/5.5.4.2.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "ResetClock"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.2.1.1.txt",
@@ -23664,12 +24800,14 @@
       "title": "Fails"
     },
     "core/5.5.4.3": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 9,
-      "methods": [],
+      "methods": [
+        "SetClockHigh"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.3.txt",
@@ -23692,12 +24830,14 @@
       "title": "ExactTime"
     },
     "core/5.5.4.3.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "SetClockHigh"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.3.2.txt",
@@ -23706,12 +24846,14 @@
       "title": "SetClockHigh Result"
     },
     "core/5.5.4.3.2.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "SetClockHigh"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.3.2.1.txt",
@@ -23720,12 +24862,15 @@
       "title": "Result"
     },
     "core/5.5.4.3.3": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "SetClockHigh",
+        "SetLagHigh"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.3.3.txt",
@@ -23734,12 +24879,14 @@
       "title": "Fails"
     },
     "core/5.5.4.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 8,
-      "methods": [],
+      "methods": [
+        "SetLagHigh"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.4.txt",
@@ -23762,12 +24909,14 @@
       "title": "LagTime"
     },
     "core/5.5.4.4.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "SetLagHigh"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.4.2.txt",
@@ -23790,12 +24939,14 @@
       "title": "LowPreserved"
     },
     "core/5.5.4.5": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 10,
-      "methods": [],
+      "methods": [
+        "SetClockLow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.5.txt",
@@ -23818,12 +24969,14 @@
       "title": "ExactTime"
     },
     "core/5.5.4.5.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "SetClockLow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.5.2.txt",
@@ -23832,12 +24985,14 @@
       "title": "SetClockLow Result"
     },
     "core/5.5.4.5.2.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "SetClockLow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.5.2.1.txt",
@@ -23846,12 +25001,15 @@
       "title": "Result"
     },
     "core/5.5.4.5.3": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "SetClockLow",
+        "SetLagLow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.5.3.txt",
@@ -23860,12 +25018,14 @@
       "title": "Fails"
     },
     "core/5.5.4.6": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 8,
-      "methods": [],
+      "methods": [
+        "SetLagLow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.6.txt",
@@ -23888,12 +25048,14 @@
       "title": "LagTime"
     },
     "core/5.5.4.6.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "SetLagLow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.6.2.txt",
@@ -23902,12 +25064,14 @@
       "title": "SetLagLow Result"
     },
     "core/5.5.4.6.2.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "SetLagLow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.6.2.1.txt",
@@ -23921,7 +25085,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 11,
-      "methods": [],
+      "methods": [
+        "IncrementCounter"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "For two calls to IncrementCounter, the later call SHALL always return a value that is greater than that"
@@ -23932,12 +25098,14 @@
       "title": "IncrementCounter (Table Method)"
     },
     "core/5.5.4.7.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "IncrementCounter"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.4.7.1.txt",
@@ -24002,12 +25170,15 @@
       "title": "Setting the Time"
     },
     "core/5.5.5.1.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 20,
-      "methods": [],
+      "methods": [
+        "SetClockHigh",
+        "SetClockLow"
+      ],
       "normative_count": 5,
       "normative_extracts": [
         "Trust source MAY be a remote but strongly protected source of time.",
@@ -24027,7 +25198,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 29,
-      "methods": [],
+      "methods": [
+        "SetClockHigh",
+        "SetLagHigh"
+      ],
       "normative_count": 4,
       "normative_extracts": [
         "HighInitialTimer should be computed by the SP, by reading the IncrementalClock value.",
@@ -24046,7 +25220,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 27,
-      "methods": [],
+      "methods": [
+        "SetClockLow",
+        "SetLagLow"
+      ],
       "normative_count": 5,
       "normative_extracts": [
         "should be computed by the SP by reading the IncrementalClock value.",
@@ -24066,7 +25243,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 31,
-      "methods": [],
+      "methods": [
+        "GetClock",
+        "IncrementCounter"
+      ],
       "normative_count": 4,
       "normative_extracts": [
         "An SP that incorporates the Clock Template also SHALL independently maintain a counter that",
@@ -24080,12 +25260,15 @@
       "title": "Monotonic Counter"
     },
     "core/5.5.5.3": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 24,
-      "methods": [],
+      "methods": [
+        "SetClockHigh",
+        "SetClockLow"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "Each TPer SHALL have a quickly accessible incremental clock.",
@@ -24102,7 +25285,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 11,
-      "methods": [],
+      "methods": [
+        "GetClock",
+        "ResetClock"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "but a successful invocation of the GetClock method SHALL return a clock_kind of \u201cTimer\u201d, the values of",
@@ -24144,12 +25330,14 @@
       "title": "Storing LagTime"
     },
     "core/5.5.5.7": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 10,
-      "methods": [],
+      "methods": [
+        "GetClock"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.5.7.txt",
@@ -24158,12 +25346,14 @@
       "title": "Reading the Time"
     },
     "core/5.5.5.8": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 17,
-      "methods": [],
+      "methods": [
+        "ResetClock"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "Note that this guarantees that the MonotonicTime value always increases (although it MAY, in a"
@@ -24174,12 +25364,17 @@
       "title": "Resetting the Clock"
     },
     "core/5.5.5.9": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "IncrementCounter",
+        "ResetClock",
+        "SetClockHigh",
+        "SetClockLow"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.5.5.9.txt",
@@ -24242,7 +25437,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "HMAC",
+        "XOR"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "Other Templates MAY provide",
@@ -24254,12 +25452,14 @@
       "title": "Overview"
     },
     "core/5.6.2": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 7,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "A particular context SHALL deal only with the operation associated with it (encrypt, decrypt, HMAC, or hash)."
@@ -24286,12 +25486,21 @@
       "title": "Data Structures"
     },
     "core/5.6.3.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 13,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash",
+        "HashFinalize",
+        "HMACInit",
+        "HMAC",
+        "HMACFinalize",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.1.txt",
@@ -24356,7 +25565,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.1.4.txt",
@@ -24370,7 +25582,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.1.5.txt",
@@ -24384,7 +25599,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "HMAC",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.1.6.txt",
@@ -24393,12 +25612,21 @@
       "title": "Signer"
     },
     "core/5.6.3.2": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 15,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash",
+        "HashFinalize",
+        "HMACInit",
+        "HMAC",
+        "HMACFinalize",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.2.txt",
@@ -24463,7 +25691,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.2.4.txt",
@@ -24477,7 +25708,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.2.5.txt",
@@ -24491,7 +25725,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "HMAC",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.2.6.txt",
@@ -24500,12 +25738,21 @@
       "title": "Signer"
     },
     "core/5.6.3.3": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 15,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash",
+        "HashFinalize",
+        "HMACInit",
+        "HMAC",
+        "HMACFinalize",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.3.txt",
@@ -24570,7 +25817,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.3.4.txt",
@@ -24584,7 +25834,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.3.5.txt",
@@ -24598,7 +25851,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "HMAC",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.3.6.txt",
@@ -24607,12 +25864,21 @@
       "title": "Signer"
     },
     "core/5.6.3.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 13,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash",
+        "HashFinalize",
+        "HMACInit",
+        "HMAC",
+        "HMACFinalize",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.4.txt",
@@ -24677,7 +25943,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.4.4.txt",
@@ -24691,7 +25960,10 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.4.5.txt",
@@ -24705,7 +25977,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "HMAC",
+        "Sign",
+        "Verify"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.3.4.6.txt",
@@ -24812,7 +26088,8 @@
       "json_block_count": 0,
       "line_count": 53,
       "methods": [
-        "Get"
+        "Get",
+        "Verify"
       ],
       "normative_count": 5,
       "normative_extracts": [
@@ -24828,12 +26105,15 @@
       "title": "Verify (Object Method)"
     },
     "core/5.6.4.11": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "one hash \u201cstream\u201d SHALL be able to be open at any one time for any individual hash object.",
@@ -24851,7 +26131,8 @@
       "json_block_count": 0,
       "line_count": 7,
       "methods": [
-        "Set"
+        "Set",
+        "Hash"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -24864,12 +26145,14 @@
       "title": "BufferOut"
     },
     "core/5.6.4.11.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "HashInit"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.11.2.txt",
@@ -24878,12 +26161,14 @@
       "title": "HashInit Result"
     },
     "core/5.6.4.11.2.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "HashInit"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.11.2.1.txt",
@@ -24908,12 +26193,16 @@
       "title": "Fails"
     },
     "core/5.6.4.12": {
-      "category": "normative reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 11,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash",
+        "HashFinalize"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This method SHALL require that the HashInit method has been invoked previously during the session",
@@ -24961,7 +26250,8 @@
       "json_block_count": 0,
       "line_count": 5,
       "methods": [
-        "Get"
+        "Get",
+        "Hash"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -24973,12 +26263,14 @@
       "title": "BufferIn"
     },
     "core/5.6.4.12.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "Hash"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.12.2.txt",
@@ -24987,12 +26279,15 @@
       "title": "Hash Result"
     },
     "core/5.6.4.12.2.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "SHALL be empty."
@@ -25009,7 +26304,8 @@
       "json_block_count": 0,
       "line_count": 8,
       "methods": [
-        "Get"
+        "Get",
+        "Hash"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -25019,12 +26315,16 @@
       "title": "Fails"
     },
     "core/5.6.4.13": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 10,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash",
+        "HashFinalize"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "If there is no open hash \u201cstream\u201d for the invoking hash object, the method invocation SHALL fail."
@@ -25035,12 +26335,14 @@
       "title": "Hash Method Group \u2013 HashFinalize (Object Method)"
     },
     "core/5.6.4.13.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "HashFinalize"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.13.1.txt",
@@ -25049,12 +26351,15 @@
       "title": "HashFinalize Result"
     },
     "core/5.6.4.13.1.1": {
-      "category": "normative reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "Hash"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "BufferOut parameter is specified in the HashInit method, the Hash method Result SHALL be empty."
@@ -25071,7 +26376,9 @@
       "json_block_count": 0,
       "line_count": 6,
       "methods": [
-        "Set"
+        "Set",
+        "HMAC",
+        "HMACFinalize"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -25081,12 +26388,15 @@
       "title": "Fails"
     },
     "core/5.6.4.14": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "HMACInit",
+        "HMAC"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "one HMAC \u201cstream\u201d SHALL be able to be open at any one time for any individual hash object.",
@@ -25104,7 +26414,8 @@
       "json_block_count": 0,
       "line_count": 7,
       "methods": [
-        "Set"
+        "Set",
+        "HMAC"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -25117,12 +26428,14 @@
       "title": "BufferOut"
     },
     "core/5.6.4.14.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "HMACInit"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.14.2.txt",
@@ -25131,12 +26444,14 @@
       "title": "HMACInit Result"
     },
     "core/5.6.4.14.2.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "HMACInit"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.14.2.1.txt",
@@ -25150,7 +26465,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.14.3.txt",
@@ -25164,7 +26481,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 11,
-      "methods": [],
+      "methods": [
+        "HMACInit",
+        "HMAC",
+        "HMACFinalize"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This method SHALL require that the HMACInit method has been invoked previously during the session",
@@ -25176,12 +26497,14 @@
       "title": "HMAC Method Group \u2013 HMAC (Object Method)"
     },
     "core/5.6.4.15.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "The value of the Input parameter MAY be either a bytes value, wherein bytes to have the HMAC"
@@ -25192,12 +26515,14 @@
       "title": "Input"
     },
     "core/5.6.4.15.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 2,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.15.1.1.txt",
@@ -25212,7 +26537,8 @@
       "json_block_count": 0,
       "line_count": 5,
       "methods": [
-        "Get"
+        "Get",
+        "HMAC"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -25224,12 +26550,14 @@
       "title": "Buffer"
     },
     "core/5.6.4.15.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "HMAC"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.15.2.txt",
@@ -25238,12 +26566,15 @@
       "title": "HMAC Result"
     },
     "core/5.6.4.15.2.1": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "HMACInit",
+        "HMAC"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "BufferOut parameter is specified in the HMACInit method, the HMAC method Result SHALL be empty."
@@ -25260,7 +26591,8 @@
       "json_block_count": 0,
       "line_count": 8,
       "methods": [
-        "Get"
+        "Get",
+        "HMAC"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -25270,12 +26602,16 @@
       "title": "Fails"
     },
     "core/5.6.4.16": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 10,
-      "methods": [],
+      "methods": [
+        "Hash",
+        "HMAC",
+        "HMACFinalize"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "If there is no open HMAC \u201cstream\u201d for the invoking Hash object, the method invocation SHALL fail."
@@ -25286,12 +26622,14 @@
       "title": "HMAC Method Group \u2013 HMACFinalize (Object Method)"
     },
     "core/5.6.4.16.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "HMACFinalize"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.16.1.txt",
@@ -25300,12 +26638,15 @@
       "title": "HMACFinalize Result"
     },
     "core/5.6.4.16.1.1": {
-      "category": "normative reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "HashInit",
+        "HMAC"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "BufferOut parameter is specified in the HashInit method, the HMAC method Result SHALL be empty."
@@ -25322,7 +26663,9 @@
       "json_block_count": 0,
       "line_count": 9,
       "methods": [
-        "Set"
+        "Set",
+        "HMAC",
+        "HMACFinalize"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -25332,12 +26675,14 @@
       "title": "Fails"
     },
     "core/5.6.4.17": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 11,
-      "methods": [],
+      "methods": [
+        "XOR"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.17.txt",
@@ -25352,7 +26697,8 @@
       "json_block_count": 0,
       "line_count": 4,
       "methods": [
-        "Get"
+        "Get",
+        "XOR"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -25365,12 +26711,14 @@
       "title": "PatternInput"
     },
     "core/5.6.4.17.2": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "XOR"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "DeletePattern parameter is True, the cell values in the referenced table SHALL be set to 00s after the"
@@ -25397,12 +26745,14 @@
       "title": "Input"
     },
     "core/5.6.4.17.3.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 2,
-      "methods": [],
+      "methods": [
+        "XOR"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.17.3.1.txt",
@@ -25417,7 +26767,8 @@
       "json_block_count": 0,
       "line_count": 5,
       "methods": [
-        "Get"
+        "Get",
+        "XOR"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -25435,7 +26786,8 @@
       "json_block_count": 0,
       "line_count": 7,
       "methods": [
-        "Set"
+        "Set",
+        "XOR"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -25448,12 +26800,14 @@
       "title": "BufferOut"
     },
     "core/5.6.4.17.5": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "XOR"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.17.5.txt",
@@ -25462,12 +26816,14 @@
       "title": "XOR Result"
     },
     "core/5.6.4.17.5.1": {
-      "category": "normative reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 5,
-      "methods": [],
+      "methods": [
+        "XOR"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "If the BufferOut parameter is specified, the Result value SHALL be empty."
@@ -25498,7 +26854,8 @@
       "json_block_count": 0,
       "line_count": 9,
       "methods": [
-        "Random"
+        "Random",
+        "Stir"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -25528,7 +26885,8 @@
       "json_block_count": 0,
       "line_count": 3,
       "methods": [
-        "Random"
+        "Random",
+        "Stir"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -25544,7 +26902,8 @@
       "json_block_count": 0,
       "line_count": 5,
       "methods": [
-        "Random"
+        "Random",
+        "Stir"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -25573,12 +26932,14 @@
       "title": "Fails"
     },
     "core/5.6.4.2.3": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "Stir"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.2.3.txt",
@@ -25587,12 +26948,14 @@
       "title": "Stir Result"
     },
     "core/5.6.4.2.3.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "Stir"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.2.3.1.txt",
@@ -25606,7 +26969,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 9,
-      "methods": [],
+      "methods": [
+        "DecryptInit"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "Only one decryption \u201cstream\u201d SHALL be able to be open at any one time for any individual"
@@ -25645,12 +27010,14 @@
       "title": "DecriptInit Result"
     },
     "core/5.6.4.3.2.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "DecryptInit"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.3.2.1.txt",
@@ -25678,7 +27045,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 15,
-      "methods": [],
+      "methods": [
+        "DecryptInit",
+        "Decrypt",
+        "DecryptFinalize"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This method SHALL require that the DecryptInit method has been invoked previously during the",
@@ -25729,7 +27100,8 @@
       "json_block_count": 0,
       "line_count": 5,
       "methods": [
-        "Get"
+        "Get",
+        "Decrypt"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -25747,7 +27119,8 @@
       "json_block_count": 0,
       "line_count": 6,
       "methods": [
-        "Set"
+        "Set",
+        "Decrypt"
       ],
       "normative_count": 3,
       "normative_extracts": [
@@ -25761,12 +27134,14 @@
       "title": "BufferOut"
     },
     "core/5.6.4.4.3": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "Decrypt"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.4.3.txt",
@@ -25798,7 +27173,8 @@
       "line_count": 13,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "Decrypt"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -25808,12 +27184,14 @@
       "title": "Fails"
     },
     "core/5.6.4.5": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "DecryptFinalize"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.5.txt",
@@ -25822,12 +27200,14 @@
       "title": "Decryption Method Group \u2013 DecryptFinalize (Object Method)"
     },
     "core/5.6.4.5.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "DecryptFinalize"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.5.1.txt",
@@ -25836,12 +27216,14 @@
       "title": "DecryptFinalize Result"
     },
     "core/5.6.4.5.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Decrypt"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.5.1.1.txt",
@@ -25869,7 +27251,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 9,
-      "methods": [],
+      "methods": [
+        "EncryptInit"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "Only one encryption \u201cstream\u201d SHALL be able to be open at any one time for any individual"
@@ -25896,12 +27280,14 @@
       "title": "IV"
     },
     "core/5.6.4.6.2": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "EncryptInit"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.6.2.txt",
@@ -25910,12 +27296,14 @@
       "title": "EncryptInit Result"
     },
     "core/5.6.4.6.2.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "EncryptInit"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.6.2.1.txt",
@@ -25943,7 +27331,11 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 15,
-      "methods": [],
+      "methods": [
+        "EncryptInit",
+        "Encrypt",
+        "EncryptFinalize"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "This method SHALL require that the EncryptInit method has been invoked previously during the",
@@ -25994,7 +27386,8 @@
       "json_block_count": 0,
       "line_count": 5,
       "methods": [
-        "Get"
+        "Get",
+        "Encrypt"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -26012,7 +27405,8 @@
       "json_block_count": 0,
       "line_count": 6,
       "methods": [
-        "Set"
+        "Set",
+        "Encrypt"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -26025,12 +27419,14 @@
       "title": "BufferOut"
     },
     "core/5.6.4.7.3": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "Encrypt"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.7.3.txt",
@@ -26062,7 +27458,8 @@
       "line_count": 14,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "Encrypt"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -26072,12 +27469,14 @@
       "title": "Fails"
     },
     "core/5.6.4.8": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "EncryptFinalize"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.8.txt",
@@ -26086,12 +27485,14 @@
       "title": "Encryption Method Group \u2013 EncryptFinalize (Object Method)"
     },
     "core/5.6.4.8.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "EncryptFinalize"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.8.1.txt",
@@ -26100,12 +27501,14 @@
       "title": "EncryptFinalize Result"
     },
     "core/5.6.4.8.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Encrypt"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.8.1.1.txt",
@@ -26128,12 +27531,14 @@
       "title": "Fails"
     },
     "core/5.6.4.9": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 9,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.9.txt",
@@ -26147,7 +27552,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 12,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "The value of the Input parameter MAY be either a bytes value, wherein bytes to be signed are passed",
@@ -26182,7 +27589,8 @@
       "json_block_count": 0,
       "line_count": 5,
       "methods": [
-        "Get"
+        "Get",
+        "Sign"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -26200,7 +27608,8 @@
       "json_block_count": 0,
       "line_count": 6,
       "methods": [
-        "Set"
+        "Set",
+        "Sign"
       ],
       "normative_count": 3,
       "normative_extracts": [
@@ -26214,12 +27623,14 @@
       "title": "BufferOut"
     },
     "core/5.6.4.9.3": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "Sign"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.6.4.9.3.txt",
@@ -26251,7 +27662,8 @@
       "line_count": 13,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "Sign"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -26282,7 +27694,8 @@
       "line_count": 12,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "XOR"
       ],
       "normative_count": 0,
       "normative_extracts": [],
@@ -26299,7 +27712,10 @@
       "line_count": 44,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "HashInit",
+        "Hash",
+        "HashFinalize"
       ],
       "normative_count": 19,
       "normative_extracts": [
@@ -26325,7 +27741,10 @@
       "line_count": 34,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "HMACInit",
+        "HMAC",
+        "HMACFinalize"
       ],
       "normative_count": 12,
       "normative_extracts": [
@@ -26351,7 +27770,8 @@
       "line_count": 28,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "XOR"
       ],
       "normative_count": 20,
       "normative_extracts": [
@@ -26390,7 +27810,8 @@
       "json_block_count": 0,
       "line_count": 11,
       "methods": [
-        "Set"
+        "Set",
+        "Sign"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -26409,7 +27830,9 @@
       "line_count": 17,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "Hash",
+        "Sign"
       ],
       "normative_count": 6,
       "normative_extracts": [
@@ -26446,7 +27869,8 @@
       "json_block_count": 0,
       "line_count": 20,
       "methods": [
-        "Get"
+        "Get",
+        "Verify"
       ],
       "normative_count": 11,
       "normative_extracts": [
@@ -26471,7 +27895,9 @@
       "json_block_count": 0,
       "line_count": 23,
       "methods": [
-        "Get"
+        "Get",
+        "Hash",
+        "Verify"
       ],
       "normative_count": 13,
       "normative_extracts": [
@@ -26498,6 +27924,9 @@
       "methods": [
         "Get",
         "Set",
+        "EncryptInit",
+        "Encrypt",
+        "EncryptFinalize",
         "Random"
       ],
       "normative_count": 14,
@@ -26524,7 +27953,10 @@
       "line_count": 40,
       "methods": [
         "Get",
-        "Set"
+        "Set",
+        "DecryptInit",
+        "Decrypt",
+        "DecryptFinalize"
       ],
       "normative_count": 12,
       "normative_extracts": [
@@ -26543,12 +27975,29 @@
       "title": "Decrypting"
     },
     "core/5.6.5.9": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 9,
-      "methods": [],
+      "methods": [
+        "Delete",
+        "DecryptInit",
+        "Decrypt",
+        "DecryptFinalize",
+        "EncryptInit",
+        "Encrypt",
+        "EncryptFinalize",
+        "HashInit",
+        "Hash",
+        "HashFinalize",
+        "HMACInit",
+        "HMAC",
+        "HMACFinalize",
+        "Sign",
+        "Verify",
+        "XOR"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "All other methods that apply to the H_SHA_* tables SHALL be as described in the Base"
@@ -27046,6 +28495,8 @@
       "line_count": 7,
       "methods": [
         "Set",
+        "Delete",
+        "DeleteRow",
         "GenKey"
       ],
       "normative_count": 3,
@@ -27115,7 +28566,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "Verify"
+      ],
       "normative_count": 1,
       "normative_extracts": [
         "SHALL be performed on the re-encrypted LBA before the LBA is considered good."
@@ -27805,7 +29258,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 14,
-      "methods": [],
+      "methods": [
+        "CreateRow"
+      ],
       "normative_count": 7,
       "normative_extracts": [
         "The TPer SHALL enforce that the creation of additional Locking objects complies with the following",
@@ -27975,7 +29430,9 @@
       "json_block_count": 0,
       "line_count": 8,
       "methods": [
-        "Set"
+        "Set",
+        "Delete",
+        "DeleteRow"
       ],
       "normative_count": 3,
       "normative_extracts": [
@@ -28090,7 +29547,8 @@
       "json_block_count": 0,
       "line_count": 27,
       "methods": [
-        "Next"
+        "Next",
+        "CreateLog"
       ],
       "normative_count": 4,
       "normative_extracts": [
@@ -28481,7 +29939,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 14,
-      "methods": [],
+      "methods": [
+        "AddLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.1.txt",
@@ -28518,12 +29978,14 @@
       "title": "Data"
     },
     "core/5.8.3.1.3": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "AddLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.1.3.txt",
@@ -28532,12 +29994,14 @@
       "title": "AddLog Result"
     },
     "core/5.8.3.1.3.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "AddLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.1.3.1.txt",
@@ -28560,12 +30024,15 @@
       "title": "Fails"
     },
     "core/5.8.3.2": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 19,
-      "methods": [],
+      "methods": [
+        "CreateRow",
+        "CreateLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.2.txt",
@@ -28662,12 +30129,14 @@
       "title": "CommonName"
     },
     "core/5.8.3.2.7": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "CreateLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.2.7.txt",
@@ -28732,12 +30201,14 @@
       "title": "Fails"
     },
     "core/5.8.3.3": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "ClearLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.3.txt",
@@ -28746,12 +30217,14 @@
       "title": "ClearLog (Table Method)"
     },
     "core/5.8.3.3.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "ClearLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.3.1.txt",
@@ -28760,12 +30233,14 @@
       "title": "ClearLog Result"
     },
     "core/5.8.3.3.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 3,
-      "methods": [],
+      "methods": [
+        "ClearLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.3.1.1.txt",
@@ -28788,12 +30263,15 @@
       "title": "Fails"
     },
     "core/5.8.3.4": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 8,
-      "methods": [],
+      "methods": [
+        "AddLog",
+        "FlushLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.4.txt",
@@ -28802,12 +30280,14 @@
       "title": "FlushLog (Table Method)"
     },
     "core/5.8.3.4.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 1,
-      "methods": [],
+      "methods": [
+        "FlushLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.4.1.txt",
@@ -28816,12 +30296,14 @@
       "title": "FlushLog Result"
     },
     "core/5.8.3.4.1.1": {
-      "category": "non-executable reference",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 4,
-      "methods": [],
+      "methods": [
+        "FlushLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.3.4.1.1.txt",
@@ -28866,7 +30348,8 @@
       "json_block_count": 0,
       "line_count": 16,
       "methods": [
-        "Authenticate"
+        "Authenticate",
+        "AddLog"
       ],
       "normative_count": 1,
       "normative_extracts": [
@@ -28929,7 +30412,9 @@
       "domain": "core",
       "json_block_count": 0,
       "line_count": 6,
-      "methods": [],
+      "methods": [
+        "Delete"
+      ],
       "normative_count": 2,
       "normative_extracts": [
         "Because a Log table and the LogList table is kept in sync, there SHALL be no ACL to allow the Log",
@@ -28960,12 +30445,15 @@
       "title": "Specifying a Log Table"
     },
     "core/5.8.4.6": {
-      "category": "table schema",
+      "category": "method rule",
       "column_definitions": [],
       "domain": "core",
       "json_block_count": 0,
       "line_count": 8,
-      "methods": [],
+      "methods": [
+        "Delete",
+        "ClearLog"
+      ],
       "normative_count": 0,
       "normative_extracts": [],
       "path": "artifacts/documents/core/5.8.4.6.txt",
@@ -30442,6 +31930,7 @@
       "line_count": 58,
       "methods": [
         "Authenticate",
+        "GetACL",
         "Get",
         "Set",
         "Next",
@@ -30466,6 +31955,7 @@
       "line_count": 603,
       "methods": [
         "Authenticate",
+        "GetACL",
         "Get",
         "Set",
         "Next",
@@ -30952,6 +32442,7 @@
       "line_count": 57,
       "methods": [
         "Authenticate",
+        "GetACL",
         "Get",
         "Set",
         "Next",
@@ -30976,6 +32467,7 @@
       "line_count": 1384,
       "methods": [
         "Authenticate",
+        "GetACL",
         "Get",
         "Set",
         "Next",
@@ -31194,7 +32686,8 @@
       "json_block_count": 0,
       "line_count": 19,
       "methods": [
-        "Set"
+        "Set",
+        "CreateRow"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -31213,7 +32706,8 @@
       "json_block_count": 0,
       "line_count": 23,
       "methods": [
-        "Set"
+        "Set",
+        "CreateRow"
       ],
       "normative_count": 2,
       "normative_extracts": [
@@ -32563,7 +34057,7 @@
           "type": "uinteger_4"
         },
         "6": {
-          "mutability": "read_only",
+          "mutability": "read_write",
           "names": [
             "tries",
             "Tries"
@@ -32597,6 +34091,128 @@
         "core/5.3.2.12",
         "opal/4.2.1.8",
         "opal/4.3.1.9"
+      ]
+    },
+    "ClockTime": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid"
+          ],
+          "number": 0
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name"
+          ],
+          "number": 1
+        },
+        "10": {
+          "mutability": "read_only",
+          "names": [
+            "lowinitialtimer"
+          ],
+          "number": 10
+        },
+        "11": {
+          "mutability": "read_only",
+          "names": [
+            "lowlag"
+          ],
+          "number": 11
+        },
+        "12": {
+          "mutability": "read_only",
+          "names": [
+            "monotonicbase"
+          ],
+          "number": 12
+        },
+        "13": {
+          "mutability": "read_only",
+          "names": [
+            "monotonicreserve"
+          ],
+          "number": 13
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname"
+          ],
+          "number": 2
+        },
+        "3": {
+          "mutability": "read_only",
+          "names": [
+            "havehigh"
+          ],
+          "number": 3
+        },
+        "4": {
+          "mutability": "read_only",
+          "names": [
+            "highbywhom"
+          ],
+          "number": 4
+        },
+        "5": {
+          "mutability": "read_only",
+          "names": [
+            "highinitialtimer"
+          ],
+          "number": 5
+        },
+        "6": {
+          "mutability": "read_only",
+          "names": [
+            "highlag"
+          ],
+          "number": 6
+        },
+        "7": {
+          "mutability": "read_only",
+          "names": [
+            "havelow"
+          ],
+          "number": 7
+        },
+        "8": {
+          "mutability": "read_only",
+          "names": [
+            "lowbywhom"
+          ],
+          "number": 8
+        },
+        "9": {
+          "mutability": "read_only",
+          "names": [
+            "lowsettime"
+          ],
+          "number": 9
+        }
+      },
+      "max_column": 13,
+      "name_to_number": {
+        "commonname": 2,
+        "havehigh": 3,
+        "havelow": 7,
+        "highbywhom": 4,
+        "highinitialtimer": 5,
+        "highlag": 6,
+        "lowbywhom": 8,
+        "lowinitialtimer": 10,
+        "lowlag": 11,
+        "lowsettime": 9,
+        "monotonicbase": 12,
+        "monotonicreserve": 13,
+        "name": 1,
+        "uid": 0
+      },
+      "sources": [
+        "built-in"
       ]
     },
     "Column": {
@@ -32700,6 +34316,32 @@
         "core/5.3.2.4"
       ]
     },
+    "DataRemovalMechanism": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid"
+          ],
+          "number": 0
+        },
+        "1": {
+          "mutability": "read_write",
+          "names": [
+            "activedataremovalmechanism"
+          ],
+          "number": 1
+        }
+      },
+      "max_column": 1,
+      "name_to_number": {
+        "activedataremovalmechanism": 1,
+        "uid": 0
+      },
+      "sources": [
+        "built-in"
+      ]
+    },
     "DataStore": {
       "columns": {
         "0": {
@@ -32779,7 +34421,7 @@
           "type": "str"
         },
         "10": {
-          "mutability": "read_only",
+          "mutability": "read_write",
           "names": [
             "activekey",
             "ActiveKey"
@@ -32797,7 +34439,7 @@
           "type": "str"
         },
         "12": {
-          "mutability": "read_write",
+          "mutability": "read_only",
           "names": [
             "reencryptstate",
             "ReEncryptState"
@@ -32844,7 +34486,7 @@
           "type": "str"
         },
         "17": {
-          "mutability": "read_write",
+          "mutability": "read_only",
           "names": [
             "lastreencryptlba",
             "LastReEncryptLBA"
@@ -32853,7 +34495,7 @@
           "type": "str"
         },
         "18": {
-          "mutability": "read_write",
+          "mutability": "read_only",
           "names": [
             "lastreencstate",
             "lastreencstat",
@@ -32864,7 +34506,7 @@
           "type": "str"
         },
         "19": {
-          "mutability": "read_write",
+          "mutability": "read_only",
           "names": [
             "generalstatus",
             "GeneralStatus"
@@ -33105,6 +34747,186 @@
         "built-in",
         "core/5.7.2.1",
         "opal/4.3.5.1"
+      ]
+    },
+    "Log": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid"
+          ],
+          "number": 0
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "prev"
+          ],
+          "number": 1
+        },
+        "10": {
+          "mutability": "read_only",
+          "names": [
+            "timekind"
+          ],
+          "number": 10
+        },
+        "11": {
+          "mutability": "read_only",
+          "names": [
+            "logkind"
+          ],
+          "number": 11
+        },
+        "12": {
+          "mutability": "read_only",
+          "names": [
+            "name"
+          ],
+          "number": 12
+        },
+        "13": {
+          "mutability": "read_only",
+          "names": [
+            "data"
+          ],
+          "number": 13
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "next"
+          ],
+          "number": 2
+        },
+        "3": {
+          "mutability": "read_only",
+          "names": [
+            "session"
+          ],
+          "number": 3
+        },
+        "4": {
+          "mutability": "read_only",
+          "names": [
+            "signingauthority"
+          ],
+          "number": 4
+        },
+        "5": {
+          "mutability": "read_only",
+          "names": [
+            "signingauthname"
+          ],
+          "number": 5
+        },
+        "6": {
+          "mutability": "read_only",
+          "names": [
+            "exchangeauthority"
+          ],
+          "number": 6
+        },
+        "7": {
+          "mutability": "read_only",
+          "names": [
+            "exchangeauthname"
+          ],
+          "number": 7
+        },
+        "8": {
+          "mutability": "read_only",
+          "names": [
+            "monotonictime"
+          ],
+          "number": 8
+        },
+        "9": {
+          "mutability": "read_only",
+          "names": [
+            "exacttime"
+          ],
+          "number": 9
+        }
+      },
+      "max_column": 13,
+      "name_to_number": {
+        "data": 13,
+        "exacttime": 9,
+        "exchangeauthname": 7,
+        "exchangeauthority": 6,
+        "logkind": 11,
+        "monotonictime": 8,
+        "name": 12,
+        "next": 2,
+        "prev": 1,
+        "session": 3,
+        "signingauthname": 5,
+        "signingauthority": 4,
+        "timekind": 10,
+        "uid": 0
+      },
+      "sources": [
+        "built-in"
+      ]
+    },
+    "LogList": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid"
+          ],
+          "number": 0
+        },
+        "1": {
+          "mutability": "read_write",
+          "names": [
+            "name"
+          ],
+          "number": 1
+        },
+        "2": {
+          "mutability": "read_write",
+          "names": [
+            "commonname"
+          ],
+          "number": 2
+        },
+        "3": {
+          "mutability": "read_only",
+          "names": [
+            "log"
+          ],
+          "number": 3
+        },
+        "4": {
+          "mutability": "read_only",
+          "names": [
+            "serial"
+          ],
+          "number": 4
+        },
+        "5": {
+          "mutability": "read_write",
+          "names": [
+            "highsecurity"
+          ],
+          "number": 5
+        }
+      },
+      "max_column": 5,
+      "name_to_number": {
+        "commonname": 2,
+        "highsecurity": 5,
+        "log": 3,
+        "name": 1,
+        "serial": 4,
+        "uid": 0
+      },
+      "sources": [
+        "built-in"
       ]
     },
     "MBRControl": {
@@ -33386,18 +35208,18 @@
           "type": "uid"
         },
         "1": {
-          "mutability": "read_only",
+          "mutability": "read_write",
           "names": [
-            "name",
+            "table",
             "Table"
           ],
           "number": 1,
           "type": "Table_object_ref"
         },
         "2": {
-          "mutability": "read_only",
+          "mutability": "read_write",
           "names": [
-            "commonname",
+            "columnnumber",
             "ColumnNumber"
           ],
           "number": 2,
@@ -33406,8 +35228,7 @@
         "3": {
           "mutability": "read_write",
           "names": [
-            "protect",
-            "columnnumber",
+            "protectmechanisms",
             "ProtectMechanisms"
           ],
           "number": 3,
@@ -33417,9 +35238,6 @@
       "max_column": 3,
       "name_to_number": {
         "columnnumber": 2,
-        "commonname": 2,
-        "name": 1,
-        "protect": 3,
         "protectmechanisms": 3,
         "table": 1,
         "uid": 0
@@ -33427,6 +35245,88 @@
       "sources": [
         "built-in",
         "core/5.3.2.8"
+      ]
+    },
+    "TPerInfo": {
+      "columns": {
+        "0": {
+          "mutability": "read_only",
+          "names": [
+            "uid"
+          ],
+          "number": 0
+        },
+        "1": {
+          "mutability": "read_only",
+          "names": [
+            "name"
+          ],
+          "number": 1
+        },
+        "2": {
+          "mutability": "read_only",
+          "names": [
+            "commonname"
+          ],
+          "number": 2
+        },
+        "3": {
+          "mutability": "read_only",
+          "names": [
+            "guid"
+          ],
+          "number": 3
+        },
+        "4": {
+          "mutability": "read_only",
+          "names": [
+            "protocolversion"
+          ],
+          "number": 4
+        },
+        "5": {
+          "mutability": "read_only",
+          "names": [
+            "firmwareversion"
+          ],
+          "number": 5
+        },
+        "6": {
+          "mutability": "read_only",
+          "names": [
+            "generation"
+          ],
+          "number": 6
+        },
+        "7": {
+          "mutability": "read_only",
+          "names": [
+            "spaceforissuance"
+          ],
+          "number": 7
+        },
+        "8": {
+          "mutability": "read_write",
+          "names": [
+            "programmaticresetenable"
+          ],
+          "number": 8
+        }
+      },
+      "max_column": 8,
+      "name_to_number": {
+        "commonname": 2,
+        "firmwareversion": 5,
+        "generation": 6,
+        "guid": 3,
+        "name": 1,
+        "programmaticresetenable": 8,
+        "protocolversion": 4,
+        "spaceforissuance": 7,
+        "uid": 0
+      },
+      "sources": [
+        "built-in"
       ]
     },
     "Table": {
@@ -33468,7 +35368,7 @@
           "type": "uinteger_4"
         },
         "12": {
-          "mutability": "read_only",
+          "mutability": "read_write",
           "names": [
             "maxsize",
             "MaxSize"
@@ -33477,7 +35377,7 @@
           "type": "uinteger_4"
         },
         "13": {
-          "mutability": "read_write",
+          "mutability": "read_only",
           "names": [
             "mandatorywritegranularity",
             "MandatoryWriteGranularity"
@@ -33486,7 +35386,7 @@
           "type": "str"
         },
         "14": {
-          "mutability": "read_write",
+          "mutability": "read_only",
           "names": [
             "recommendedaccessgranularity",
             "RecommendedAccessGranularity"
