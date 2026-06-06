@@ -1,3 +1,0 @@
-5.3.2.3.5 Kind
-This value indicates the type of table – either object or byte.
-This column SHALL NOT be modifiable by the host.

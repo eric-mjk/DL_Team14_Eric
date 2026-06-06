@@ -1,3 +1,0 @@
-5.6.4.9.1.1 Data
-This input parameter is used to supply bytes directly from the host for signing.  Should padding be
-required, the host SHALL perform it.

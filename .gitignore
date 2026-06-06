@@ -10,3 +10,7 @@ __pycache__/
 # Evaluation outputs
 predictions.jsonl
 scores.json
+
+# Generated copies of the canonical root documents/ corpus.
+*/artifacts/documents/
+*/*/artifacts/documents/

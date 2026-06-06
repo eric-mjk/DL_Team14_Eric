@@ -6,7 +6,7 @@ Generated from `artifacts/spec_index.json` and the rule references used by the d
 
 - Total indexed sections: 1376
 - Categories: auth/access control 301, data command behavior 54, method rule 223, non-executable reference 174, normative reference 104, state transition 59, table schema 461
-- Coverage states: implemented 240, indexed_only 212, non_executable 94, partial 103, schema_metadata_only 343, transport_layer_only 174, type_definition_only 129, vendor_optional 81
+- Coverage states: implemented 245, indexed_only 212, non_executable 94, partial 103, schema_metadata_only 343, transport_layer_only 169, type_definition_only 129, vendor_optional 81
 - Unresolved rule refs: 0
 - Rules without refs: 0
 - Normative gaps: 128

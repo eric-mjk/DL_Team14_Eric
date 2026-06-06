@@ -1,3 +1,0 @@
-5.3.2.7.2 InvokingID
-This is the uidref to the SP/Table/Object portion of this access control association.
-This column SHALL NOT be modifiable by the host.

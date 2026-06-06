@@ -1,2 +1,0 @@
-5.8.3.4.2 Fails
-a. If the referenced log table does not exist.

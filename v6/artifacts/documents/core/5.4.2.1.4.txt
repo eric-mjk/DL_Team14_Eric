@@ -1,3 +1,0 @@
-5.4.2.1.4 Generation
-This is the generation number of the volume.
-This column SHALL NOT be modifiable by the host.

@@ -1,3 +1,0 @@
-5.3.3.5.1 Rows
-The Rows parameter consists of a list of uids that represent each of the rows to be deleted from the
-table.

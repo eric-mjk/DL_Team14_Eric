@@ -1,2 +1,0 @@
-3.4 SP Operation Descriptions
-This section defines the operational and access control model for SPs.

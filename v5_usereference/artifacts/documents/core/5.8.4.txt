@@ -1,2 +1,0 @@
-5.8.4 Descriptions
-Logs are cyclical.  Implementation SHALL prevent uncontrolled logging recursion.

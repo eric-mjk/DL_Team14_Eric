@@ -1,3 +1,0 @@
-5.7.2.5.1 UID
-This is the unique identifier of this table row.
-This column SHALL NOT be modifiable by the host.

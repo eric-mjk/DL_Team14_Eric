@@ -1,2 +1,0 @@
-3.2.3.4.1.1.2 Kind
-This field identifies the type of the subpacket.  For data subpackets, this field is set to zeroes.

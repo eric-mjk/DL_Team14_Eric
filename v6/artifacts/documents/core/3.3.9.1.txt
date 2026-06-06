@@ -1,4 +1,0 @@
-3.3.9.1 Introduction
-Begin Informative Content
-Session Reliability provides resilience against lost, duplicated, or deleted packets.
-End Informative Content
