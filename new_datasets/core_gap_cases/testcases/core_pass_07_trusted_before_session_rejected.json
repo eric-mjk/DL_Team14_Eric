@@ -1,0 +1,40 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "method": {
+        "name": "StartTrustedSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {
+            "HostSessionID": 1,
+            "SPSessionID": 25970
+          },
+          "optional": {
+            "HostResponse": "proof",
+            "HostEncryptSessionKey": "enc",
+            "HostIntegritySessionKey": "mac"
+          }
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "FAIL"
+    },
+    "output": {
+      "method": {
+        "name": "StartTrustedSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {},
+      "status_codes": "FAIL"
+    }
+  }
+]

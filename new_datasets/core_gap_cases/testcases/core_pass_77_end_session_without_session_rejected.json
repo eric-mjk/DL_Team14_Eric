@@ -1,0 +1,33 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "method": {
+        "name": "EndSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "FAIL"
+    },
+    "output": {
+      "method": {
+        "name": "EndSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {},
+      "status_codes": "FAIL"
+    }
+  }
+]

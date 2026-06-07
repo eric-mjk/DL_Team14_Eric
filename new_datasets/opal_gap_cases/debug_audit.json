@@ -1,0 +1,2550 @@
+[
+  {
+    "filename": "opal_pass_01_activate_sid_adminsp.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Activate requires authenticated SID AdminSP write session.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/4.2.1.5"
+    ],
+    "debug": "final=method:Activate object=LockingSP family=SP status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP Activate requires an authenticated SID AdminSP write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_01_activate_sid_adminsp.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Activate requires authenticated SID AdminSP write session.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/4.2.1.5"
+    ],
+    "debug": "final=method:Activate object=LockingSP family=SP status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP Activate requires an authenticated SID AdminSP write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_02_activate_unauth_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Unauthenticated AdminSP session cannot activate LockingSP.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/4.2.1.5"
+    ],
+    "debug": "final=method:Activate object=LockingSP family=SP status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP Activate requires an authenticated SID AdminSP write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_02_activate_unauth_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Unauthenticated AdminSP session cannot activate LockingSP.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/4.2.1.5"
+    ],
+    "debug": "final=method:Activate object=LockingSP family=SP status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP Activate requires an authenticated SID AdminSP write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_03_activate_readonly_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Activate requires a read-write AdminSP session.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/4.1.1.2"
+    ],
+    "debug": "final=method:Activate object=LockingSP family=SP status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=False auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Activate requires a write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_03_activate_readonly_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Activate requires a read-write AdminSP session.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/4.1.1.2"
+    ],
+    "debug": "final=method:Activate object=LockingSP family=SP status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=False auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Activate requires a write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_04_activate_wrong_uid.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Activate targets manufactured SP objects, specifically LockingSP here.",
+    "refs": [
+      "opal/5.1.1"
+    ],
+    "debug": "final=method:Activate object=SP_00AA family=SP status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Activate target must be LockingSP.",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_04_activate_wrong_uid.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Activate targets manufactured SP objects, specifically LockingSP here.",
+    "refs": [
+      "opal/5.1.1"
+    ],
+    "debug": "final=method:Activate object=SP_00AA family=SP status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Activate target must be LockingSP.",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_05_activate_repeat_noop.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Repeat Activate on an already-Manufactured LockingSP completes as an authorized no-op.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/5.2.2.3.2"
+    ],
+    "debug": "final=method:Activate object=LockingSP family=SP status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Activate on already-Manufactured LockingSP is a no-op if access control is satisfied (opal/5.1.1).",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_05_activate_repeat_noop.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Repeat Activate on an already-Manufactured LockingSP completes as an authorized no-op.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/5.2.2.3.2"
+    ],
+    "debug": "final=method:Activate object=LockingSP family=SP status=invalid_parameter expected=success actual=invalid_parameter verdict=fail policy=none coverage=implemented refs=opal/5.1.1,opal/5.1.1.1,opal/5.1.1.2,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.1,core/4.1 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Activate on already-Manufactured LockingSP is a no-op if access control is satisfied (opal/5.1.1).",
+    "classification": "sound_debug_reason",
+    "final": "method:Activate",
+    "expected_status": "success",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_06_activate_copies_sid_to_admin1.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "First activation copies SID PIN into LockingSP Admin1.",
+    "refs": [
+      "opal/5.1.1.2",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for Admin1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_06_activate_copies_sid_to_admin1.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "First activation copies SID PIN into LockingSP Admin1.",
+    "refs": [
+      "opal/5.1.1.2",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for Admin1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_07_repeat_activate_no_recopysid.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Repeat Activate does not overwrite an initialized Admin1 PIN.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/5.1.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge does not match tracked credential for Admin1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_07_repeat_activate_no_recopysid.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Repeat Activate does not overwrite an initialized Admin1 PIN.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/5.1.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge does not match tracked credential for Admin1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_08_lockingsp_before_activation.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Manufactured-Inactive LockingSP rejects StartSession.",
+    "refs": [
+      "opal/5.2.2.3.1",
+      "opal/4.1.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP session before successful LockingSP activation should fail.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_08_lockingsp_before_activation.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Manufactured-Inactive LockingSP rejects StartSession.",
+    "refs": [
+      "opal/5.2.2.3.1",
+      "opal/4.1.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP session before successful LockingSP activation should fail.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_09_revert_lockingsp_inactive.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Revert on LockingSP returns it to Manufactured-Inactive.",
+    "refs": [
+      "opal/5.1.2",
+      "opal/5.2.2.2.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=Global:1,Range1:1 ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP session before successful LockingSP activation should fail.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_09_revert_lockingsp_inactive.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Revert on LockingSP returns it to Manufactured-Inactive.",
+    "refs": [
+      "opal/5.1.2",
+      "opal/5.2.2.2.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=Global:1,Range1:1 ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP session before successful LockingSP activation should fail.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_10_revert_requires_sid.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Revert requires SID or PSID in an AdminSP read-write session.",
+    "refs": [
+      "opal/5.1.2",
+      "opal/4.2.1.5"
+    ],
+    "debug": "final=method:Revert object=LockingSP family=SP status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/5.1.2,opal/5.1.2.1,opal/5.1.2.2,opal/5.1.2.2.1,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.2,core/4.1 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Revert on an SP object requires an authenticated AdminSP write session with SID or PSID authority (opal/5.1.2).",
+    "classification": "sound_debug_reason",
+    "final": "method:Revert",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_10_revert_requires_sid.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Revert requires SID or PSID in an AdminSP read-write session.",
+    "refs": [
+      "opal/5.1.2",
+      "opal/4.2.1.5"
+    ],
+    "debug": "final=method:Revert object=LockingSP family=SP status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/5.1.2,opal/5.1.2.1,opal/5.1.2.2,opal/5.1.2.2.1,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.2,core/4.1 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Revert on an SP object requires an authenticated AdminSP write session with SID or PSID authority (opal/5.1.2).",
+    "classification": "sound_debug_reason",
+    "final": "method:Revert",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_11_revert_unknown_sp.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Revert is not permitted on issued or unknown SP objects.",
+    "refs": [
+      "opal/5.1.2"
+    ],
+    "debug": "final=method:Revert object=SP_00AA family=SP status=fail expected=error actual=error verdict=pass policy=none coverage=implemented refs=opal/5.1.2,opal/5.1.2.1,opal/5.1.2.2,opal/5.1.2.2.1,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.2,core/4.1 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Revert is not permitted on issued or unknown SP objects (opal/5.1.2).",
+    "classification": "sound_debug_reason",
+    "final": "method:Revert",
+    "expected_status": "error",
+    "actual_status": "error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_11_revert_unknown_sp.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Revert is not permitted on issued or unknown SP objects.",
+    "refs": [
+      "opal/5.1.2"
+    ],
+    "debug": "final=method:Revert object=SP_00AA family=SP status=success expected=error actual=success verdict=fail policy=none coverage=implemented refs=opal/5.1.2,opal/5.1.2.1,opal/5.1.2.2,opal/5.1.2.2.1,opal/5.2.1.2,opal/5.2.2.2,opal/5.2.2.2.2,core/4.1 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Revert is not permitted on issued or unknown SP objects (opal/5.1.2).",
+    "classification": "sound_debug_reason",
+    "final": "method:Revert",
+    "expected_status": "error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_12_revertsp_admin_success.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "RevertSP succeeds in an authenticated LockingSP admin write session.",
+    "refs": [
+      "opal/5.1.3",
+      "opal/4.3.1.6"
+    ],
+    "debug": "final=method:RevertSP object=LockingSP family=SP status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/5.1.3,opal/5.1.3.1,opal/5.1.3.2,opal/5.1.3.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=RevertSP requires an authenticated owner/admin write session in the target SP.",
+    "classification": "sound_debug_reason",
+    "final": "method:RevertSP",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_12_revertsp_admin_success.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "RevertSP succeeds in an authenticated LockingSP admin write session.",
+    "refs": [
+      "opal/5.1.3",
+      "opal/4.3.1.6"
+    ],
+    "debug": "final=method:RevertSP object=LockingSP family=SP status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/5.1.3,opal/5.1.3.1,opal/5.1.3.2,opal/5.1.3.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=RevertSP requires an authenticated owner/admin write session in the target SP.",
+    "classification": "sound_debug_reason",
+    "final": "method:RevertSP",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_13_revertsp_unauth_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "RevertSP requires an admin/owner authority in the target SP.",
+    "refs": [
+      "opal/5.1.3",
+      "opal/4.3.1.6"
+    ],
+    "debug": "final=method:RevertSP object=LockingSP family=SP status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/5.1.3,opal/5.1.3.1,opal/5.1.3.2,opal/5.1.3.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=RevertSP requires an authenticated owner/admin write session in the target SP.",
+    "classification": "sound_debug_reason",
+    "final": "method:RevertSP",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_13_revertsp_unauth_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "RevertSP requires an admin/owner authority in the target SP.",
+    "refs": [
+      "opal/5.1.3",
+      "opal/4.3.1.6"
+    ],
+    "debug": "final=method:RevertSP object=LockingSP family=SP status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/5.1.3,opal/5.1.3.1,opal/5.1.3.2,opal/5.1.3.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=RevertSP requires an authenticated owner/admin write session in the target SP.",
+    "classification": "sound_debug_reason",
+    "final": "method:RevertSP",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_14_revertsp_keep_global_ok.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "KeepGlobalRangeKey is valid for LockingSP RevertSP when the global range is not locked.",
+    "refs": [
+      "opal/5.1.3.2"
+    ],
+    "debug": "final=method:RevertSP object=LockingSP family=SP status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/5.1.3,opal/5.1.3.1,opal/5.1.3.2,opal/5.1.3.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=RevertSP requires an authenticated owner/admin write session in the target SP.",
+    "classification": "sound_debug_reason",
+    "final": "method:RevertSP",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_14_revertsp_keep_global_ok.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "KeepGlobalRangeKey is valid for LockingSP RevertSP when the global range is not locked.",
+    "refs": [
+      "opal/5.1.3.2"
+    ],
+    "debug": "final=method:RevertSP object=LockingSP family=SP status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/5.1.3,opal/5.1.3.1,opal/5.1.3.2,opal/5.1.3.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=RevertSP requires an authenticated owner/admin write session in the target SP.",
+    "classification": "sound_debug_reason",
+    "final": "method:RevertSP",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_15_revertsp_keep_global_locked.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "KeepGlobalRangeKey fails when the global range is read-locked and write-locked.",
+    "refs": [
+      "opal/5.1.3.2",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=method:RevertSP object=LockingSP family=SP status=fail expected=error actual=error verdict=pass policy=none coverage=implemented refs=opal/5.1.3,opal/5.1.3.1,opal/5.1.3.2,opal/5.1.3.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:1 w=0:1; Range1:start=0 len=0 r=0:0 w=0:0]) reason=RevertSP with KeepGlobalRangeKey=True fails because Global Range is both Read Locked and Write Locked (opal/5.1.3.2).",
+    "classification": "sound_debug_reason",
+    "final": "method:RevertSP",
+    "expected_status": "error",
+    "actual_status": "error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_15_revertsp_keep_global_locked.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "KeepGlobalRangeKey fails when the global range is read-locked and write-locked.",
+    "refs": [
+      "opal/5.1.3.2",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=method:RevertSP object=LockingSP family=SP status=success expected=error actual=success verdict=fail policy=none coverage=implemented refs=opal/5.1.3,opal/5.1.3.1,opal/5.1.3.2,opal/5.1.3.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:1 w=0:1; Range1:start=0 len=0 r=0:0 w=0:0]) reason=RevertSP with KeepGlobalRangeKey=True fails because Global Range is both Read Locked and Write Locked (opal/5.1.3.2).",
+    "classification": "sound_debug_reason",
+    "final": "method:RevertSP",
+    "expected_status": "error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_16_revertsp_session_aborts.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "After successful RevertSP, LockingSP sessions fail until reactivation.",
+    "refs": [
+      "opal/5.1.3.3",
+      "opal/5.2.2.3.1"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=Global:1,Range1:1 ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP session before successful LockingSP activation should fail.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_16_revertsp_session_aborts.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "After successful RevertSP, LockingSP sessions fail until reactivation.",
+    "refs": [
+      "opal/5.1.3.3",
+      "opal/5.2.2.3.1"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=Global:1,Range1:1 ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingSP session before successful LockingSP activation should fail.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_17_revertsp_resets_admin1_pin.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "RevertSP resets LockingSP C_PIN values before reactivation copies SID again.",
+    "refs": [
+      "opal/5.1.3.3",
+      "opal/4.3.1.9",
+      "opal/5.1.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=Global:1,Range1:1 ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for Admin1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_17_revertsp_resets_admin1_pin.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "RevertSP resets LockingSP C_PIN values before reactivation copies SID again.",
+    "refs": [
+      "opal/5.1.3.3",
+      "opal/4.3.1.9",
+      "opal/5.1.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=Global:1,Range1:1 ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for Admin1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_18_adminsp_manufactured_session.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Manufactured AdminSP accepts unauthenticated sessions.",
+    "refs": [
+      "opal/5.2.2.3.2",
+      "opal/4.1.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for None.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_18_adminsp_manufactured_session.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Manufactured AdminSP accepts unauthenticated sessions.",
+    "refs": [
+      "opal/5.2.2.3.2",
+      "opal/4.1.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for None.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_19_lockingsp_manufactured_session.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Manufactured LockingSP accepts sessions after activation.",
+    "refs": [
+      "opal/5.2.2.3.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for None.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_19_lockingsp_manufactured_session.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Manufactured LockingSP accepts sessions after activation.",
+    "refs": [
+      "opal/5.2.2.3.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for None.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_20_disabled_lockingsp_session.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Disabled LockingSP rejects StartSession.",
+    "refs": [
+      "opal/5.2.2.1",
+      "opal/5.2.2.3.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=sp_disabled expected=error actual=resource_error verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Issued-Disabled active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession to LockingSP must fail: SP lifecycle is Issued-Disabled (spec core/4.3.6).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "error",
+    "actual_status": "resource_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_20_disabled_lockingsp_session.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Disabled LockingSP rejects StartSession.",
+    "refs": [
+      "opal/5.2.2.1",
+      "opal/5.2.2.3.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Issued-Disabled active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession to LockingSP must fail: SP lifecycle is Issued-Disabled (spec core/4.3.6).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_21_locking_admin_set_flags.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "LockingSP admins can set RangeStart, RangeLength, and lock flags.",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=success expected=success actual=success verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_21_locking_admin_set_flags.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "LockingSP admins can set RangeStart, RangeLength, and lock flags.",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=not_authorized expected=success actual=auth_error verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_22_locking_unauth_set_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Unauthenticated sessions cannot mutate locking range columns.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_22_locking_unauth_set_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Unauthenticated sessions cannot mutate locking range columns.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=success expected=auth_error actual=success verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_23_locking_readonly_set_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Read-only sessions cannot mutate locking range columns.",
+    "refs": [
+      "opal/4.1.1.2",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=LockingSP write=False auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set requires a write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_23_locking_readonly_set_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Read-only sessions cannot mutate locking range columns.",
+    "refs": [
+      "opal/4.1.1.2",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=LockingSP write=False auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set requires a write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_24_global_range_geometry_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Global RangeStart and RangeLength are not host-modifiable geometry.",
+    "refs": [
+      "opal/4.3.5.2.1.1",
+      "opal/4.3.5.2.1.2"
+    ],
+    "debug": "final=method:Set object=Locking_Global family=Locking status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=table_schema coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Locking RangeStart/RangeLength update is negative or overlaps another configured range.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "table_schema",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_24_global_range_geometry_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Global RangeStart and RangeLength are not host-modifiable geometry.",
+    "refs": [
+      "opal/4.3.5.2.1.1",
+      "opal/4.3.5.2.1.2"
+    ],
+    "debug": "final=method:Set object=Locking_Global family=Locking status=success expected=invalid_parameter actual=success verdict=fail policy=table_schema coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Locking RangeStart/RangeLength update is negative or overlaps another configured range.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "table_schema",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_25_negative_range_geometry.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "RangeStart and RangeLength updates cannot be negative.",
+    "refs": [
+      "opal/4.3.5.2.1.1",
+      "opal/4.3.5.2.1.2"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=table_schema coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Locking RangeStart/RangeLength update is negative or overlaps another configured range.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "table_schema",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_25_negative_range_geometry.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "RangeStart and RangeLength updates cannot be negative.",
+    "refs": [
+      "opal/4.3.5.2.1.1",
+      "opal/4.3.5.2.1.2"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=success expected=invalid_parameter actual=success verdict=fail policy=table_schema coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Locking RangeStart/RangeLength update is negative or overlaps another configured range.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "table_schema",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_26_locking_get_reflects_state.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Locking Get must reflect tracked ReadLocked and WriteLocked state.",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Get object=Locking_Range1 family=Locking status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=1:1 w=1:0]) reason=Locking range Get is authorized and returned values match tracked state.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_26_locking_get_reflects_state.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Locking Get must reflect tracked ReadLocked and WriteLocked state.",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Get object=Locking_Range1 family=Locking status=success expected=None actual=success verdict=fail policy=rule coverage=implemented refs=opal/4.3.1 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=1:1 w=1:0]) reason=Locking GET returned read_locked=0 for Range1 but tracked state has read_locked=1 (opal/4.3.1 \u2014 drive must reflect authoritative lock state).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "None",
+    "actual_status": "success",
+    "policy": "rule",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_27_locking_get_protected_cols.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Non-admin Locking Get must not return protected range columns.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=method:Get object=Locking_Range1 family=Locking status=not_authorized expected={'auth_error', 'success'} actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Non-admin Locking range Get of protected columns: drive should omit cells and return SUCCESS (opal/4.3.1.7 + core/5.3.4.2.2).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "{'auth_error',",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_27_locking_get_protected_cols.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Non-admin Locking Get must not return protected range columns.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=method:Get object=Locking_Range1 family=Locking status=success expected={'auth_error', 'success'} actual=success verdict=fail policy=rule coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Drive returned protected Locking columns [5, 6, 7, 8] to non-admin session \u2014 cell-omit required (opal/4.3.1.7 + core/5.3.4.2.2).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "{'auth_error',",
+    "actual_status": "success",
+    "policy": "rule",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_28_lockinginfo_public_in_sp.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "LockingInfo geometry columns are readable inside an active LockingSP session.",
+    "refs": [
+      "opal/4.3.5.1"
+    ],
+    "debug": "final=method:Get object=LockingInfo family=LockingInfo status=success expected=success actual=success verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Get matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_28_lockinginfo_public_in_sp.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "LockingInfo geometry columns are readable inside an active LockingSP session.",
+    "refs": [
+      "opal/4.3.5.1"
+    ],
+    "debug": "final=method:Get object=LockingInfo family=LockingInfo status=not_authorized expected=success actual=auth_error verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Get matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_29_locking_get_before_active.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Locking range access requires an active LockingSP.",
+    "refs": [
+      "opal/5.2.2.3.1",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=method:Get object=Locking_Range1 family=Locking status=fail expected=error actual=error verdict=pass policy=none coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Locking_Range1 Get requires an active LockingSP.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "error",
+    "actual_status": "error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_29_locking_get_before_active.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Locking range access requires an active LockingSP.",
+    "refs": [
+      "opal/5.2.2.3.1",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=method:Get object=Locking_Range1 family=Locking status=success expected=error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.3.5.2,opal/4.3.5.2.1.1,opal/4.3.5.2.1.2,opal/4.3.5.2.2,opal/4.3.1.7,core/5.7.2.2,core/5.7.2.2.13,core/5.7.2.2.14,core/5.7.3.3,core/5.7.3.4,core/5.7.3.5,core/5.7.3.7.1,core/5.7.3.7.4,core/3.3.6.5.3 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Locking_Range1 Get requires an active LockingSP.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_30_mbrcontrol_admin_set.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "MBRControl Enable/Done/DoneOnReset are admin-controlled.",
+    "refs": [
+      "opal/4.3.5.3",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=MBRControl family=MBRControl status=success expected=success actual=success verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_30_mbrcontrol_admin_set.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "MBRControl Enable/Done/DoneOnReset are admin-controlled.",
+    "refs": [
+      "opal/4.3.5.3",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=MBRControl family=MBRControl status=not_authorized expected=success actual=auth_error verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_31_mbrcontrol_unauth_set.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Unauthenticated sessions cannot write MBRControl.",
+    "refs": [
+      "opal/4.3.5.3",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=MBRControl family=MBRControl status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_31_mbrcontrol_unauth_set.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Unauthenticated sessions cannot write MBRControl.",
+    "refs": [
+      "opal/4.3.5.3",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=MBRControl family=MBRControl status=success expected=auth_error actual=success verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_32_mbrcontrol_anybody_get.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "MBRControl Get is available to Anybody inside LockingSP.",
+    "refs": [
+      "opal/4.3.1.6",
+      "opal/4.3.5.3"
+    ],
+    "debug": "final=method:Get object=MBRControl family=MBRControl status=success expected=success actual=success verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Get matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_32_mbrcontrol_anybody_get.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "MBRControl Get is available to Anybody inside LockingSP.",
+    "refs": [
+      "opal/4.3.1.6",
+      "opal/4.3.5.3"
+    ],
+    "debug": "final=method:Get object=MBRControl family=MBRControl status=not_authorized expected=success actual=auth_error verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Get matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_33_mbr_shadow_read.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "When MBR shadowing is active, reads inside the shadow region return MBR table data.",
+    "refs": [
+      "opal/4.3.5.4",
+      "opal/4.3.4",
+      "opal/4.3.7"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_success actual=data_success verdict=pass policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Read within active MBR shadow region returned data (MBR table contents, opal/4.3.4).",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_success",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_33_mbr_shadow_read.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "When MBR shadowing is active, reads inside the shadow region return MBR table data.",
+    "refs": [
+      "opal/4.3.5.4",
+      "opal/4.3.4",
+      "opal/4.3.7"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_success actual=data_error verdict=fail policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Read fully within MBR shadow region must succeed with MBR table data (opal/4.3.4).",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_success",
+    "actual_status": "data_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_34_mbr_shadow_write.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Writes to the active MBR shadow region must be rejected.",
+    "refs": [
+      "opal/4.3.5.4",
+      "opal/4.3.7"
+    ],
+    "debug": "final=write:Write object=None family=None status=None expected=data_error actual=data_error verdict=pass policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Write to active MBR shadow region was correctly rejected (opal/4.3.4).",
+    "classification": "sound_debug_reason",
+    "final": "write:Write",
+    "expected_status": "data_error",
+    "actual_status": "data_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_34_mbr_shadow_write.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Writes to the active MBR shadow region must be rejected.",
+    "refs": [
+      "opal/4.3.5.4",
+      "opal/4.3.7"
+    ],
+    "debug": "final=write:Write object=None family=None status=None expected=data_error actual=data_success verdict=fail policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Write to active MBR shadow region must be rejected (opal/4.3.4).",
+    "classification": "sound_debug_reason",
+    "final": "write:Write",
+    "expected_status": "data_error",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_35_mbr_shadow_mixed_read.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Reads spanning MBR shadow and user data must fail.",
+    "refs": [
+      "opal/4.3.5.4",
+      "opal/4.3.7"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_error actual=data_error verdict=pass policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Mixed MBR-shadow/user read correctly returned Data Protection Error (opal/4.3.4).",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_error",
+    "actual_status": "data_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_35_mbr_shadow_mixed_read.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Reads spanning MBR shadow and user data must fail.",
+    "refs": [
+      "opal/4.3.5.4",
+      "opal/4.3.7"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_error actual=data_success verdict=fail policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Read spanning MBR shadow and user regions must return Data Protection Error (opal/4.3.4).",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_error",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_36_admin2_disabled.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "LockingSP Admin2 is disabled by default.",
+    "refs": [
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=Authority.Enabled coverage=implemented refs=opal/4.2.1.7,opal/4.3.1.8,core/5.3.2.10,core/5.3.4.1.2,core/5.3.4.1.3,core/5.3.4.1.4 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession authority Admin2 is disabled (opal/4.2.1.7 \u2014 AdminSP Admin1 starts disabled).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "Authority.Enabled",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_36_admin2_disabled.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "LockingSP Admin2 is disabled by default.",
+    "refs": [
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=auth_error actual=success verdict=fail policy=Authority.Enabled coverage=implemented refs=opal/4.2.1.7,opal/4.3.1.8,core/5.3.2.10,core/5.3.4.1.2,core/5.3.4.1.3,core/5.3.4.1.4 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession authority Admin2 is disabled (opal/4.2.1.7 \u2014 AdminSP Admin1 starts disabled).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "Authority.Enabled",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_37_admin2_empty_pin_enabled.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Enabled Admin2 has the factory empty PIN until changed.",
+    "refs": [
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for Admin2.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_37_admin2_empty_pin_enabled.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Enabled Admin2 has the factory empty PIN until changed.",
+    "refs": [
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for Admin2.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_38_user1_disabled.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "LockingSP User1 is disabled by default.",
+    "refs": [
+      "opal/4.3.1.8"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=Authority.Enabled coverage=implemented refs=opal/4.2.1.7,opal/4.3.1.8,core/5.3.2.10,core/5.3.4.1.2,core/5.3.4.1.3,core/5.3.4.1.4 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession authority User1 is disabled (opal/4.2.1.7 \u2014 AdminSP Admin1 starts disabled).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "Authority.Enabled",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_38_user1_disabled.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "LockingSP User1 is disabled by default.",
+    "refs": [
+      "opal/4.3.1.8"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=auth_error actual=success verdict=fail policy=Authority.Enabled coverage=implemented refs=opal/4.2.1.7,opal/4.3.1.8,core/5.3.2.10,core/5.3.4.1.2,core/5.3.4.1.3,core/5.3.4.1.4 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession authority User1 is disabled (opal/4.2.1.7 \u2014 AdminSP Admin1 starts disabled).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "Authority.Enabled",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_39_user1_empty_pin_enabled.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Enabled User1 has an empty PIN until changed.",
+    "refs": [
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for User1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_39_user1_empty_pin_enabled.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Enabled User1 has an empty PIN until changed.",
+    "refs": [
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for User1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_40_user1_pin_auth.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Admin1 can enable User1 and set a User1 PIN for later authentication.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for User1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_40_user1_pin_auth.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Admin1 can enable User1 and set a User1 PIN for later authentication.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge matches tracked credential for User1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_41_user1_wrong_pin.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "User1 authentication fails with a wrong PIN.",
+    "refs": [
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge does not match tracked credential for User1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_41_user1_wrong_pin.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "User1 authentication fails with a wrong PIN.",
+    "refs": [
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession challenge does not match tracked credential for User1.",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_42_user1_self_pin_set.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "A User authority can set its own PIN when authorized by the C_PIN ACE.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:Set object=C_PIN_User1 family=C_PIN status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.2.1.8,opal/4.3.1.9,core/5.3.2.12,core/5.3.4.1.1,core/5.3.4.1.1.2 state=(session=open=True sp=LockingSP write=True auth=User1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=C_PIN Set requires a write session authorized by Admins or by the matching credential authority for PIN updates.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_42_user1_self_pin_set.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "A User authority can set its own PIN when authorized by the C_PIN ACE.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:Set object=C_PIN_User1 family=C_PIN status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=opal/4.2.1.8,opal/4.3.1.9,core/5.3.2.12,core/5.3.4.1.1,core/5.3.4.1.1.2 state=(session=open=True sp=LockingSP write=True auth=User1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=C_PIN Set requires a write session authorized by Admins or by the matching credential authority for PIN updates.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_43_users_class_not_authority.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Users class UID is not a valid StartSession authority.",
+    "refs": [
+      "opal/4.3.1.8",
+      "core/5.3.4.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession HostSigningAuthority Users is a class authority; class authorities are not valid session authorities (spec core/5.1.5.11).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_43_users_class_not_authority.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Users class UID is not a valid StartSession authority.",
+    "refs": [
+      "opal/4.3.1.8",
+      "core/5.3.4.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession HostSigningAuthority Users is a class authority; class authorities are not valid session authorities (spec core/5.1.5.11).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_44_admins_class_not_authority.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Admins class UID is not a valid StartSession authority.",
+    "refs": [
+      "opal/4.3.1.8",
+      "core/5.3.4.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession HostSigningAuthority Admins is a class authority; class authorities are not valid session authorities (spec core/5.1.5.11).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_44_admins_class_not_authority.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Admins class UID is not a valid StartSession authority.",
+    "refs": [
+      "opal/4.3.1.8",
+      "core/5.3.4.1.2"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession HostSigningAuthority Admins is a class authority; class authorities are not valid session authorities (spec core/5.1.5.11).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_45_authority_set_by_admin.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "LockingSP Admin1 may enable User authorities.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8"
+    ],
+    "debug": "final=method:Set object=User1 family=Authority status=success expected=success actual=success verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_45_authority_set_by_admin.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "LockingSP Admin1 may enable User authorities.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8"
+    ],
+    "debug": "final=method:Set object=User1 family=Authority status=not_authorized expected=success actual=auth_error verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_46_authority_set_unauth.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Unauthenticated sessions cannot mutate Authority rows.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8"
+    ],
+    "debug": "final=method:Set object=User1 family=Authority status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_46_authority_set_unauth.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Unauthenticated sessions cannot mutate Authority rows.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8"
+    ],
+    "debug": "final=method:Set object=User1 family=Authority status=success expected=auth_error actual=success verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_47_adminsp_admin1_disabled.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "AdminSP Admin1 starts disabled and cannot authenticate by default.",
+    "refs": [
+      "opal/4.2.1.7"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=Authority.Enabled coverage=implemented refs=opal/4.2.1.7,opal/4.3.1.8,core/5.3.2.10,core/5.3.4.1.2,core/5.3.4.1.3,core/5.3.4.1.4 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession authority Admin1 is disabled (opal/4.2.1.7 \u2014 AdminSP Admin1 starts disabled).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "Authority.Enabled",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_47_adminsp_admin1_disabled.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "AdminSP Admin1 starts disabled and cannot authenticate by default.",
+    "refs": [
+      "opal/4.2.1.7"
+    ],
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected=auth_error actual=success verdict=fail policy=Authority.Enabled coverage=implemented refs=opal/4.2.1.7,opal/4.3.1.8,core/5.3.2.10,core/5.3.4.1.2,core/5.3.4.1.3,core/5.3.4.1.4 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession authority Admin1 is disabled (opal/4.2.1.7 \u2014 AdminSP Admin1 starts disabled).",
+    "classification": "sound_debug_reason",
+    "final": "method:StartSession",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "Authority.Enabled",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_48_cpin_pin_not_readable.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "C_PIN PIN columns other than MSID are not readable via Get.",
+    "refs": [
+      "opal/4.2.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:Get object=C_PIN_SID family=C_PIN status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.2.1.8,opal/4.3.1.9,core/5.3.2.12,core/5.3.4.1.1,core/5.3.4.1.1.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Get requesting hidden/write-only columns [3] is not permitted for C_PIN objects (NOPIN constraint).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_48_cpin_pin_not_readable.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "C_PIN PIN columns other than MSID are not readable via Get.",
+    "refs": [
+      "opal/4.2.1.8",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:Get object=C_PIN_SID family=C_PIN status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.2.1.8,opal/4.3.1.9,core/5.3.2.12,core/5.3.4.1.1,core/5.3.4.1.1.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Get requesting hidden/write-only columns [3] is not permitted for C_PIN objects (NOPIN constraint).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_49_admin1_pin_not_readable.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "LockingSP Admin1 cannot read its own C_PIN PIN column.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:Get object=C_PIN_Admin1 family=C_PIN status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.2.1.8,opal/4.3.1.9,core/5.3.2.12,core/5.3.4.1.1,core/5.3.4.1.1.2 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Get requesting hidden/write-only columns [3] is not permitted for C_PIN objects (NOPIN constraint).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_49_admin1_pin_not_readable.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "LockingSP Admin1 cannot read its own C_PIN PIN column.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.9"
+    ],
+    "debug": "final=method:Get object=C_PIN_Admin1 family=C_PIN status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.2.1.8,opal/4.3.1.9,core/5.3.2.12,core/5.3.4.1.1,core/5.3.4.1.1.2 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Get requesting hidden/write-only columns [3] is not permitted for C_PIN objects (NOPIN constraint).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_50_authenticate_wrong_pin.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Authenticate returns result false on a wrong tracked password.",
+    "refs": [
+      "opal/4.3.1.8",
+      "core/5.3.4.1.14"
+    ],
+    "debug": "final=method:Authenticate object=SessionManager family=SessionManager status=success expected=success_false actual=success verdict=pass policy=none coverage=implemented refs=core/5.3.3.12,core/5.3.4.1.14,core/5.3.4.1.14.1 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Authenticate proof does not match tracked credential for User1.",
+    "classification": "sound_debug_reason",
+    "final": "method:Authenticate",
+    "expected_status": "success_false",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_50_authenticate_wrong_pin.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Authenticate returns result false on a wrong tracked password.",
+    "refs": [
+      "opal/4.3.1.8",
+      "core/5.3.4.1.14"
+    ],
+    "debug": "final=method:Authenticate object=SessionManager family=SessionManager status=success expected=success_false actual=success verdict=fail policy=none coverage=implemented refs=core/5.3.3.12,core/5.3.4.1.14,core/5.3.4.1.14.1 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Authenticate proof does not match tracked credential for User1.",
+    "classification": "sound_debug_reason",
+    "final": "method:Authenticate",
+    "expected_status": "success_false",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_51_accesscontrol_n_get.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "AccessControl special columns are not readable with Get.",
+    "refs": [
+      "opal/4.2.1.5",
+      "opal/4.3.1.6"
+    ],
+    "debug": "final=method:Get object=AccessControl family=AccessControl status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AccessControl columns [4] have (N) access \u2014 not readable via Get (opal/4.2.6.1).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_51_accesscontrol_n_get.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "AccessControl special columns are not readable with Get.",
+    "refs": [
+      "opal/4.2.1.5",
+      "opal/4.3.1.6"
+    ],
+    "debug": "final=method:Get object=AccessControl family=AccessControl status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AccessControl columns [4] have (N) access \u2014 not readable via Get (opal/4.2.6.1).",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_52_getacl_anybody.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "GetACL is allowed where GetACLACL is ACE_Anybody.",
+    "refs": [
+      "opal/4.2.1.5",
+      "opal/4.3.1.6"
+    ],
+    "debug": "final=method:GetACL object=AccessControl family=AccessControl status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.3.3.11,core/5.3.3.11.1,core/5.3.3.11.2,core/5.3.3.11.4,core/5.3.3.13,core/5.3.3.14,core/5.3.3.15,core/5.3.4.3,core/5.3.4.3.1 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=GetACL requires an open session; GetACLACL defaults to ACE_Anybody in Opal SSC.",
+    "classification": "sound_debug_reason",
+    "final": "method:GetACL",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_52_getacl_anybody.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "GetACL is allowed where GetACLACL is ACE_Anybody.",
+    "refs": [
+      "opal/4.2.1.5",
+      "opal/4.3.1.6"
+    ],
+    "debug": "final=method:GetACL object=AccessControl family=AccessControl status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=core/5.3.3.11,core/5.3.3.11.1,core/5.3.3.11.2,core/5.3.3.11.4,core/5.3.3.13,core/5.3.3.14,core/5.3.3.15,core/5.3.4.3,core/5.3.4.3.1 state=(session=open=True sp=AdminSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=GetACL requires an open session; GetACLACL defaults to ACE_Anybody in Opal SSC.",
+    "classification": "sound_debug_reason",
+    "final": "method:GetACL",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_53_addace_grants_anybody_set.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "AddACE can grant ACE_Anybody to a target method.",
+    "refs": [
+      "opal/4.3.1.6",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=success expected=success actual=success verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_53_addace_grants_anybody_set.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "AddACE can grant ACE_Anybody to a target method.",
+    "refs": [
+      "opal/4.3.1.6",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=not_authorized expected=success actual=auth_error verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_54_removeace_revokes_anybody_set.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "RemoveACE revokes a previously added ACE.",
+    "refs": [
+      "opal/4.3.1.6",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_54_removeace_revokes_anybody_set.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "RemoveACE revokes a previously added ACE.",
+    "refs": [
+      "opal/4.3.1.6",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:Set object=Locking_Range1 family=Locking status=success expected=auth_error actual=success verdict=fail policy=AccessControl:opal/4.3.1.6 ACE:opal/4.3.1.7 scope:LockingSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.3.1.6",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_55_addace_unauth_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Unauthenticated sessions cannot mutate AccessControl ACLs.",
+    "refs": [
+      "opal/4.3.1.6",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:AddACE object=AccessControl family=AccessControl status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=core/5.3.3.11,core/5.3.3.11.1,core/5.3.3.11.2,core/5.3.3.11.4,core/5.3.3.13,core/5.3.3.14,core/5.3.3.15,core/5.3.4.3,core/5.3.4.3.1 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AddACE requires the corresponding meta-ACL authorization on the AccessControl association.",
+    "classification": "sound_debug_reason",
+    "final": "method:AddACE",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_55_addace_unauth_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Unauthenticated sessions cannot mutate AccessControl ACLs.",
+    "refs": [
+      "opal/4.3.1.6",
+      "opal/4.3.1.7"
+    ],
+    "debug": "final=method:AddACE object=AccessControl family=AccessControl status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=core/5.3.3.11,core/5.3.3.11.1,core/5.3.3.11.2,core/5.3.3.11.4,core/5.3.3.13,core/5.3.3.14,core/5.3.3.15,core/5.3.4.3,core/5.3.4.3.1 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AddACE requires the corresponding meta-ACL authorization on the AccessControl association.",
+    "classification": "sound_debug_reason",
+    "final": "method:AddACE",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_56_dataremoval_valid_value.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "ActiveDataRemovalMechanism accepts defined values.",
+    "refs": [
+      "opal/4.2.6.1",
+      "opal/4.2.6.1.2"
+    ],
+    "debug": "final=method:Set object=DataRemovalMechanism family=DataRemovalMechanism status=success expected=success actual=success verdict=pass policy=AccessControl:opal/4.2.1.5 ACE:opal/4.2.1.6 scope:AdminSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "AccessControl:opal/4.2.1.5",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_56_dataremoval_valid_value.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "ActiveDataRemovalMechanism accepts defined values.",
+    "refs": [
+      "opal/4.2.6.1",
+      "opal/4.2.6.1.2"
+    ],
+    "debug": "final=method:Set object=DataRemovalMechanism family=DataRemovalMechanism status=not_authorized expected=success actual=auth_error verdict=fail policy=AccessControl:opal/4.2.1.5 ACE:opal/4.2.1.6 scope:AdminSP coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set matched ACE/AccessControl policy.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "AccessControl:opal/4.2.1.5",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_57_dataremoval_reserved_value.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "ActiveDataRemovalMechanism rejects reserved values.",
+    "refs": [
+      "opal/4.2.6.1",
+      "opal/4.2.6.1.2"
+    ],
+    "debug": "final=method:Set object=DataRemovalMechanism family=DataRemovalMechanism status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=table_schema coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=ActiveDataRemovalMechanism reserved value is not allowed (opal/4.2.6.1).",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "table_schema",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_57_dataremoval_reserved_value.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "ActiveDataRemovalMechanism rejects reserved values.",
+    "refs": [
+      "opal/4.2.6.1",
+      "opal/4.2.6.1.2"
+    ],
+    "debug": "final=method:Set object=DataRemovalMechanism family=DataRemovalMechanism status=success expected=invalid_parameter actual=success verdict=fail policy=table_schema coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=ActiveDataRemovalMechanism reserved value is not allowed (opal/4.2.6.1).",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "table_schema",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_58_dataremoval_uid_readonly.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "DataRemovalMechanism UID is read-only.",
+    "refs": [
+      "opal/4.2.6.1.1"
+    ],
+    "debug": "final=method:Set object=DataRemovalMechanism family=DataRemovalMechanism status=invalid_parameter expected={'auth_error', 'invalid_parameter'} actual=invalid_parameter verdict=pass policy=table_schema coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set Values include read-only/non-modifiable columns [0].",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "{'auth_error',",
+    "actual_status": "invalid_parameter",
+    "policy": "table_schema",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_58_dataremoval_uid_readonly.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "DataRemovalMechanism UID is read-only.",
+    "refs": [
+      "opal/4.2.6.1.1"
+    ],
+    "debug": "final=method:Set object=DataRemovalMechanism family=DataRemovalMechanism status=success expected={'auth_error', 'invalid_parameter'} actual=success verdict=fail policy=table_schema coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set Values include read-only/non-modifiable columns [0].",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "{'auth_error',",
+    "actual_status": "success",
+    "policy": "table_schema",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_59_mbr_byte_set_bytes.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "MBR byte-table Set uses Bytes values.",
+    "refs": [
+      "opal/5.3",
+      "opal/5.3.1.1.2"
+    ],
+    "debug": "final=method:Set object=MBR family=MBR status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=MBR Set requires authenticated Admin1 LockingSP write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_59_mbr_byte_set_bytes.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "MBR byte-table Set uses Bytes values.",
+    "refs": [
+      "opal/5.3",
+      "opal/5.3.1.1.2"
+    ],
+    "debug": "final=method:Set object=MBR family=MBR status=invalid_parameter expected=success actual=invalid_parameter verdict=fail policy=none coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=MBR Set requires authenticated Admin1 LockingSP write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "success",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_60_mbr_byte_set_rowvalues.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "MBR byte-table Set rejects object-table RowValues.",
+    "refs": [
+      "opal/5.3",
+      "opal/5.3.1.1.2"
+    ],
+    "debug": "final=method:Set object=MBR family=MBR status=invalid_parameter expected=error actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set Values shape must match byte-table Bytes versus object-table RowValues.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "error",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_60_mbr_byte_set_rowvalues.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "MBR byte-table Set rejects object-table RowValues.",
+    "refs": [
+      "opal/5.3",
+      "opal/5.3.1.1.2"
+    ],
+    "debug": "final=method:Set object=MBR family=MBR status=success expected=error actual=success verdict=fail policy=none coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set Values shape must match byte-table Bytes versus object-table RowValues.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_61_mbr_byte_set_uid_where.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Byte-table Set Where is a row offset, not a UID object reference.",
+    "refs": [
+      "opal/5.3",
+      "opal/5.3.1.1.2"
+    ],
+    "debug": "final=method:Set object=MBR family=MBR status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set Where parameter has the wrong row/UID type for the target table kind.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_61_mbr_byte_set_uid_where.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Byte-table Set Where is a row offset, not a UID object reference.",
+    "refs": [
+      "opal/5.3",
+      "opal/5.3.1.1.2"
+    ],
+    "debug": "final=method:Set object=MBR family=MBR status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=core/5.3.3.7,core/5.3.4.2.6,opal/5.3.1.1,opal/5.3.1.1.2,opal/5.3.1.2 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Set Where parameter has the wrong row/UID type for the target table kind.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_62_datastore_byte_set_auth.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "DataStore byte-table writes require LockingSP admin authority.",
+    "refs": [
+      "opal/4.3.8.1",
+      "opal/5.3.1.1.2"
+    ],
+    "debug": "final=method:Set object=DataStore family=DataStore status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=DataStore Set requires authenticated Admin1 LockingSP write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_62_datastore_byte_set_auth.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "DataStore byte-table writes require LockingSP admin authority.",
+    "refs": [
+      "opal/4.3.8.1",
+      "opal/5.3.1.1.2"
+    ],
+    "debug": "final=method:Set object=DataStore family=DataStore status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=opal/4.2.1.5,opal/4.2.1.6,opal/4.3.1.6,opal/4.3.1.7,core/3.4.2,core/3.4.2.1,core/3.4.2.2,core/3.4.2.3,core/5.3.2.7,core/5.3.2.9,core/5.3.4.3 state=(session=open=True sp=LockingSP write=True auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=DataStore Set requires authenticated Admin1 LockingSP write session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Set",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_63_read_locked_range.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "ReadLocked ranges block reads when ReadLockEnabled is set.",
+    "refs": [
+      "opal/4.3.7",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_error_or_zeroes actual=data_error verdict=pass policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=4096 r=1:1 w=0:0]) reason=Read intersects a locked range and returned protected-read behavior.",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_error_or_zeroes",
+    "actual_status": "data_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_63_read_locked_range.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "ReadLocked ranges block reads when ReadLockEnabled is set.",
+    "refs": [
+      "opal/4.3.7",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_error_or_zeroes actual=data_success verdict=fail policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=4096 r=1:1 w=0:0]) reason=Read intersects a locked range but returned user data.",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_error_or_zeroes",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_64_write_locked_range.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "WriteLocked ranges block writes when WriteLockEnabled is set.",
+    "refs": [
+      "opal/4.3.7",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=write:Write object=None family=None status=None expected=data_error actual=data_error verdict=pass policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=4096 r=0:0 w=1:1]) reason=Write intersects a locked range and was rejected.",
+    "classification": "sound_debug_reason",
+    "final": "write:Write",
+    "expected_status": "data_error",
+    "actual_status": "data_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_64_write_locked_range.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "WriteLocked ranges block writes when WriteLockEnabled is set.",
+    "refs": [
+      "opal/4.3.7",
+      "opal/4.3.5.2"
+    ],
+    "debug": "final=write:Write object=None family=None status=None expected=data_error actual=data_success verdict=fail policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=4096 r=0:0 w=1:1]) reason=Write intersects a locked range but succeeded.",
+    "classification": "sound_debug_reason",
+    "final": "write:Write",
+    "expected_status": "data_error",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_65_zero_length_range_no_lock.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "A non-global zero-length range does not lock data.",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.7"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_success actual=data_success verdict=pass policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=1:1 w=0:0]) reason=No prior write for this LBA and no lock violation is known; accept observed read.",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_success",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_65_zero_length_range_no_lock.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "A non-global zero-length range does not lock data.",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.7"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_success actual=data_error verdict=fail policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=1:1 w=0:0]) reason=Read is not locked but returned an error-like data response.",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_success",
+    "actual_status": "data_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_66_lockonreset_locks_range.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "LockOnReset sets ReadLocked and WriteLocked on reset.",
+    "refs": [
+      "opal/4.3.5.2.2",
+      "opal/3.3.5.1"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_error_or_zeroes actual=data_error verdict=pass policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:1 w=0:1; Range1:start=0 len=4096 r=1:1 w=1:1]) reason=Read intersects a locked range and returned protected-read behavior.",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_error_or_zeroes",
+    "actual_status": "data_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_66_lockonreset_locks_range.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "LockOnReset sets ReadLocked and WriteLocked on reset.",
+    "refs": [
+      "opal/4.3.5.2.2",
+      "opal/3.3.5.1"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=data_error_or_zeroes actual=data_success verdict=fail policy=none coverage=implemented refs=opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:1 w=0:1; Range1:start=0 len=4096 r=1:1 w=1:1]) reason=Read intersects a locked range but returned user data.",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "data_error_or_zeroes",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_67_reset_aborts_session.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "TPER reset style events abort open sessions.",
+    "refs": [
+      "opal/3.2.3",
+      "opal/3.3.5.1"
+    ],
+    "debug": "final=method:Get object=C_PIN_SID family=C_PIN status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=core/5.1.4.2.3,core/5.3.3.6,core/5.3.3.6.1,core/5.3.3.9,core/5.3.3.10,core/5.3.4.2.2,core/5.6.5.1 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:1 w=0:1; Range1:start=0 len=0 r=0:1 w=0:1]) reason=Get requires an open session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_67_reset_aborts_session.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "TPER reset style events abort open sessions.",
+    "refs": [
+      "opal/3.2.3",
+      "opal/3.3.5.1"
+    ],
+    "debug": "final=method:Get object=C_PIN_SID family=C_PIN status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=core/5.1.4.2.3,core/5.3.3.6,core/5.3.3.6.1,core/5.3.3.9,core/5.3.3.10,core/5.3.4.2.2,core/5.6.5.1 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:1 w=0:1; Range1:start=0 len=0 r=0:1 w=0:1]) reason=Get requires an open session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Get",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_68_genkey_changes_range_data.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "GenKey on a range key changes subsequent data reads for that range.",
+    "refs": [
+      "opal/4.3.5.5",
+      "opal/4.3.7"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=changed_data actual=data_success verdict=pass policy=none coverage=implemented refs=core/5.3.3.16,core/5.3.4.1.1.1,opal/4.3.1.7,opal/4.3.5.5,opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=Range1:1 ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=4096 r=1:0 w=1:0]) reason=Read after successful GenKey returned data different from the old written pattern.",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "changed_data",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_68_genkey_changes_range_data.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "GenKey on a range key changes subsequent data reads for that range.",
+    "refs": [
+      "opal/4.3.5.5",
+      "opal/4.3.7"
+    ],
+    "debug": "final=read:Read object=None family=None status=None expected=changed_data actual=data_success verdict=fail policy=none coverage=implemented refs=core/5.3.3.16,core/5.3.4.1.1.1,opal/4.3.1.7,opal/4.3.5.5,opal/4.3.7,core/5.7.3.2,core/3.3.6.5.3 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=Range1:1 ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=4096 r=1:0 w=1:0]) reason=Read after successful GenKey returned the old written pattern.",
+    "classification": "sound_debug_reason",
+    "final": "read:Read",
+    "expected_status": "changed_data",
+    "actual_status": "data_success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_69_discovery_inactive.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Level 0 Discovery reports required Opal descriptors while LockingSP is inactive.",
+    "refs": [
+      "opal/3.1.1",
+      "opal/3.1.1.2",
+      "opal/3.1.1.3",
+      "opal/3.1.1.5"
+    ],
+    "debug": "final=discovery:IF_RECV object=None family=None status=None expected=success actual=success verdict=pass policy=spec coverage=implemented refs=opal/3.1.1,opal/3.1.1.2,opal/3.1.1.3,opal/3.1.1.3.1,opal/3.1.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Level 0 Discovery response is compliant: required descriptors present and field values valid (opal/3.1.1).",
+    "classification": "sound_debug_reason",
+    "final": "discovery:IF_RECV",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "spec",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_69_discovery_missing_v2.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Level 0 Discovery must include the Opal SSC V2 descriptor.",
+    "refs": [
+      "opal/3.1.1",
+      "opal/3.1.1.5"
+    ],
+    "debug": "final=discovery:IF_RECV object=None family=None status=None expected=success actual=discovery_missing_descriptor verdict=fail policy=spec coverage=implemented refs=opal/3.1.1,opal/3.1.1.2,opal/3.1.1.3,opal/3.1.1.3.1,opal/3.1.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Level 0 Discovery missing required Opal SSC V2 descriptor (feature 0x0203) (opal/3.1.1).",
+    "classification": "sound_debug_reason",
+    "final": "discovery:IF_RECV",
+    "expected_status": "success",
+    "actual_status": "discovery_missing_descriptor",
+    "policy": "spec",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_70_discovery_enabled_inactive.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "LockingEnabled must be false before LockingSP activation.",
+    "refs": [
+      "opal/3.1.1.3",
+      "opal/3.1.1.3.1"
+    ],
+    "debug": "final=discovery:IF_RECV object=None family=None status=None expected=success actual=discovery_locking_enabled verdict=fail policy=spec coverage=implemented refs=opal/3.1.1,opal/3.1.1.2,opal/3.1.1.3,opal/3.1.1.3.1,opal/3.1.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=LockingEnabled must be 0 when LockingSP is inactive (opal/3.1.1.3.1).",
+    "classification": "sound_debug_reason",
+    "final": "discovery:IF_RECV",
+    "expected_status": "success",
+    "actual_status": "discovery_locking_enabled",
+    "policy": "spec",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_pass_70_discovery_enabled_active.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "LockingEnabled must be true after LockingSP activation.",
+    "refs": [
+      "opal/3.1.1.3",
+      "opal/3.1.1.3.1"
+    ],
+    "debug": "final=discovery:IF_RECV object=None family=None status=None expected=success actual=success verdict=pass policy=spec coverage=implemented refs=opal/3.1.1,opal/3.1.1.2,opal/3.1.1.3,opal/3.1.1.3.1,opal/3.1.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Level 0 Discovery response is compliant: required descriptors present and field values valid (opal/3.1.1).",
+    "classification": "sound_debug_reason",
+    "final": "discovery:IF_RECV",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "spec",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_71_discovery_too_few_admins.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Opal SSC V2 discovery reports at least four LockingSP admin authorities.",
+    "refs": [
+      "opal/3.1.1",
+      "opal/3.1.1.5"
+    ],
+    "debug": "final=discovery:IF_RECV object=None family=None status=None expected=success actual=discovery_opal_v2 verdict=fail policy=spec coverage=implemented refs=opal/3.1.1,opal/3.1.1.2,opal/3.1.1.3,opal/3.1.1.3.1,opal/3.1.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Opal SSC V2 must support at least 4 Locking SP admin authorities; reported 2 (opal/3.1.1.5).",
+    "classification": "sound_debug_reason",
+    "final": "discovery:IF_RECV",
+    "expected_status": "success",
+    "actual_status": "discovery_opal_v2",
+    "policy": "spec",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "opal_fail_72_discovery_too_few_users.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Opal SSC V2 discovery reports at least eight user authorities.",
+    "refs": [
+      "opal/3.1.1",
+      "opal/3.1.1.5"
+    ],
+    "debug": "final=discovery:IF_RECV object=None family=None status=None expected=success actual=discovery_opal_v2 verdict=fail policy=spec coverage=implemented refs=opal/3.1.1,opal/3.1.1.2,opal/3.1.1.3,opal/3.1.1.3.1,opal/3.1.1.5 state=(session=open=False sp=None write=False auth=none failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Opal SSC V2 must support at least 8 Locking SP user authorities; reported 4 (opal/3.1.1.5).",
+    "classification": "sound_debug_reason",
+    "final": "discovery:IF_RECV",
+    "expected_status": "success",
+    "actual_status": "discovery_opal_v2",
+    "policy": "spec",
+    "coverage": "implemented"
+  }
+]

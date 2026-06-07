@@ -1,0 +1,117 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "method": {
+        "name": "StartSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          },
+          "optional": {}
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "SyncSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "00006572"
+        },
+        "optional": {}
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 2,
+    "input": {
+      "method": {
+        "name": "Set",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {
+            "Values": [
+              {
+                "5": 1,
+                "9": "Sign"
+              }
+            ]
+          }
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000900030001",
+        "name": "Authority",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "Set",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {},
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 3,
+    "input": {
+      "method": {
+        "name": "Authenticate",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {
+            "Authority": "0000000900030001",
+            "Proof": "testproof"
+          }
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "Authenticate",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {
+        "Result": true
+      },
+      "status_codes": "SUCCESS"
+    }
+  }
+]
