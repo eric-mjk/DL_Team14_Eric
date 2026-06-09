@@ -665,8 +665,6 @@ def protected_columns_requested(event, public_columns=()):
 def invalid_cellblock(event):
     if event.get("cellblock_invalid"):
         return True
-    if event.get("object_family") in {"MBR", "DataStore"} and (event.get("cellblock_start") is not None or event.get("cellblock_end") is not None):
-        return True
     start = event.get("cellblock_start")
     end = event.get("cellblock_end")
     if start is None and end is None:
@@ -725,6 +723,21 @@ def projected_locking_bounds(state, event):
     return (start, start + length - 1)
 
 
+def _get_locking_info_alignment(state):
+    """Return (alignment_required, granularity, lowest_lba) from trajectory-observed LockingInfo, or None."""
+    for key, row in (state.get("tables") or {}).items():
+        if row.get("table") != "LockingInfo" and not (isinstance(key, str) and key.startswith("00000801")):
+            continue
+        cols = row.get("columns") or {}
+        alignment_required = to_bool(cols.get(7))
+        if alignment_required is None:
+            continue
+        granularity = to_int(cols.get(9))
+        lowest_lba = to_int(cols.get(10)) or 0
+        return (alignment_required, granularity, lowest_lba)
+    return None
+
+
 def invalid_locking_range_update(state, event):
     columns = event.get("value_columns") or {}
     if event.get("object_family") != "Locking" or not ({3, 4} & set(columns)):
@@ -744,6 +757,25 @@ def invalid_locking_range_update(state, event):
     # spec core/5.7.2.2.12: if Global Range is not IDLE, no range geometry change is permitted.
     if not _reencrypt_idle("Global"):
         return True
+    # spec opal/4.3.5.2.1.1 + 4.3.5.2.1.2: alignment check
+    alignment = _get_locking_info_alignment(state)
+    if alignment:
+        align_required, granularity, lowest_lba = alignment
+        if align_required and granularity and granularity > 1:
+            if 3 in columns:  # RangeStart alignment
+                rs = to_int(columns[3]) or 0
+                if rs != 0 and (rs - lowest_lba) % granularity != 0:
+                    return True
+            if 4 in columns:  # RangeLength alignment
+                rl = to_int(columns[4]) or 0
+                if rl != 0:
+                    if 3 in columns:
+                        rs = to_int(columns[3]) or 0
+                    else:
+                        rs = to_int((state.get("locking_ranges") or {}).get(range_name, {}).get("range_start")) or 0
+                    length_align = (rl - lowest_lba) % granularity if rs == 0 else rl % granularity
+                    if length_align != 0:
+                        return True
     bounds = projected_locking_bounds(state, event)
     if bounds == "invalid":
         return True
@@ -821,6 +853,75 @@ def invalid_data_removal_enum(event):
     return val is not None and val not in {0, 1, 2, 5}
 
 
+_LOCK_ON_RESET_NAMES = {
+    "powercycle": 0, "power_cycle": 0, "powercyl": 0,
+    "hardwarereset": 1, "hardware_reset": 1, "hwreset": 1,
+    "programmatic": 3, "prog": 3,
+}
+
+_MANDATORY_RESET_SETS = {frozenset({0}), frozenset({0, 3})}
+_OPTIONAL_RESET_SETS = {frozenset({0, 1}), frozenset({0, 1, 3})}
+_ALL_SUPPORTED_RESET_SETS = _MANDATORY_RESET_SETS | _OPTIONAL_RESET_SETS
+
+
+def _parse_reset_set(value):
+    """Parse a LockOnReset/DoneOnReset column value to frozenset of ints, or None."""
+    if value is None:
+        return None
+    if isinstance(value, int):
+        return frozenset({value})
+    if isinstance(value, (list, tuple)):
+        result = set()
+        for v in value:
+            if isinstance(v, int):
+                result.add(v)
+            else:
+                key = re.sub(r"[\s\-_]", "", str(v).lower())
+                mapped = _LOCK_ON_RESET_NAMES.get(key)
+                if mapped is None:
+                    try:
+                        result.add(int(v))
+                    except (ValueError, TypeError):
+                        return None  # unparseable element
+                else:
+                    result.add(mapped)
+        return frozenset(result) if result is not None else None
+    if isinstance(value, str):
+        stripped = re.sub(r"[{}\s]", "", value)
+        if not stripped:
+            return None
+        parts = stripped.split(",")
+        result = set()
+        for part in parts:
+            try:
+                result.add(int(part))
+            except ValueError:
+                key = re.sub(r"[\-_]", "", part.lower())
+                mapped = _LOCK_ON_RESET_NAMES.get(key)
+                if mapped is None:
+                    return None  # unrecognized string
+                result.add(mapped)
+        return frozenset(result) if result else None
+    return None
+
+
+def validate_lock_on_reset_value(value):
+    """Return expected status string/set for LockOnReset/DoneOnReset column value.
+
+    Returns 'invalid_parameter' for clearly unsupported values, 'success_or_invalid'
+    (as a set) for optional-support values, or None for mandatory/unknown values
+    where normal auth flow should proceed.
+    """
+    parsed = _parse_reset_set(value)
+    if parsed is None:
+        return None  # unparseable — can't judge content
+    if parsed in _MANDATORY_RESET_SETS:
+        return None  # mandatory: must succeed if authorized — fall through to auth check
+    if parsed in _OPTIONAL_RESET_SETS:
+        return {"success", "invalid_parameter"}  # optional: either is acceptable
+    return "invalid_parameter"  # unsupported value
+
+
 def byte_table_granularity(state, event):
     if event.get("object_family") not in {"MBR", "DataStore"}:
         return None
@@ -853,6 +954,73 @@ def invalid_byte_table_granularity(state, event):
     if offset is None or length is None:
         return False
     return offset % granularity != 0 or length % granularity != 0
+
+
+_MBR_TABLE_UID = "0000000100000804"
+_DATASTORE_TABLE_UID = "0000000100001001"
+_BYTE_TABLE_MIN_SIZES = {
+    _MBR_TABLE_UID: (0x08000000, "MBR", "opal/4.3.5.4"),
+    _DATASTORE_TABLE_UID: (0x00A00000, "DataStore", "opal/4.3.8.1"),
+}
+
+
+def byte_table_reported_size_violation(event):
+    if event.get("method") != "Get" or actual_status_class(event) != "success":
+        return None
+    table_uid = compact_uid(event.get("object_uid"))
+    if table_uid not in _BYTE_TABLE_MIN_SIZES:
+        return None
+    minimum, name, spec_ref = _BYTE_TABLE_MIN_SIZES[table_uid]
+    return_cols = event.get("return_columns") or {}
+    raw_out = (event.get("raw") or {}).get("output") or {}
+    return_values = raw_out.get("return_values")
+    candidates = [
+        return_cols.get(7),   # Table.Rows: byte-table size in bytes
+        return_cols.get(11),  # Table.MinSize, if returned
+        find_named_value(return_values, {"Rows"}),
+        find_named_value(return_values, {"MinSize"}),
+    ]
+    for raw_size in candidates:
+        size = to_int(raw_size)
+        if size is not None and size < minimum:
+            return (name, size, minimum, spec_ref)
+    return None
+
+
+_LOCKING_SP_METHODS = {"Next", "GetACL", "GenKey", "RevertSP", "DeleteSP", "Get", "Set", "Authenticate", "Random"}
+_SESSION_MANAGER_METHODS = {
+    "Properties", "StartSession", "SyncSession", "StartTrustedSession",
+    "SyncTrustedSession", "CloseSession", "EndSession",
+}
+
+
+def sp_method_filter_result(state, event):
+    method = event.get("method")
+    if method in _SESSION_MANAGER_METHODS or not method:
+        return None
+    session_sp = state["session"].get("sp")
+    sp_method = method in {"RevertSP", "DeleteSP", "IssueSP"}
+    target_sp = session_sp if sp_method else (object_sp(event) or session_sp)
+
+    # Keep Core/Admin-template methods modeled elsewhere in this file. The high-risk AdminSP
+    # gap is accepting SUCCESS for methods with no AdminSP MethodID, especially GenKey.
+    if target_sp == "AdminSP" and method == "GenKey":
+        return expected_status_result(
+            event,
+            "error",
+            f"{method} is not in the AdminSP supported MethodID set (opal/4.2.1.4).",
+            rule_key="method_table",
+            coverage_status="implemented",
+        )
+    if target_sp == "LockingSP" and method not in _LOCKING_SP_METHODS:
+        return expected_status_result(
+            event,
+            "error",
+            f"{method} is not in the LockingSP supported MethodID set (opal/4.3.1.5).",
+            rule_key="method_table",
+            coverage_status="implemented",
+        )
+    return None
 
 
 METHOD_FAILURE_MATRIX = {
@@ -963,6 +1131,13 @@ def invalid_boolean_parameter(event, names):
         if raw is not None and to_bool(raw) is None:
             return True
     return False
+
+
+def invalid_tperinfo_programmatic_reset_value(event):
+    if event.get("method") != "Set" or event.get("object_family") != "TPerInfo":
+        return False
+    value_cols = event.get("value_columns") or {}
+    return 8 in value_cols and to_bool(value_cols.get(8)) is None
 
 
 def invalid_host_properties(event):
@@ -1143,8 +1318,11 @@ def invalid_create_table_parameters(event):
     kind = create_table_kind(event)
     columns = parameter_value(event, ("Columns",))
     has_max_size = parameter_present(event, ("MaxSize",))
+    has_hint_size = parameter_present(event, ("HintSize",))
+    # spec core/5.3.4.2.1: byte tables use no row-count parameters (MaxSize, HintSize) and
+    # no typed column list. These are object-table-only parameters.
     if kind == "byte":
-        return has_max_size or columns not in ([], (), None)
+        return has_max_size or has_hint_size or columns not in ([], (), None)
     return False
 
 
@@ -1213,6 +1391,14 @@ def method_preflight(state, event):
             "invalid_parameter",
             f"{method} includes a malformed boolean parameter.",
             rule_key=rule_key,
+        )
+    if invalid_tperinfo_programmatic_reset_value(event):
+        return expected_status_result(
+            event,
+            "invalid_parameter",
+            "TPerInfo ProgrammaticResetEnable must be a boolean value (opal/4.2.3.1).",
+            rule_key="set",
+            coverage_status="implemented",
         )
     if method == "Properties" and invalid_host_properties(event):
         return expected_status_result(
@@ -1397,6 +1583,19 @@ def _check_sync_session_ids(event):
             policy_source="SyncSession",
         )
 
+    # spec core/5.2.3.2.1: echoed HostSessionID must match what the host sent.
+    input_host_id = to_int(parameter_value(event, ("HostSessionID",)))
+    if input_host_id is not None and host_id_int is not None and host_id_int != input_host_id:
+        return fail_result(
+            f"StartSession SyncSession echoed HostSessionID={host_id_int} but host sent {input_host_id}; "
+            "the TPer must echo the host's HostSessionID unmodified (spec core/5.2.3.2.1).",
+            confidence=0.90,
+            expected_status="success_with_session_ids",
+            actual_status="success_wrong_host_id",
+            spec_refs=("core/5.2.3.2.1",),
+            policy_source="SyncSession",
+        )
+
     return None
 
 
@@ -1482,14 +1681,29 @@ def judge_start_session(state, event):
             policy_source="C_PIN.TryLimit",
         )
 
+    # SP-scoping: if all matching authority records have SP-discriminating sources and none match
+    # the target SP, this authority does not exist in the target SP (opal/4.2.1.7, opal/4.3.1.8).
+    if sp and authority:
+        _sp_sourced = [r for r in authority_records_for(state, authority) if r.get("source")]
+        if _sp_sourced and not any(_source_matches_sp(r["source"], sp) for r in _sp_sourced):
+            return expected_status_result(
+                event,
+                "auth_error",
+                f"StartSession authority {authority} is not valid in {sp}; it is defined in a different SP only (opal/4.2.1.7, opal/4.3.1.8).",
+                rule_key="start_session",
+                coverage_status="implemented",
+            )
+
     match = credential_matches(state, authority, event.get("challenge"))
     if match is True:
-        id_check = _check_sync_session_ids(event)
-        if id_check is not None:
-            return id_check
+        if actual_status_class(event) == "success":
+            id_check = _check_sync_session_ids(event)
+            if id_check is not None:
+                return id_check
+        expected = {"success", "auth_error"} if event.get("write") is False else "success"
         return expected_status_result(
             event,
-            "success",
+            expected,
             f"StartSession challenge matches tracked credential for {authority}.",
             rule_key="start_session",
         )
@@ -1503,9 +1717,10 @@ def judge_start_session(state, event):
 
     if authority:
         if actual_status_class(event) in {"success", "auth_error"}:
-            id_check = _check_sync_session_ids(event)
-            if id_check is not None:
-                return id_check
+            if actual_status_class(event) == "success":
+                id_check = _check_sync_session_ids(event)
+                if id_check is not None:
+                    return id_check
             return pass_result(
                 f"No tracked credential for {authority}; final authenticated StartSession is not contradicted by state.",
                 0.55,
@@ -1521,10 +1736,12 @@ def judge_start_session(state, event):
             spec_refs_for("start_session"),
         )
 
-    id_check = _check_sync_session_ids(event)
-    if id_check is not None:
-        return id_check
-    return expected_status_result(event, "success", "Unauthenticated StartSession should succeed when the SP is available.", rule_key="start_session")
+    if actual_status_class(event) == "success":
+        id_check = _check_sync_session_ids(event)
+        if id_check is not None:
+            return id_check
+    expected = {"success", "auth_error"} if event.get("write") is False else "success"
+    return expected_status_result(event, expected, "Unauthenticated StartSession should succeed when the SP is available.", rule_key="start_session")
 
 
 def judge_authenticate(state, event):
@@ -1615,6 +1832,24 @@ def judge_authenticate(state, event):
             return pass_result(reason, expected_status="success_false", actual_status=actual, spec_refs=refs, policy_source="Authority.Secure")
         return fail_result(reason, expected_status="success_false", actual_status=actual, spec_refs=refs, policy_source="Authority.Secure")
 
+    # SP-scoping: if all matching authority records have SP-discriminating sources and none match
+    # the current session SP, this authority does not exist in this SP.
+    # Per Core/5.3.4.1.14.1: Authenticate on a non-existent authority returns SUCCESS with result=False.
+    _session_sp = state["session"].get("sp")
+    if _session_sp and authority:
+        _auth_sourced = [r for r in authority_records_for(state, authority) if r.get("source")]
+        if _auth_sourced and not any(_source_matches_sp(r["source"], _session_sp) for r in _auth_sourced):
+            actual = actual_status_class(event)
+            auth_result_sp = event.get("auth_result")
+            _sp_reason = (
+                f"Authenticate authority {authority} is not valid in {_session_sp}; "
+                f"TPer must return SUCCESS with result=False (core/5.3.4.1.14.1, opal/4.2, opal/4.3.1)."
+            )
+            _sp_refs = spec_refs_for("authenticate")
+            if actual == "success" and auth_result_sp is False:
+                return pass_result(_sp_reason, expected_status="success_false", actual_status=actual, spec_refs=_sp_refs)
+            return fail_result(_sp_reason, expected_status="success_false", actual_status=actual, spec_refs=_sp_refs)
+
     match = credential_matches(state, authority, event.get("proof"))
     actual = actual_status_class(event)
     auth_result = event.get("auth_result")
@@ -1691,6 +1926,19 @@ def judge_get(state, event):
     if target_sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", f"{obj} Get requires an active LockingSP.", rule_key="locking_table")
 
+    size_violation = byte_table_reported_size_violation(event)
+    if size_violation is not None:
+        table_name, reported_size, minimum_size, spec_ref = size_violation
+        return fail_result(
+            f"{table_name} Table row reported size {reported_size} bytes, below the required minimum "
+            f"{minimum_size} bytes ({spec_ref}).",
+            expected_status="success_with_minimum_size",
+            actual_status=actual_status_class(event),
+            spec_refs=(spec_ref,),
+            policy_source="table_schema",
+            coverage_status="implemented",
+        )
+
     # (N) columns: not readable via Get at all, regardless of ACE policy (opal/4.2.6.1).
     # When no columns are explicitly requested (whole-row Get), treat it as requesting all columns
     # including the (N) ones — the same block applies.
@@ -1710,9 +1958,53 @@ def judge_get(state, event):
 
     # spec core/5.3.4.2.2: byte tables vs object tables differ on unauthorized access.
     # byte tables (MBR, DataStore) return auth_error; object tables omit unauthorized cells and return SUCCESS.
-    # Families with write-only (NOPIN) columns (C_PIN, MediaKey) keep auth_error — those columns cannot be leaked.
-    _CELL_OMIT_FAMILIES = frozenset({"Authority", "ACE", "AccessControl", "SecretProtect"})
+    # Byte-tables, write-only-column families (MediaKey), and C_PIN are NOT in the omit set:
+    #   - MBR, DataStore: byte tables → empty result, not cell omission
+    #   - MediaKey: key material (col 3) is write-only; auth_error keeps that leak-free
+    #   - C_PIN: PIN (col 3) is NOPIN; handled separately with explicit auth_error for PIN requests
+    #   - Locking/MBRControl/LockingInfo/MBR: handled by their own specific branches below
+    _CELL_OMIT_FAMILIES = frozenset({
+        "Authority", "ACE", "AccessControl", "SecretProtect",
+        "SP", "MethodID", "Column",
+        "ClockTime", "TPerInfo", "DataRemovalMechanism",
+        "Log", "LogList",
+    })
     is_byte_table = family in {"MBR", "DataStore"}
+
+    # SP Get: validate returned LifeCycleState (col 6) against tracked state before the policy path,
+    # so content consistency is checked regardless of whether an AccessControl row was matched.
+    if family == "SP":
+        sp_return_cols = event.get("return_columns") or {}
+        int_sp_return_cols = {int(k): v for k, v in sp_return_cols.items()} if sp_return_cols else {}
+        if 6 in int_sp_return_cols:
+            returned_lc = int_sp_return_cols[6]
+            tracked_lc = (state.get("sp_lifecycle") or {}).get(obj)
+            if tracked_lc in ("Manufactured", "Manufactured-Inactive"):
+                # Map returned value to canonical string form.
+                if isinstance(returned_lc, int):
+                    canonical = {8: "Manufactured-Inactive", 9: "Manufactured"}.get(returned_lc)
+                else:
+                    s = str(returned_lc).lower().replace("-", "").replace("_", "").replace(" ", "")
+                    canonical = (
+                        "Manufactured-Inactive" if "inactive" in s else
+                        "Manufactured" if s == "manufactured" else
+                        None
+                    )
+                if canonical is not None and canonical != tracked_lc:
+                    return RuleResult(
+                        verdict="fail",
+                        confidence=0.90,
+                        reason=(
+                            f"SP table Get for {obj} returned LifeCycleState={returned_lc!r} "
+                            f"({canonical}) but tracked state is {tracked_lc!r} "
+                            f"(core/5.4.2.4.7: LifeCycleState must reflect current SP lifecycle)."
+                        ),
+                        expected_status=None,
+                        actual_status=event.get("status"),
+                        spec_refs=("core/5.4.2.4.7", "opal/5.2.2.2"),
+                        policy_source="rule",
+                        coverage_status="implemented",
+                    )
 
     # Locking Get is handled before the policy path so that value validation and protected-column
     # leak detection always run, regardless of whether the AccessControl policy matched.
@@ -1869,7 +2161,14 @@ def judge_get(state, event):
             rule_key="access_control",
         )
 
-    return expected_status_result(event, "success", "Get on non-sensitive discovery object should succeed.", rule_key="get")
+    _final_sp = target_sp or state["session"].get("sp")
+    _session_ok = session_open_for(state, _final_sp)
+    return expected_status_result(
+        event,
+        "success" if _session_ok else "auth_error",
+        "Get on discovery/metadata object requires an open session in the target SP.",
+        rule_key="get",
+    )
 
 
 def judge_set(state, event):
@@ -1903,7 +2202,7 @@ def judge_set(state, event):
         return expected_status_result(
             event,
             "invalid_parameter",
-            "Locking RangeStart/RangeLength update is negative or overlaps another configured range.",
+            "Locking RangeStart/RangeLength update violates alignment, overlaps another configured range, or is negative.",
             rule_key="locking_table",
             policy_source="table_schema",
             coverage_status="implemented",
@@ -1949,6 +2248,23 @@ def judge_set(state, event):
             coverage_status="implemented",
         )
 
+    # spec core/3.4.1.1: AdminSP SHALL NOT be disabled or frozen.
+    # Reject Set on AdminSP's SP-table row that sets Enabled (col 6) to False or Frozen (col 7) to True.
+    if event.get("object") == "AdminSP" and event.get("object_family") == "SP":
+        value_cols = event.get("value_columns") or {}
+        if 6 in value_cols and to_bool(value_cols[6]) is False:
+            return expected_status_result(
+                event, "invalid_parameter",
+                "AdminSP cannot be disabled (Enabled=False); core/3.4.1.1 forbids disabling AdminSP.",
+                rule_key="set",
+            )
+        if 7 in value_cols and to_bool(value_cols[7]) is True:
+            return expected_status_result(
+                event, "invalid_parameter",
+                "AdminSP cannot be frozen (Frozen=True); core/3.4.1.1 forbids freezing AdminSP.",
+                rule_key="set",
+            )
+
     target_sp = object_sp(event) or state["session"].get("sp")
     if target_sp == "LockingSP" and not state.get("locking_sp_active"):
         return expected_status_result(event, "error", f"{obj} Set requires an active LockingSP.", rule_key="locking_table")
@@ -1983,10 +2299,26 @@ def judge_set(state, event):
     if family == "Locking":
         # spec opal/4.3.1.7 lines 177-231: all Locking range Set ACEs use BooleanExpr=Admins.
         # ReadLocked and WriteLocked ACE rows are also Admins-only, not UserN.
-        expected = authenticated_locking_admin_write(state)
+        if authenticated_locking_admin_write(state):
+            # spec opal/4.3.5.2.2: LockOnReset column (9) has restricted supported values.
+            # Mandatory: {0}, {0,3}. Optional: {0,1}, {0,1,3}. Others: INVALID_PARAMETER.
+            value_cols = event.get("value_columns") or {}
+            if 9 in value_cols:
+                lor_result = validate_lock_on_reset_value(value_cols[9])
+                if lor_result is not None:
+                    return expected_status_result(
+                        event, lor_result,
+                        f"Locking LockOnReset value must be {{0}}, {{0,3}} (mandatory), "
+                        f"{{0,1}}, or {{0,1,3}} (optional per opal/4.3.5.2.2).",
+                        rule_key="locking_table",
+                    )
+            return expected_status_result(
+                event, "success",
+                f"{obj} Set requires an authenticated Admin LockingSP write session (opal/4.3.1.7).",
+                rule_key="access_control",
+            )
         return expected_status_result(
-            event,
-            "success" if expected else "auth_error",
+            event, "auth_error",
             f"{obj} Set requires an authenticated Admin LockingSP write session (opal/4.3.1.7).",
             rule_key="access_control",
         )
@@ -1995,10 +2327,27 @@ def judge_set(state, event):
         # opal/4.3.1.6 + 4.3.1.7: MBRControl Set ACL = ACE_MBRControl_Admins_Set OR ACE_MBRControl_Set_DoneToDOR.
         # Both ACEs have BooleanExpr=Admins (opal/4.3.1.7 Table 39). All columns (Enable=1, Done=2,
         # DoneOnReset=3) require an Admin authority in a LockingSP write session.
-        expected = authenticated_locking_admin_write(state)
+        if authenticated_locking_admin_write(state):
+            # spec opal/4.3.5.3.1: DoneOnReset column (3) has restricted supported values.
+            # Mandatory: {0}, {0,3}. Optional: {0,1}, {0,1,3}. Others: INVALID_PARAMETER.
+            value_cols = event.get("value_columns") or {}
+            if 3 in value_cols:
+                dor_result = validate_lock_on_reset_value(value_cols[3])
+                if dor_result is not None:
+                    return expected_status_result(
+                        event, dor_result,
+                        f"MBRControl DoneOnReset value must be {{0}}, {{0,3}} (mandatory), "
+                        f"{{0,1}}, or {{0,1,3}} (optional per opal/4.3.5.3.1).",
+                        rule_key="mbr_control",
+                    )
+            return expected_status_result(
+                event, "success",
+                f"{obj} Set requires authenticated Admin LockingSP write session"
+                " (ACE_MBRControl_Admins_Set, BooleanExpr=Admins, opal/4.3.1.7).",
+                rule_key="mbr_control",
+            )
         return expected_status_result(
-            event,
-            "success" if expected else "auth_error",
+            event, "auth_error",
             f"{obj} Set requires authenticated Admin LockingSP write session"
             " (ACE_MBRControl_Admins_Set, BooleanExpr=Admins, opal/4.3.1.7).",
             rule_key="mbr_control",
@@ -2006,6 +2355,25 @@ def judge_set(state, event):
 
     if family in {"MBR", "MediaKey", "ACE", "AccessControl", "SecretProtect", "DataStore"}:
         # MBR byte-table Set: Admin-only per ACE_Admin (opal/4.3.1.6 InvokingID=00 00 08 04)
+        if family == "ACE" and authenticated_locking_admin_write(state):
+            # spec opal/4.3.1.7 *ACE1: ACE_C_PIN_UserMMMM_Set_PIN BooleanExpr must be only
+            # "Admins" or "Admins OR UserMMMM". Any other value → INVALID_PARAMETER.
+            obj_name = (obj or "").lower()
+            if re.search(r"ace_c_pin_user\w+_set_pin", obj_name):
+                value_cols = event.get("value_columns") or {}
+                if 3 in value_cols:  # column 3 = BooleanExpr
+                    raw_expr = value_cols[3]
+                    expr_str = re.sub(r"[^a-zA-Z0-9\s_]", "", str(raw_expr or "")).lower().strip()
+                    # Accept "admins" alone or "admins or userN" (any user number)
+                    is_admins = expr_str in {"admins"}
+                    is_admins_or_user = bool(re.match(r"admins\s+or\s+user\w+", expr_str))
+                    if not is_admins and not is_admins_or_user:
+                        return expected_status_result(
+                            event, "invalid_parameter",
+                            f"ACE_C_PIN_UserMMMM_Set_PIN BooleanExpr must be 'Admins' or 'Admins OR UserMMMM'; "
+                            f"got {raw_expr!r} (opal/4.3.1.7 *ACE1).",
+                            rule_key="ace",
+                        )
         expected = authenticated_locking_admin_write(state)
         return expected_status_result(
             event,
@@ -2027,11 +2395,16 @@ def judge_set(state, event):
             rule_key="authority",
         )
 
-    expected = state["session"].get("open") and state["session"].get("write") and session_has_authority(state)
+    _set_sp = object_sp(event) or state["session"].get("sp")
+    expected = (
+        state["session"].get("open")
+        and state["session"].get("write")
+        and session_has_admin_authority(state, _set_sp)
+    )
     return expected_status_result(
         event,
         "success" if expected else "auth_error",
-        "Protected Set fallback requires an authenticated write session.",
+        "Protected Set fallback requires an admin-level authenticated write session.",
         rule_key="set",
     )
 
@@ -2136,6 +2509,13 @@ def judge_gen_key(state, event):
             return expected_status_result(
                 event, "invalid_parameter",
                 "GenKey PinLength is only valid for C_PIN credential objects (core/5.3.3.16.4).",
+                rule_key="gen_key",
+            )
+        pin_length_val = to_int(parameter_value(event, ("PinLength",)))
+        if pin_length_val is not None and pin_length_val > 32:
+            return expected_status_result(
+                event, "invalid_parameter",
+                f"GenKey PinLength {pin_length_val} exceeds the maximum of 32 (core/5.3.3.16.2).",
                 rule_key="gen_key",
             )
 
@@ -2398,6 +2778,24 @@ def judge_delete(state, event):
             "MethodID rows are TPer-managed and cannot be deleted by the host (core/5.3.3.3).",
             rule_key="delete",
         )
+    # spec core/3.4.1.1: AdminSP SHALL NOT be deleted.
+    if event.get("object") == "AdminSP":
+        return expected_status_result(
+            event, "invalid_parameter",
+            "AdminSP cannot be deleted; it is a mandatory singleton (core/3.4.1.1).",
+            rule_key="delete",
+        )
+    # spec core/5.7.2.2.12: Delete on a Locking-family row fails if Global Range is not IDLE.
+    if event.get("object_family") == "Locking":
+        global_range = (state.get("locking_ranges") or {}).get("Global") or {}
+        sv = reencrypt_state_value(global_range.get("reencrypt_state"))
+        if sv is not None and sv != 1:
+            return expected_status_result(
+                event,
+                "invalid_parameter",
+                "Delete on a Locking row is not permitted while Global Range re-encryption is in progress (core/5.7.2.2.12).",
+                rule_key="delete",
+            )
     target_sp = object_sp(event) or state["session"].get("sp")
     expected = session_open_for(state, target_sp, write_required=True) and session_has_authority(state)
     return expected_status_result(
@@ -2412,6 +2810,13 @@ def judge_delete_sp(state, event):
     # DeleteSP is an SP method — it operates within the current session's SP and deletes that SP.
     # Do not use object_sp() here: for LockingSP the object_sp would return "AdminSP" (wrong).
     sp = state["session"].get("sp")
+    # spec core/3.4.1.1: AdminSP SHALL NOT be deleted.
+    if sp == "AdminSP":
+        return expected_status_result(
+            event, "invalid_parameter",
+            "AdminSP cannot be deleted via DeleteSP; it is a mandatory singleton (core/3.4.1.1).",
+            rule_key="delete_sp",
+        )
     expected = session_open_for(state, sp, write_required=True) and session_has_admin_authority(state, sp)
     return expected_status_result(
         event,
@@ -2661,6 +3066,14 @@ def judge_read(state, event):
                     actual_status=actual,
                     spec_refs=spec_refs_for("locking_data"),
                 )
+            result_text = str(event.get("result") or "").strip().lower()
+            if "user_data" in result_text or "userdata" in result_text:
+                return fail_result(
+                    "Read within active MBR shadow region returned user data instead of MBR table data (opal/4.3.4).",
+                    expected_status="data_success_mbr_data",
+                    actual_status="data_success_user_data",
+                    spec_refs=spec_refs_for("locking_data"),
+                )
             return pass_result(
                 "Read within active MBR shadow region returned data (MBR table contents, opal/4.3.4).",
                 0.7,
@@ -2810,9 +3223,10 @@ def fallback(event, state):
     if method in harmless:
         return expected_status_result(event, "success", f"{method} is a harmless discovery/helper method.", rule_key="properties")
 
+    _fb_sp = state["session"].get("sp")
     expected = state["session"].get("open") and (
         not method.lower().startswith(("set", "gen", "activate", "revert", "delete", "create"))
-        or (state["session"].get("write") and session_has_authority(state))
+        or (state["session"].get("write") and session_has_admin_authority(state, _fb_sp))
     )
     return expected_status_result(
         event,
@@ -2959,12 +3373,78 @@ def judge_final(state, event):
     if preflight is not None:
         return preflight
 
+    method_filter = sp_method_filter_result(state, event)
+    if method_filter is not None:
+        return method_filter
+
     if method == "Properties":
         expected = event.get("object") == "SessionManager"
+        if not expected:
+            return expected_status_result(
+                event,
+                "invalid_parameter",
+                "Properties should be invoked on the Session Manager.",
+                rule_key="properties",
+            )
+        # spec core/5.2.2.2 Table 167: validate mandatory TPer property minimums when returned.
+        # MaxComPacketSize SHALL be >= 1024; MaxPacketSize SHALL be >= 1004.
+        raw_out = (event.get("raw") or {}).get("output") or {}
+        return_vals = raw_out.get("return_values") or []
+        tper_props = find_named_value(return_vals, {"Properties", "TPerProperties"})
+        if isinstance(tper_props, dict) and actual_status_class(event) == "success":
+            def _prop_int(props, name):
+                v = props.get(name)
+                if v is None:
+                    return None
+                if isinstance(v, int):
+                    return v
+                try:
+                    return int(str(v), 16) if str(v).startswith(("0x", "0X")) or (len(str(v)) > 2 and all(c in "0123456789abcdefABCDEF" for c in str(v))) else int(v)
+                except (ValueError, TypeError):
+                    return None
+            missing = [name for name in ("MaxComPacketSize", "MaxPacketSize") if name not in tper_props]
+            if missing:
+                return RuleResult(
+                    verdict="fail",
+                    confidence=0.95,
+                    reason=(
+                        "Properties response included TPerProperties but omitted mandatory "
+                        f"{', '.join(missing)} field(s) (core/5.2.2.2 Table 167)."
+                    ),
+                    expected_status=None,
+                    actual_status=event.get("status"),
+                    spec_refs=("core/5.2.2.2",),
+                    policy_source="rule",
+                    coverage_status="implemented",
+                )
+            max_com = _prop_int(tper_props, "MaxComPacketSize")
+            if max_com is not None and max_com != 0 and max_com < 1024:
+                return RuleResult(
+                    verdict="fail",
+                    confidence=0.95,
+                    reason=f"Properties response MaxComPacketSize={max_com} is below the spec minimum of 1024 (core/5.2.2.2 Table 167).",
+                    expected_status=None,
+                    actual_status=event.get("status"),
+                    spec_refs=("core/5.2.2.2",),
+                    policy_source="rule",
+                    coverage_status="implemented",
+                )
+            max_pkt = _prop_int(tper_props, "MaxPacketSize")
+            if max_pkt is not None and max_pkt != 0 and max_pkt < 1004:
+                return RuleResult(
+                    verdict="fail",
+                    confidence=0.95,
+                    reason=f"Properties response MaxPacketSize={max_pkt} is below the spec minimum of 1004 (core/5.2.2.2 Table 167).",
+                    expected_status=None,
+                    actual_status=event.get("status"),
+                    spec_refs=("core/5.2.2.2",),
+                    policy_source="rule",
+                    coverage_status="implemented",
+                )
         return expected_status_result(
             event,
-            "success" if expected else "invalid_parameter",
-            "Properties should be invoked on the Session Manager.",
+            "success",
+            "Properties is a discovery method on the Session Manager.",
             rule_key="properties",
         )
     if method == "StartSession":

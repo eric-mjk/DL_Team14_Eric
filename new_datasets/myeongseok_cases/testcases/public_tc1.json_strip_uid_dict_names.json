@@ -1,0 +1,58 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "invoking_id": {
+        "type": null,
+        "uid": "00 00 00 00 00 00 00 FF"
+      },
+      "method": {
+        "args": [
+          {
+            "HostProperties": {
+              "MaxComPacketSize": "0800",
+              "MaxIndTokenSize": "07c8",
+              "MaxMethods": 1,
+              "MaxPacketSize": "07ec",
+              "MaxPackets": 1,
+              "MaxSubpackets": 1
+            }
+          }
+        ],
+        "uid": "00 00 00 00 00 00 FF 01"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": [
+        {
+          "Properties": {
+            "DefSessionTimeout": 0,
+            "MaxAuthentications": 5,
+            "MaxComPacketSize": "010200",
+            "MaxIndTokenSize": "010004",
+            "MaxMethods": 1,
+            "MaxPacketSize": "0101ec",
+            "MaxPackets": 1,
+            "MaxResponseComPacketSize": "010200",
+            "MaxSessions": 1,
+            "MaxSubpackets": 1,
+            "MaxTransactionLimit": 1
+          }
+        },
+        {
+          "HostProperties": {
+            "MaxComPacketSize": "0800",
+            "MaxIndTokenSize": "07c8",
+            "MaxMethods": 1,
+            "MaxPacketSize": "07ec",
+            "MaxPackets": 1,
+            "MaxResponseComPacketSize": "0800",
+            "MaxSubpackets": 1
+          }
+        }
+      ],
+      "status_codes": "SUCCESS"
+    }
+  }
+]

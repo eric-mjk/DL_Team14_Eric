@@ -712,6 +712,12 @@ def apply_successful_set(state, event):
             parsed if parsed is not None else columns[5]
         )
 
+    # spec core/3.3.7.4: Set of Tries (col 6) to 0 resets the failed-auth counter/lockout.
+    if credential_authority and 6 in columns:
+        tries_val = to_int(columns[6])
+        if tries_val == 0:
+            state.setdefault("failed_auth_counts", {}).pop(credential_authority, None)
+
     if credential_authority and 3 in columns:
         state["credentials"][credential_authority] = columns[3]
         state.setdefault("failed_auth_counts", {}).pop(credential_authority, None)
@@ -810,6 +816,20 @@ def reset_locking_sp(state, preserve_global_key=False):
         state.setdefault("trylimit_by_authority", {}).pop(_auth, None)
         state.setdefault("invalidated_credentials", {}).pop(_auth, None)
     reset_access_policy_scope(state, "LockingSP")
+    # spec opal/4.3.1.8: ensure User2-User8 are restored to disabled OFS after reset.
+    # reset_access_policy_scope only affects rows whose source matches "opal/4.3.*" scope;
+    # synthetic User2-User8 rows use source="LockingSP" (not an opal/ prefix) so they
+    # survive the scope-filtered reset. Re-seed them explicitly.
+    for _n in range(2, 9):
+        _user = f"User{_n}"
+        state["authority_rows"][_user] = {
+            "name": _user,
+            "enabled": False,
+            "is_class": False,
+            "class": "Users",
+            "operation": "Password",
+            "source": "LockingSP",
+        }
 
 
 def reset_admin_sp_credentials(state):
@@ -1141,6 +1161,13 @@ def apply_event(state, event):
             apply_successful_activate(state, event)
         elif method == "GenKey":
             apply_successful_gen_key(state, event)
+        elif method == "SetPackage":
+            # spec core/5.3.4.1.1.2: successful SetPackage on a C_PIN object modifies the PIN
+            # column and therefore resets the Tries column to 0 (same rule as GenKey / Set).
+            if event.get("object_family") == "C_PIN":
+                authority = event.get("credential_authority")
+                if authority:
+                    state.setdefault("failed_auth_counts", {}).pop(authority, None)
         elif method in {"EncryptInit", "DecryptInit", "HashInit", "HMACInit", "EncryptFinalize", "DecryptFinalize", "HashFinalize", "HMACFinalize"}:
             apply_successful_crypto_stream_method(state, event)
             state["pending_clock_lag"] = None

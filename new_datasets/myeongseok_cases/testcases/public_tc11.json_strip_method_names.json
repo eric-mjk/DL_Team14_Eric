@@ -1,0 +1,32 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "00 00 00 00 00 00 00 FF"
+      },
+      "method": {
+        "args": [
+          {
+            "HostProperties": {
+              "MaxComPacketSize": "0800",
+              "MaxIndTokenSize": "07c8",
+              "MaxMethods": 1,
+              "MaxPacketSize": "07ec",
+              "MaxPackets": 1,
+              "MaxSubpackets": 1
+            }
+          }
+        ],
+        "uid": "00 00 00 00 00 00 FF 01"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": [],
+      "status_codes": "INVALID_PARAMETER"
+    }
+  }
+]

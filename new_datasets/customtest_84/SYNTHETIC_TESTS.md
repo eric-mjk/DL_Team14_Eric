@@ -1,15 +1,17 @@
 # Synthetic Test Cases
 
-`customtest_57/` 디렉토리는 oracle 검증용 합성 test trajectory와 생성 스크립트를 담는다.
+`customtest_84/` 디렉토리는 oracle 검증용 합성 test trajectory와 생성 스크립트를 담는다.
 
 ```
-customtest_57/
+customtest_84/
 ├── generate_synthetic.py   # synthetic dataset generator/checker
-├── synthetic_testcases/      # 57개 .json 파일 (tc1.json 포맷과 동일)
+├── testcases/                # 표준 new_datasets runner용 .json 파일
+├── label.jsonl               # 표준 new_datasets runner용 정답 label
+├── synthetic_testcases/      # generator/check-only 호환용 .json 파일
 │   ├── syn_pass_01_*.json
 │   ├── syn_fail_01_*.json
 │   └── ...
-└── synthetic_labels.jsonl    # 각 파일의 정답 label
+└── synthetic_labels.jsonl    # generator/check-only 호환용 정답 label
 ```
 
 ## 목적
@@ -53,6 +55,10 @@ python generate_synthetic.py --check
 
 # 이미 생성된 synthetic_testcases/와 synthetic_labels.jsonl로 정확도만 확인
 python generate_synthetic.py --check-only
+
+# 모든 표준 new_datasets와 함께 실행
+PYTHONPATH=/workspace/Eric/ws/v8 \
+python /workspace/Eric/ws/new_datasets/run_all_tests.py /workspace/Eric/ws/new_datasets
 
 # 예상 출력
 # Generated 57 cases (30 pass, 27 fail)

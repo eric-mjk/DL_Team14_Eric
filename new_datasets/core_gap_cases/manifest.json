@@ -26,6 +26,22 @@
     ]
   },
   {
+    "filename": "core_pass_02b_sync_sp_id_mismatch_rejected.json",
+    "label": "pass",
+    "concept": "SyncSession SPSessionID must match the established TPer session number.",
+    "refs": [
+      "core/5.2.3.2.2"
+    ]
+  },
+  {
+    "filename": "core_fail_02b_sync_sp_id_mismatch_success.json",
+    "label": "fail",
+    "concept": "SyncSession with the wrong SPSessionID cannot succeed.",
+    "refs": [
+      "core/5.2.3.2.2"
+    ]
+  },
+  {
     "filename": "core_pass_03_close_open_session.json",
     "label": "pass",
     "concept": "CloseSession is valid when a session is open.",
@@ -343,6 +359,22 @@
     "filename": "core_fail_24_xor_bad_pattern_success.json",
     "label": "fail",
     "concept": "XOR with malformed PatternInput cannot succeed.",
+    "refs": [
+      "core/5.6.4.17.1"
+    ]
+  },
+  {
+    "filename": "core_pass_24b_xor_bufferout_bound.json",
+    "label": "pass",
+    "concept": "XOR output bytes may be equal to the explicit BufferOut limit.",
+    "refs": [
+      "core/5.6.4.17.1"
+    ]
+  },
+  {
+    "filename": "core_fail_24b_xor_bufferout_overflow.json",
+    "label": "fail",
+    "concept": "XOR output bytes cannot exceed explicit BufferOut.",
     "refs": [
       "core/5.6.4.17.1"
     ]
@@ -885,6 +917,14 @@
     ]
   },
   {
+    "filename": "core_fail_57b_genkey_success_unexpected_return.json",
+    "label": "fail",
+    "concept": "GenKey returns an empty result list on success; non-empty return values are not compliant.",
+    "refs": [
+      "core/5.3.3.16.3.1"
+    ]
+  },
+  {
     "filename": "core_pass_58_hmac_without_init_rejected.json",
     "label": "pass",
     "concept": "HMAC requires a prior HMACInit stream.",
@@ -1054,12 +1094,36 @@
     ]
   },
   {
+    "filename": "core_pass_67b_properties_opal_tper_minima.json",
+    "label": "pass",
+    "concept": "Explicit Opal TPerProperties include mandatory fields at or above Table 17 minima.",
+    "refs": [
+      "opal/4.1.1.1"
+    ]
+  },
+  {
+    "filename": "core_fail_67b_properties_low_max_packet.json",
+    "label": "fail",
+    "concept": "Explicit Opal TPerProperties cannot report MaxPacketSize below the Table 17 minimum.",
+    "refs": [
+      "opal/4.1.1.1"
+    ]
+  },
+  {
     "filename": "core_pass_68_deletesp_authorized.json",
     "label": "pass",
     "concept": "DeleteSP is valid in an authorized read-write session to the SP being deleted.",
     "refs": [
       "core/5.3.3.1",
       "core/5.3.4.4"
+    ]
+  },
+  {
+    "filename": "core_fail_68b_activate_success_unexpected_return.json",
+    "label": "fail",
+    "concept": "Activate returns an empty result list on success; non-empty return values are not compliant.",
+    "refs": [
+      "opal/5.1.1.1"
     ]
   },
   {
@@ -1187,6 +1251,14 @@
     ]
   },
   {
+    "filename": "core_fail_76b_end_session_success_unexpected_return.json",
+    "label": "fail",
+    "concept": "EndSession returns an empty result list on success; non-empty return values are not compliant.",
+    "refs": [
+      "core/3.3.7.1.5"
+    ]
+  },
+  {
     "filename": "core_pass_77_end_session_without_session_rejected.json",
     "label": "pass",
     "concept": "EndSession without an open session must fail.",
@@ -1234,6 +1306,24 @@
     "concept": "Class authority Authenticate cannot succeed.",
     "refs": [
       "core/5.3.4.1.2"
+    ]
+  },
+  {
+    "filename": "core_pass_79b_max_authentications_cap_false.json",
+    "label": "pass",
+    "concept": "MaxAuthentications counts Anybody and the startup authority, so another distinct Authenticate must return result False when the learned cap is already reached.",
+    "refs": [
+      "core/5.3.4.1.2.1",
+      "core/5.3.4.1.14"
+    ]
+  },
+  {
+    "filename": "core_fail_79b_max_authentications_cap_true.json",
+    "label": "fail",
+    "concept": "Authenticate cannot add another distinct authority beyond learned MaxAuthentications.",
+    "refs": [
+      "core/5.3.4.1.2.1",
+      "core/5.3.4.1.14"
     ]
   },
   {
@@ -1579,6 +1669,1346 @@
     "concept": "CreateTable without MinSize cannot succeed.",
     "refs": [
       "core/5.3.3.2.5"
+    ]
+  },
+  {
+    "filename": "core_pass_100_getclock_readonly.json",
+    "label": "pass",
+    "concept": "GetClock is a read-only ClockTime method valid in a read-only session.",
+    "refs": [
+      "core/5.5.4.1"
+    ]
+  },
+  {
+    "filename": "core_fail_100_getclock_readonly_rejected.json",
+    "label": "fail",
+    "concept": "GetClock should not require write authorization.",
+    "refs": [
+      "core/5.5.4.1"
+    ]
+  },
+  {
+    "filename": "core_pass_101_incrementcounter_wrong_target_rejected.json",
+    "label": "pass",
+    "concept": "IncrementCounter is a ClockTime method; invoking it on a non-ClockTime object is rejected.",
+    "refs": [
+      "core/5.5.4.7",
+      "core/5.5.5.2"
+    ]
+  },
+  {
+    "filename": "core_fail_101_incrementcounter_wrong_target_success.json",
+    "label": "fail",
+    "concept": "IncrementCounter on a non-ClockTime object cannot succeed.",
+    "refs": [
+      "core/5.5.4.7"
+    ]
+  },
+  {
+    "filename": "core_pass_102_addlog_to_new_log.json",
+    "label": "pass",
+    "concept": "AddLog succeeds on a log table created successfully earlier in the same session.",
+    "refs": [
+      "core/5.8.3.1",
+      "core/5.8.3.2"
+    ]
+  },
+  {
+    "filename": "core_fail_102_addlog_to_new_log_rejected.json",
+    "label": "fail",
+    "concept": "AddLog to a valid newly created log table should not be rejected.",
+    "refs": [
+      "core/5.8.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_103_addlog_nonlog_target_rejected.json",
+    "label": "pass",
+    "concept": "AddLog must target a Log table; invoking on a non-Log table returns INVALID_PARAMETER.",
+    "refs": [
+      "core/5.8.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_103_addlog_nonlog_target_success.json",
+    "label": "fail",
+    "concept": "AddLog cannot succeed when targeting a non-Log table.",
+    "refs": [
+      "core/5.8.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_104_getacl_bad_invoking_rejected.json",
+    "label": "pass",
+    "concept": "GetACL InvokingID must reference a valid existing object; an empty UID is rejected.",
+    "refs": [
+      "core/5.3.3.13",
+      "core/5.3.3.13.1"
+    ]
+  },
+  {
+    "filename": "core_fail_104_getacl_bad_invoking_success.json",
+    "label": "fail",
+    "concept": "GetACL with an invalid InvokingID cannot succeed.",
+    "refs": [
+      "core/5.3.3.13.1"
+    ]
+  },
+  {
+    "filename": "core_pass_105_hmac_after_init_succeeds.json",
+    "label": "pass",
+    "concept": "HMAC with data succeeds when an HMAC stream is open via prior HMACInit.",
+    "refs": [
+      "core/5.6.4.14",
+      "core/5.6.4.15"
+    ]
+  },
+  {
+    "filename": "core_fail_105_hmac_after_init_rejected.json",
+    "label": "fail",
+    "concept": "HMAC should not be rejected when an HMAC stream is open.",
+    "refs": [
+      "core/5.6.4.15"
+    ]
+  },
+  {
+    "filename": "core_pass_106_next_count_zero_valid.json",
+    "label": "pass",
+    "concept": "Next with Count=0 is a valid unsigned-integer request returning an empty result set.",
+    "refs": [
+      "core/5.3.3.8",
+      "core/5.3.3.8.2"
+    ]
+  },
+  {
+    "filename": "core_fail_106_next_count_zero_rejected.json",
+    "label": "fail",
+    "concept": "Next with Count=0 must not be treated as an invalid parameter.",
+    "refs": [
+      "core/5.3.3.8.2"
+    ]
+  },
+  {
+    "filename": "core_pass_107_setpackage_authorized_succeeds.json",
+    "label": "pass",
+    "concept": "SetPackage succeeds on a credential object in an authorized write session.",
+    "refs": [
+      "core/5.3.3.18"
+    ]
+  },
+  {
+    "filename": "core_fail_107_setpackage_authorized_rejected.json",
+    "label": "fail",
+    "concept": "SetPackage in an authorized write session targeting a credential should not be rejected.",
+    "refs": [
+      "core/5.3.3.18"
+    ]
+  },
+  {
+    "filename": "core_pass_108_issuesp_missing_size_rejected.json",
+    "label": "pass",
+    "concept": "IssueSP requires Size; omitting it is rejected with INVALID_PARAMETER.",
+    "refs": [
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_108_issuesp_missing_size_success.json",
+    "label": "fail",
+    "concept": "IssueSP missing required Size cannot succeed.",
+    "refs": [
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_109_genkey_cpin_not_authorized.json",
+    "label": "pass",
+    "concept": "GenKey on a C_PIN credential in Opal SSC has no AccessControl ACE and returns NOT_AUTHORIZED.",
+    "refs": [
+      "core/5.3.3.16",
+      "core/5.3.3.16.4"
+    ]
+  },
+  {
+    "filename": "core_fail_109_genkey_cpin_success.json",
+    "label": "fail",
+    "concept": "GenKey on a C_PIN credential cannot succeed without an authorized ACE in Opal SSC.",
+    "refs": [
+      "core/5.3.3.16"
+    ]
+  },
+  {
+    "filename": "core_pass_110_addlog_missing_logentryname_rejected.json",
+    "label": "pass",
+    "concept": "AddLog requires LogEntryName; omitting it returns INVALID_PARAMETER.",
+    "refs": [
+      "core/5.8.3.1",
+      "core/5.8.3.1.1"
+    ]
+  },
+  {
+    "filename": "core_fail_110_addlog_missing_logentryname_success.json",
+    "label": "fail",
+    "concept": "AddLog without required LogEntryName cannot succeed.",
+    "refs": [
+      "core/5.8.3.1.1"
+    ]
+  },
+  {
+    "filename": "core_pass_111_hash_after_init_succeeds.json",
+    "label": "pass",
+    "concept": "Hash with data succeeds when a hash stream is open via prior HashInit.",
+    "refs": [
+      "core/5.6.4.11",
+      "core/5.6.4.12"
+    ]
+  },
+  {
+    "filename": "core_fail_111_hash_after_init_rejected.json",
+    "label": "fail",
+    "concept": "Hash should not be rejected when a hash stream is open.",
+    "refs": [
+      "core/5.6.4.12"
+    ]
+  },
+  {
+    "filename": "core_pass_112_clearlog_new_log_succeeds.json",
+    "label": "pass",
+    "concept": "ClearLog succeeds on a log table created within the current write session.",
+    "refs": [
+      "core/5.8.3.2",
+      "core/5.8.3.3"
+    ]
+  },
+  {
+    "filename": "core_fail_112_clearlog_new_log_rejected.json",
+    "label": "fail",
+    "concept": "ClearLog on a valid newly created log table should not fail.",
+    "refs": [
+      "core/5.8.3.3"
+    ]
+  },
+  {
+    "filename": "core_pass_113_decrypt_after_init_succeeds.json",
+    "label": "pass",
+    "concept": "Decrypt succeeds when a decrypt stream is open via prior DecryptInit.",
+    "refs": [
+      "core/5.6.4.3",
+      "core/5.6.4.4"
+    ]
+  },
+  {
+    "filename": "core_fail_113_decrypt_after_init_rejected.json",
+    "label": "fail",
+    "concept": "Decrypt should not be rejected when a decrypt stream is open.",
+    "refs": [
+      "core/5.6.4.4"
+    ]
+  },
+  {
+    "filename": "core_pass_114_verify_wrong_proof_success_false.json",
+    "label": "pass",
+    "concept": "Verify with a non-matching proof returns SUCCESS with Result=False rather than a failure method status.",
+    "refs": [
+      "core/5.6.4.10",
+      "core/5.6.5.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_114_verify_wrong_proof_as_fail.json",
+    "label": "fail",
+    "concept": "Verify with a non-matching proof must not return a FAIL method status.",
+    "refs": [
+      "core/5.6.4.10"
+    ]
+  },
+  {
+    "filename": "core_pass_115_dynamic_unique_conflict_rejected.json",
+    "label": "pass",
+    "concept": "CreateRow on a learned dynamic table rejects duplicate values in columns marked IsUnique.",
+    "refs": [
+      "core/3.2.5.4",
+      "core/5.3.3.4",
+      "core/5.1.5.8"
+    ]
+  },
+  {
+    "filename": "core_fail_115_dynamic_unique_conflict_success.json",
+    "label": "fail",
+    "concept": "CreateRow cannot succeed when a learned unique-column value duplicates an existing dynamic row.",
+    "refs": [
+      "core/3.2.5.4",
+      "core/5.3.3.4"
+    ]
+  },
+  {
+    "filename": "core_pass_116_dynamic_byte_next_rejected.json",
+    "label": "pass",
+    "concept": "Next is not valid on learned dynamic byte tables.",
+    "refs": [
+      "core/5.3.3.8"
+    ]
+  },
+  {
+    "filename": "core_fail_116_dynamic_byte_next_success.json",
+    "label": "fail",
+    "concept": "Next cannot succeed on a learned dynamic byte table.",
+    "refs": [
+      "core/5.3.3.8"
+    ]
+  },
+  {
+    "filename": "core_pass_117_dynamic_byte_set_rowvalues_rejected.json",
+    "label": "pass",
+    "concept": "Set on a learned dynamic byte table must use Bytes, not RowValues.",
+    "refs": [
+      "core/5.3.3.7.2",
+      "core/5.3.3.7.2.1"
+    ]
+  },
+  {
+    "filename": "core_fail_117_dynamic_byte_set_rowvalues_success.json",
+    "label": "fail",
+    "concept": "Set with RowValues cannot succeed on a learned dynamic byte table.",
+    "refs": [
+      "core/5.3.3.7.2.1"
+    ]
+  },
+  {
+    "filename": "core_pass_118_dynamic_getfreespace_tablerows.json",
+    "label": "pass",
+    "concept": "GetFreeSpace TableRows for a learned dynamic table reflects tracked rows remaining.",
+    "refs": [
+      "core/5.3.3.9",
+      "core/5.3.3.9.1.2"
+    ]
+  },
+  {
+    "filename": "core_fail_118_dynamic_getfreespace_tablerows_wrong.json",
+    "label": "fail",
+    "concept": "GetFreeSpace cannot report a wrong TableRows value for a learned dynamic table with complete inventory.",
+    "refs": [
+      "core/5.3.3.9.1.2"
+    ]
+  },
+  {
+    "filename": "core_pass_119_dynamic_delete_row_mixed_unknown_rejected.json",
+    "label": "pass",
+    "concept": "DeleteRow is all-or-fail when any requested dynamic row is unknown.",
+    "refs": [
+      "core/5.3.3.5",
+      "core/5.3.3.5.2.1"
+    ]
+  },
+  {
+    "filename": "core_fail_119_dynamic_delete_row_mixed_unknown_success.json",
+    "label": "fail",
+    "concept": "DeleteRow cannot succeed when a request mixes known and unknown dynamic rows.",
+    "refs": [
+      "core/5.3.3.5.2.1"
+    ]
+  },
+  {
+    "filename": "core_pass_120_dynamic_table_get_metadata.json",
+    "label": "pass",
+    "concept": "Get on a learned dynamic table reports tracked Rows and RowsFree metadata.",
+    "refs": [
+      "core/5.3.3.6",
+      "core/5.3.2.3.8",
+      "core/5.3.2.3.9"
+    ]
+  },
+  {
+    "filename": "core_fail_120_dynamic_table_get_metadata_wrong.json",
+    "label": "fail",
+    "concept": "Get on a learned dynamic table cannot report stale RowsFree metadata.",
+    "refs": [
+      "core/5.3.2.3.9"
+    ]
+  },
+  {
+    "filename": "core_pass_121_dynamic_row_set_then_get.json",
+    "label": "pass",
+    "concept": "Set on a learned dynamic object table updates the tracked dynamic row value used by later Get.",
+    "refs": [
+      "core/5.3.3.7",
+      "core/5.3.3.6"
+    ]
+  },
+  {
+    "filename": "core_fail_121_dynamic_row_set_then_get_stale.json",
+    "label": "fail",
+    "concept": "After dynamic row Set, a later Get cannot return the stale pre-update value.",
+    "refs": [
+      "core/5.3.3.7",
+      "core/5.3.3.6"
+    ]
+  },
+  {
+    "filename": "core_pass_121b_dynamic_column_metadata_create_row.json",
+    "label": "pass",
+    "concept": "Concrete Column-row metadata extends a learned dynamic table schema used by CreateRow.",
+    "refs": [
+      "core/5.3.2.4",
+      "core/5.3.3.4"
+    ]
+  },
+  {
+    "filename": "core_pass_121c_dynamic_column_metadata_missing_rejected.json",
+    "label": "pass",
+    "concept": "CreateRow must include concrete columns learned from Column-row metadata.",
+    "refs": [
+      "core/5.3.2.4",
+      "core/5.3.3.4"
+    ]
+  },
+  {
+    "filename": "core_fail_121c_dynamic_column_metadata_missing_success.json",
+    "label": "fail",
+    "concept": "CreateRow success with a missing concrete Column-row-defined column is non-compliant.",
+    "refs": [
+      "core/5.3.2.4",
+      "core/5.3.3.4"
+    ]
+  },
+  {
+    "filename": "core_pass_121d_dynamic_column_metadata_unique_rejected.json",
+    "label": "pass",
+    "concept": "Concrete Column-row IsUnique metadata participates in dynamic CreateRow duplicate checks.",
+    "refs": [
+      "core/3.2.5.4",
+      "core/5.3.2.4",
+      "core/5.3.3.4",
+      "core/5.1.5.8"
+    ]
+  },
+  {
+    "filename": "core_fail_121d_dynamic_column_metadata_unique_success.json",
+    "label": "fail",
+    "concept": "CreateRow cannot succeed when it duplicates a value in a unique column learned from Column-row metadata.",
+    "refs": [
+      "core/3.2.5.4",
+      "core/5.3.2.4",
+      "core/5.3.3.4"
+    ]
+  },
+  {
+    "filename": "core_pass_122_cpin_msid_get_requested_pin.json",
+    "label": "pass",
+    "concept": "Successful C_PIN_MSID Get of requested PIN column returns that requested column.",
+    "refs": [
+      "opal/4.2.1.8",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_122_cpin_msid_get_missing_requested_pin.json",
+    "label": "fail",
+    "concept": "Successful C_PIN_MSID Get cannot omit a requested authorized PIN column.",
+    "refs": [
+      "opal/4.2.1.8",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_123_locking_global_get_range_length.json",
+    "label": "pass",
+    "concept": "Locking Global Get reports tracked RangeLength for the requested column.",
+    "refs": [
+      "opal/4.3.5.2",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_123_locking_global_get_wrong_range_length.json",
+    "label": "fail",
+    "concept": "Locking Global Get cannot return a RangeLength different from tracked state.",
+    "refs": [
+      "opal/4.3.5.2",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_124_mbrcontrol_get_defaults.json",
+    "label": "pass",
+    "concept": "MBRControl Get reports tracked default Enable and Done values.",
+    "refs": [
+      "opal/4.3.5.3",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_124_mbrcontrol_get_wrong_enable.json",
+    "label": "fail",
+    "concept": "MBRControl Get cannot report Enable different from tracked state.",
+    "refs": [
+      "opal/4.3.5.3",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_125_authority_enabled_after_set.json",
+    "label": "pass",
+    "concept": "Authority Get reports the tracked Enabled value after a successful Set.",
+    "refs": [
+      "core/5.3.2.10.6",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_125_authority_enabled_stale_after_set.json",
+    "label": "fail",
+    "concept": "Authority Get cannot return a stale Enabled value after a successful Set.",
+    "refs": [
+      "core/5.3.2.10.6",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_126_sp_get_lifecycle.json",
+    "label": "pass",
+    "concept": "SP Get reports the requested tracked LifeCycleState column.",
+    "refs": [
+      "core/5.4.2.4.7",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_126_sp_get_missing_lifecycle.json",
+    "label": "fail",
+    "concept": "SP Get cannot omit the requested tracked LifeCycleState column.",
+    "refs": [
+      "core/5.4.2.4.7",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_127_lockinginfo_get_maxranges.json",
+    "label": "pass",
+    "concept": "LockingInfo Get returns requested MaxRanges at the Opal minimum.",
+    "refs": [
+      "opal/4.3.5.1",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_127_lockinginfo_get_missing_maxranges.json",
+    "label": "fail",
+    "concept": "LockingInfo Get cannot omit requested MaxRanges.",
+    "refs": [
+      "opal/4.3.5.1",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_128_accesscontrol_get_commonname.json",
+    "label": "pass",
+    "concept": "AccessControl Get returns the requested readable CommonName column.",
+    "refs": [
+      "core/5.3.2.7",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_128_accesscontrol_get_missing_commonname.json",
+    "label": "fail",
+    "concept": "AccessControl Get cannot omit a requested readable CommonName column in an authorized successful response.",
+    "refs": [
+      "core/5.3.2.7",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_129_cpin_get_trylimit.json",
+    "label": "pass",
+    "concept": "C_PIN Get returns the requested readable TryLimit metadata column.",
+    "refs": [
+      "core/5.3.2.12",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_129_cpin_get_missing_trylimit.json",
+    "label": "fail",
+    "concept": "C_PIN Get cannot omit a requested readable TryLimit metadata column in an authorized successful response.",
+    "refs": [
+      "core/5.3.2.12",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_130_mbrcontrol_singleton_uid.json",
+    "label": "pass",
+    "concept": "MBRControl Get succeeds on the exact Opal singleton row UID.",
+    "refs": [
+      "opal/4.3.5.3"
+    ]
+  },
+  {
+    "filename": "core_fail_130_mbrcontrol_non_singleton_uid_success.json",
+    "label": "fail",
+    "concept": "MBRControl is a singleton Opal object; a different MBRControl-family row UID cannot succeed.",
+    "refs": [
+      "opal/4.3.5.3"
+    ]
+  },
+  {
+    "filename": "core_pass_131_invoking_name_uid_family_match.json",
+    "label": "pass",
+    "concept": "A concrete invoking object name and UID from the same family can be accepted.",
+    "refs": [
+      "core/5.3.3.6",
+      "opal/4.3.5.3"
+    ]
+  },
+  {
+    "filename": "core_fail_131_invoking_name_uid_family_mismatch_success.json",
+    "label": "fail",
+    "concept": "A method invocation with incompatible concrete object name and UID families cannot succeed.",
+    "refs": [
+      "core/5.3.3.6"
+    ]
+  },
+  {
+    "filename": "core_pass_132_dynamic_getsetacl_anybody_set.json",
+    "label": "pass",
+    "concept": "A dynamic table created with GetSetACL=ACE_Anybody permits Set in an unauthenticated write session.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.7",
+      "core/5.3.4.2"
+    ]
+  },
+  {
+    "filename": "core_fail_132_dynamic_getsetacl_anybody_set_rejected.json",
+    "label": "fail",
+    "concept": "A dynamic table GetSetACL=ACE_Anybody grant cannot be rejected when the session is otherwise valid.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.7",
+      "core/5.3.4.2"
+    ]
+  },
+  {
+    "filename": "core_pass_133_dynamic_getsetacl_admin_get_rejected.json",
+    "label": "pass",
+    "concept": "A dynamic table created with an Admins-only GetSetACL rejects unauthenticated Get.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.6",
+      "core/5.3.4.2"
+    ]
+  },
+  {
+    "filename": "core_fail_133_dynamic_getsetacl_admin_get_success.json",
+    "label": "fail",
+    "concept": "A dynamic table Admins-only GetSetACL cannot return row data to an unauthenticated session.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.6",
+      "core/5.3.4.2"
+    ]
+  },
+  {
+    "filename": "core_pass_134_issuesp_space_exhausted_rejected.json",
+    "label": "pass",
+    "concept": "IssueSP cannot succeed after learned TPerInfo.SpaceForIssuance has been exhausted.",
+    "refs": [
+      "core/5.4.2.1.7",
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_134_issuesp_space_exhausted_success.json",
+    "label": "fail",
+    "concept": "IssueSP success after learned issuance space is exhausted is non-compliant.",
+    "refs": [
+      "core/5.4.2.1.7",
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_165_issuesp_space_exhausted_wrong_status.json",
+    "label": "fail",
+    "concept": "IssueSP resource exhaustion must use the specific insufficient-space status when learned issuance space is concrete.",
+    "refs": [
+      "core/5.4.2.1.7",
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_135_issuesp_returned_size_exceeds_space.json",
+    "label": "fail",
+    "concept": "IssueSP cannot report an allocated Size larger than learned TPerInfo.SpaceForIssuance.",
+    "refs": [
+      "core/5.4.2.1.7",
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_136_discovery_optional_descriptor_lengths.json",
+    "label": "pass",
+    "concept": "Level 0 Discovery accepts ordered descriptors with exact optional Geometry and Data Removal lengths.",
+    "refs": [
+      "opal/3.1.1.4",
+      "opal/3.1.1.5"
+    ]
+  },
+  {
+    "filename": "core_pass_136b_discovery_header_version.json",
+    "label": "pass",
+    "concept": "Level 0 Discovery accepts the standard header version 0.1 when explicitly reported.",
+    "refs": [
+      "core/3.3.6.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_136b_discovery_bad_header_major.json",
+    "label": "fail",
+    "concept": "Level 0 Discovery header MajorVersion must be 0x0000 when explicitly reported.",
+    "refs": [
+      "core/3.3.6.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_136c_discovery_bad_header_minor.json",
+    "label": "fail",
+    "concept": "Level 0 Discovery header MinorVersion must be 0x0001 when explicitly reported.",
+    "refs": [
+      "core/3.3.6.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_136_discovery_duplicate_feature_code.json",
+    "label": "fail",
+    "concept": "Level 0 Discovery cannot contain duplicate concrete feature descriptor codes.",
+    "refs": [
+      "core/3.3.6.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_137_discovery_out_of_order_feature_code.json",
+    "label": "fail",
+    "concept": "Level 0 Discovery descriptors must be reported in increasing feature-code order.",
+    "refs": [
+      "core/3.3.6.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_138_discovery_bad_geometry_length.json",
+    "label": "fail",
+    "concept": "Geometry descriptor length must be 0x1C when the optional descriptor is present.",
+    "refs": [
+      "opal/3.1.1.4"
+    ]
+  },
+  {
+    "filename": "core_fail_139_discovery_bad_data_removal_length.json",
+    "label": "fail",
+    "concept": "Data Removal descriptor length must be 0x20 when the optional descriptor is present.",
+    "refs": [
+      "opal/3.1.1.5"
+    ]
+  },
+  {
+    "filename": "core_pass_139b_discovery_opal_v2_sid_indicators.json",
+    "label": "pass",
+    "concept": "Opal V2 C_PIN_SID indicator values 0x00 and 0xFF are defined.",
+    "refs": [
+      "opal/3.1.1.5"
+    ]
+  },
+  {
+    "filename": "core_fail_139b_discovery_reserved_initial_sid_indicator.json",
+    "label": "fail",
+    "concept": "Opal V2 Initial C_PIN_SID PIN Indicator values 0x01..0xFE are reserved.",
+    "refs": [
+      "opal/3.1.1.5"
+    ]
+  },
+  {
+    "filename": "core_fail_139c_discovery_reserved_revert_sid_indicator.json",
+    "label": "fail",
+    "concept": "Opal V2 C_PIN_SID PIN revert behavior values 0x01..0xFE are reserved.",
+    "refs": [
+      "opal/3.1.1.5"
+    ]
+  },
+  {
+    "filename": "core_pass_139d_discovery_reserved_fields_zero.json",
+    "label": "pass",
+    "concept": "Explicit Level 0 Discovery reserved fields are compliant when they are zero.",
+    "refs": [
+      "opal/3.1.1.1",
+      "opal/3.1.1.2",
+      "opal/3.1.1.3",
+      "opal/3.1.1.5"
+    ]
+  },
+  {
+    "filename": "core_fail_139d_discovery_header_reserved_nonzero.json",
+    "label": "fail",
+    "concept": "Level 0 Discovery header reserved bytes 8-15 must be zero when exposed.",
+    "refs": [
+      "opal/3.1.1.1"
+    ]
+  },
+  {
+    "filename": "core_fail_139e_discovery_tper_reserved_nonzero.json",
+    "label": "fail",
+    "concept": "TPer Discovery descriptor reserved bits/bytes must be zero when exposed.",
+    "refs": [
+      "opal/3.1.1.2"
+    ]
+  },
+  {
+    "filename": "core_fail_139f_discovery_locking_reserved_nonzero.json",
+    "label": "fail",
+    "concept": "Locking Discovery descriptor reserved bytes must be zero when exposed.",
+    "refs": [
+      "opal/3.1.1.3"
+    ]
+  },
+  {
+    "filename": "core_fail_139g_discovery_opal_reserved_nonzero.json",
+    "label": "fail",
+    "concept": "Opal V2 Discovery descriptor reserved future-common fields must be zero when exposed.",
+    "refs": [
+      "opal/3.1.1.5"
+    ]
+  },
+  {
+    "filename": "core_pass_139h_discovery_total_length_exact.json",
+    "label": "pass",
+    "concept": "Complete Level 0 Discovery LengthOfParameterData matches the returned descriptor byte count.",
+    "refs": [
+      "opal/3.1.1.1"
+    ]
+  },
+  {
+    "filename": "core_fail_139h_discovery_total_length_short.json",
+    "label": "fail",
+    "concept": "Level 0 Discovery LengthOfParameterData cannot be shorter than the concrete returned descriptors.",
+    "refs": [
+      "opal/3.1.1.1"
+    ]
+  },
+  {
+    "filename": "core_fail_139i_discovery_total_length_complete_long.json",
+    "label": "fail",
+    "concept": "Complete Level 0 Discovery LengthOfParameterData cannot exceed the concrete descriptor byte count without explicit tail evidence.",
+    "refs": [
+      "opal/3.1.1.1"
+    ]
+  },
+  {
+    "filename": "core_pass_139i_discovery_total_length_truncated_long.json",
+    "label": "pass",
+    "concept": "A truncated Level 0 Discovery response may report a larger total length than the returned descriptors.",
+    "refs": [
+      "opal/3.1.1.1"
+    ]
+  },
+  {
+    "filename": "core_pass_140_getfreerows_learned_table_rowsfree.json",
+    "label": "pass",
+    "concept": "GetFreeRows reflects a concrete RowsFree value learned from the target Table row.",
+    "refs": [
+      "core/5.3.3.10"
+    ]
+  },
+  {
+    "filename": "core_fail_140_getfreerows_wrong_learned_table_rowsfree.json",
+    "label": "fail",
+    "concept": "GetFreeRows cannot contradict a concrete RowsFree value learned from the target Table row.",
+    "refs": [
+      "core/5.3.3.10"
+    ]
+  },
+  {
+    "filename": "core_pass_141_getfreespace_tablerows_learned_table.json",
+    "label": "pass",
+    "concept": "GetFreeSpace.TableRows reflects concrete RowsFree values learned from preconfigured Table rows.",
+    "refs": [
+      "core/5.3.3.9"
+    ]
+  },
+  {
+    "filename": "core_fail_141_getfreespace_tablerows_wrong_learned_table.json",
+    "label": "fail",
+    "concept": "GetFreeSpace.TableRows cannot contradict concrete RowsFree values learned from preconfigured Table rows.",
+    "refs": [
+      "core/5.3.3.9"
+    ]
+  },
+  {
+    "filename": "core_pass_142_dynamic_addace_grants_get.json",
+    "label": "pass",
+    "concept": "AddACE on a dynamic table Get ACL can add ACE_Anybody and permit a later unauthenticated Get.",
+    "refs": [
+      "core/5.3.3.14",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_142_dynamic_addace_get_still_rejected.json",
+    "label": "fail",
+    "concept": "A dynamic table Get ACL modified by AddACE(ACE_Anybody) cannot still reject the authorized Get.",
+    "refs": [
+      "core/5.3.3.14",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_142b_dynamic_addace_requires_admin_acl.json",
+    "label": "pass",
+    "concept": "AddACE on a concrete dynamic AccessControl row requires its AddACEACL authorization.",
+    "refs": [
+      "core/5.3.3.14",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_142b_dynamic_addace_unauth_success.json",
+    "label": "fail",
+    "concept": "AddACE cannot bypass the concrete dynamic AccessControl row's AddACEACL.",
+    "refs": [
+      "core/5.3.3.14",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_143_dynamic_removeace_revokes_get.json",
+    "label": "pass",
+    "concept": "RemoveACE on a concrete dynamic Get ACL revokes the ACE and later unauthenticated Get is rejected.",
+    "refs": [
+      "core/5.3.3.15",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_143_dynamic_removeace_get_still_success.json",
+    "label": "fail",
+    "concept": "A dynamic Get ACL emptied by RemoveACE cannot fall back to the CreateTable GetSetACL.",
+    "refs": [
+      "core/5.3.3.15",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_143b_dynamic_removeace_requires_admin_acl.json",
+    "label": "pass",
+    "concept": "RemoveACE on a concrete dynamic AccessControl row requires its RemoveACEACL authorization.",
+    "refs": [
+      "core/5.3.3.15",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_143b_dynamic_removeace_unauth_success.json",
+    "label": "fail",
+    "concept": "RemoveACE cannot bypass the concrete dynamic AccessControl row's RemoveACEACL.",
+    "refs": [
+      "core/5.3.3.15",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_144_dynamic_deletemethod_revokes_get.json",
+    "label": "pass",
+    "concept": "DeleteMethod on a concrete dynamic Get ACL removes that method authorization for later Get.",
+    "refs": [
+      "core/5.3.3.16",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_144_dynamic_deletemethod_get_still_success.json",
+    "label": "fail",
+    "concept": "A dynamic Get ACL removed by DeleteMethod cannot fall back to the CreateTable GetSetACL.",
+    "refs": [
+      "core/5.3.3.16",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_144b_dynamic_deletemethod_requires_admin_acl.json",
+    "label": "pass",
+    "concept": "DeleteMethod on a concrete dynamic AccessControl row requires its DeleteMethodACL authorization.",
+    "refs": [
+      "core/5.3.3.16",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_144b_dynamic_deletemethod_unauth_success.json",
+    "label": "fail",
+    "concept": "DeleteMethod cannot bypass the concrete dynamic AccessControl row's DeleteMethodACL.",
+    "refs": [
+      "core/5.3.3.16",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_145_dynamic_getacl_returns_acl.json",
+    "label": "pass",
+    "concept": "GetACL on a concrete dynamic AccessControl row returns the tracked ACE list.",
+    "refs": [
+      "core/5.3.3.13",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_145_dynamic_getacl_wrong_acl.json",
+    "label": "fail",
+    "concept": "GetACL on a concrete dynamic AccessControl row cannot return an ACL list that contradicts tracked state.",
+    "refs": [
+      "core/5.3.3.13",
+      "core/5.3.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_146_dynamic_create_row_rowsfree_zero_rejected.json",
+    "label": "pass",
+    "concept": "CreateRow cannot succeed when tracked dynamic RowsFree is already zero, even before MaxSize is reached.",
+    "refs": [
+      "core/5.3.3.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_fail_146_dynamic_create_row_rowsfree_zero_success.json",
+    "label": "fail",
+    "concept": "CreateRow success contradicts concrete dynamic RowsFree=0 state.",
+    "refs": [
+      "core/5.3.3.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_fail_166_dynamic_create_row_rowsfree_zero_wrong_status.json",
+    "label": "fail",
+    "concept": "Dynamic CreateRow exhaustion must use the specific insufficient-rows status when RowsFree=0 is concrete.",
+    "refs": [
+      "core/5.3.3.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_pass_147_learned_table_create_row_rowsfree_zero_rejected.json",
+    "label": "pass",
+    "concept": "CreateRow cannot succeed when concrete Table.RowsFree for the target table is zero.",
+    "refs": [
+      "core/5.3.3.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_fail_147_learned_table_create_row_rowsfree_zero_success.json",
+    "label": "fail",
+    "concept": "CreateRow success contradicts concrete learned Table.RowsFree=0 state.",
+    "refs": [
+      "core/5.3.3.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_fail_167_learned_table_create_row_rowsfree_zero_wrong_status.json",
+    "label": "fail",
+    "concept": "Preconfigured-table CreateRow exhaustion must use the specific insufficient-rows status when Table.RowsFree=0 is concrete.",
+    "refs": [
+      "core/5.3.3.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_pass_148_issuesp_known_template_available.json",
+    "label": "pass",
+    "concept": "IssueSP may use a template UID that is present in a complete learned Template table inventory.",
+    "refs": [
+      "core/5.4.3.1",
+      "core/5.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_pass_149_issuesp_unknown_template_rejected.json",
+    "label": "pass",
+    "concept": "IssueSP cannot use a template UID absent from a complete learned Template table inventory.",
+    "refs": [
+      "core/5.4.3.1",
+      "core/5.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_fail_149_issuesp_unknown_template_success.json",
+    "label": "fail",
+    "concept": "IssueSP success with a template absent from complete learned inventory is non-compliant.",
+    "refs": [
+      "core/5.4.3.1",
+      "core/5.4.2.1"
+    ]
+  },
+  {
+    "filename": "core_pass_150_createtable_table_rowsfree_zero_rejected.json",
+    "label": "pass",
+    "concept": "CreateTable cannot succeed when the concrete Table table RowsFree value is zero.",
+    "refs": [
+      "core/5.3.3.2"
+    ]
+  },
+  {
+    "filename": "core_fail_150_createtable_table_rowsfree_zero_success.json",
+    "label": "fail",
+    "concept": "CreateTable success contradicts concrete Table table RowsFree=0 state.",
+    "refs": [
+      "core/5.3.3.2"
+    ]
+  },
+  {
+    "filename": "core_fail_168_createtable_table_rowsfree_zero_wrong_status.json",
+    "label": "fail",
+    "concept": "CreateTable exhaustion must use the specific insufficient-rows status when the Table table RowsFree=0 is concrete.",
+    "refs": [
+      "core/5.3.3.2"
+    ]
+  },
+  {
+    "filename": "core_pass_151_table_capacity_consistent.json",
+    "label": "pass",
+    "concept": "Table Get capacity metadata is internally consistent when Rows + RowsFree is within MaxSize.",
+    "refs": [
+      "core/5.3.2.2",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_151_table_capacity_rowsfree_exceeds_max.json",
+    "label": "fail",
+    "concept": "Table Get capacity metadata cannot report Rows + RowsFree greater than MaxSize.",
+    "refs": [
+      "core/5.3.2.2",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_fail_152_table_capacity_rows_exceeds_max.json",
+    "label": "fail",
+    "concept": "Table Get capacity metadata cannot report Rows greater than MaxSize.",
+    "refs": [
+      "core/5.3.2.2",
+      "core/5.3.3.6.2"
+    ]
+  },
+  {
+    "filename": "core_pass_153_issuesp_distinct_returned_uids.json",
+    "label": "pass",
+    "concept": "IssueSP may return distinct concrete SP UIDs for distinct issued SPs.",
+    "refs": [
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_153_issuesp_duplicate_returned_uid_success.json",
+    "label": "fail",
+    "concept": "IssueSP cannot successfully return a concrete SP UID that was already issued.",
+    "refs": [
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_154_issued_disabled_sp_start_rejected.json",
+    "label": "pass",
+    "concept": "A concrete issued SP created with Enabled=False rejects later StartSession with SP_DISABLED.",
+    "refs": [
+      "core/4.3.6",
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_154_issued_disabled_sp_start_success.json",
+    "label": "fail",
+    "concept": "StartSession cannot succeed for a concrete issued SP whose IssueSP Enabled parameter was false.",
+    "refs": [
+      "core/4.3.6",
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_154b_issued_sp_delete_releases_template_instance.json",
+    "label": "pass",
+    "concept": "Deleting a concrete issued SP releases its concrete Template Instances count for later IssueSP.",
+    "refs": [
+      "core/5.4.2.1",
+      "core/5.4.3.1",
+      "core/5.4.4.2"
+    ]
+  },
+  {
+    "filename": "core_fail_154b_issued_sp_delete_template_instance_stale.json",
+    "label": "fail",
+    "concept": "Template Instances cannot remain consumed after the concrete issued SP using that template has been deleted.",
+    "refs": [
+      "core/5.4.2.1",
+      "core/5.4.3.1",
+      "core/5.4.4.2"
+    ]
+  },
+  {
+    "filename": "core_pass_155_random_count_length.json",
+    "label": "pass",
+    "concept": "Random Count=4 returns exactly four random bytes when output bytes are present.",
+    "refs": [
+      "core/5.6.4.1"
+    ]
+  },
+  {
+    "filename": "core_fail_155_random_count_wrong_length.json",
+    "label": "fail",
+    "concept": "Random cannot return fewer or more bytes than the requested Count when output bytes are present.",
+    "refs": [
+      "core/5.6.4.1"
+    ]
+  },
+  {
+    "filename": "core_pass_155b_random_count_zero_empty.json",
+    "label": "pass",
+    "concept": "Random Count=0 returns an empty byte result when output bytes are present.",
+    "refs": [
+      "core/5.6.4.1"
+    ]
+  },
+  {
+    "filename": "core_pass_156_hash_bufferout_bound.json",
+    "label": "pass",
+    "concept": "Hash output bytes may be equal to the explicit BufferOut limit.",
+    "refs": [
+      "core/5.6.4.12"
+    ]
+  },
+  {
+    "filename": "core_fail_156_hash_bufferout_overflow.json",
+    "label": "fail",
+    "concept": "Hash output bytes cannot exceed explicit BufferOut.",
+    "refs": [
+      "core/5.6.4.12"
+    ]
+  },
+  {
+    "filename": "core_pass_157_hashfinalize_bufferout_bound.json",
+    "label": "pass",
+    "concept": "HashFinalize output bytes may be equal to the explicit BufferOut limit.",
+    "refs": [
+      "core/5.6.4.13"
+    ]
+  },
+  {
+    "filename": "core_fail_157_hashfinalize_bufferout_overflow.json",
+    "label": "fail",
+    "concept": "HashFinalize output bytes cannot exceed explicit BufferOut.",
+    "refs": [
+      "core/5.6.4.13"
+    ]
+  },
+  {
+    "filename": "core_pass_160_deleted_dynamic_table_get_rejected.json",
+    "label": "pass",
+    "concept": "A deleted dynamic table UID cannot later be used for Get.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.6"
+    ]
+  },
+  {
+    "filename": "core_fail_160_deleted_dynamic_table_get_success.json",
+    "label": "fail",
+    "concept": "Get cannot succeed on a dynamic table after that concrete table UID was deleted.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.6"
+    ]
+  },
+  {
+    "filename": "core_pass_160b_dynamic_table_delete_restores_table_rowsfree.json",
+    "label": "pass",
+    "concept": "Deleting a known dynamic table restores the learned Table table RowsFree counter.",
+    "refs": [
+      "core/5.3.3.3",
+      "core/5.3.3.10"
+    ]
+  },
+  {
+    "filename": "core_fail_160b_dynamic_table_delete_rowsfree_stale.json",
+    "label": "fail",
+    "concept": "Table table RowsFree cannot remain consumed after the concrete dynamic table has been deleted.",
+    "refs": [
+      "core/5.3.3.3",
+      "core/5.3.3.10"
+    ]
+  },
+  {
+    "filename": "core_pass_161_deleted_dynamic_row_get_rejected.json",
+    "label": "pass",
+    "concept": "A deleted dynamic row UID cannot later be used for Get.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.6"
+    ]
+  },
+  {
+    "filename": "core_fail_161_deleted_dynamic_row_get_success.json",
+    "label": "fail",
+    "concept": "Get cannot succeed on a dynamic row after that concrete row UID was deleted.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.6"
+    ]
+  },
+  {
+    "filename": "core_pass_162_deleted_dynamic_table_getacl_rejected.json",
+    "label": "pass",
+    "concept": "Deleting a dynamic table removes its concrete dynamic AccessControl association.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.13"
+    ]
+  },
+  {
+    "filename": "core_fail_162_deleted_dynamic_table_getacl_success.json",
+    "label": "fail",
+    "concept": "GetACL cannot succeed for a deleted dynamic table AccessControl association.",
+    "refs": [
+      "core/5.3.3.1",
+      "core/5.3.3.13"
+    ]
+  },
+  {
+    "filename": "core_pass_163_issued_sp_getfreespace_within_size.json",
+    "label": "pass",
+    "concept": "GetFreeSpace on a concrete issued SP may report free space up to the issued Size.",
+    "refs": [
+      "core/5.3.3.9",
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_fail_163_issued_sp_getfreespace_exceeds_size.json",
+    "label": "fail",
+    "concept": "GetFreeSpace on a concrete issued SP cannot report FreeSpace greater than the issued Size.",
+    "refs": [
+      "core/5.3.3.9",
+      "core/5.4.3.1"
+    ]
+  },
+  {
+    "filename": "core_pass_164_admin_delete_issued_sp_deferred.json",
+    "label": "pass",
+    "concept": "AdminSP Delete on an issued SP takes effect at session close and prevents later StartSession.",
+    "refs": [
+      "core/5.3.3.1.1",
+      "core/5.4.4.2"
+    ]
+  },
+  {
+    "filename": "core_fail_164_admin_delete_issued_sp_deferred_start_success.json",
+    "label": "fail",
+    "concept": "StartSession cannot succeed after deferred AdminSP Delete of a concrete issued SP.",
+    "refs": [
+      "core/5.3.3.1.1",
+      "core/5.4.4.2"
     ]
   }
 ]

@@ -16,6 +16,7 @@ Treat this file as a recursive handoff document. Any agent working in `new_datas
 ## Current Status
 
 - 2026-06-06 17:54 UTC: First Opal dataset package implemented and validated. Generated 142 cases: 70 pass, 72 fail, 74 distinct concepts. v7 label check passed 142/142. Debug strict audit passed with 142 `sound_debug_reason`, 0 `miss`, and 0 `right_label_weak_reason`.
+- 2026-06-07: Round 2 expansion added 30 cases (cases 73–87, 15 pairs). Now 172 cases: 85 pass, 87 fail. v7 label check 172/172. Debug strict audit 172/172 sound_debug_reason. New topics: lock flags without enable, RevertSP session requirements, Activate no-op, TryLimit lockout, Admin1→Admin2 PIN, authority disable, DoneOnReset, MBR byte Get in read-only session, repeated GenKey, LockingSP reactivate after Revert, RevertSP KeepGlobalRangeKey rules.
 
 ## Progress Log
 

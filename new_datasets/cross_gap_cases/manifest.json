@@ -1,0 +1,290 @@
+[
+  {
+    "filename": "cross_pass_01_trylimit_cross_sp_isolation.json",
+    "label": "pass",
+    "concept": "C_PIN TryLimit is per-object; failing SID auth in AdminSP must not affect Admin1 TryLimit in LockingSP.",
+    "refs": [
+      "core/5.3.4.1.14",
+      "opal/4.2.1.8",
+      "opal/4.3.1.9"
+    ]
+  },
+  {
+    "filename": "cross_fail_01_trylimit_cross_sp_spillover.json",
+    "label": "fail",
+    "concept": "AdminSP SID failure cannot lock out LockingSP Admin1; TryLimit counters are SP-local.",
+    "refs": [
+      "core/5.3.4.1.14",
+      "opal/4.2.1.8",
+      "opal/4.3.1.9"
+    ]
+  },
+  {
+    "filename": "cross_pass_02_sid_not_valid_locking_sp_authority.json",
+    "label": "pass",
+    "concept": "SID authority only exists in AdminSP; StartSession to LockingSP with SID_UID must fail.",
+    "refs": [
+      "core/5.2.3.1",
+      "opal/4.2",
+      "opal/4.3.1"
+    ]
+  },
+  {
+    "filename": "cross_fail_02_sid_accepted_by_locking_sp.json",
+    "label": "fail",
+    "concept": "SID is an AdminSP-only authority and cannot authenticate a LockingSP session.",
+    "refs": [
+      "core/5.2.3.1",
+      "opal/4.2",
+      "opal/4.3.1"
+    ]
+  },
+  {
+    "filename": "cross_pass_03_activate_requires_sid_auth.json",
+    "label": "pass",
+    "concept": "Activate(LockingSP) succeeds only from an authenticated AdminSP SID session.",
+    "refs": [
+      "core/5.4.3.2",
+      "opal/5.1.1.1",
+      "opal/5.1.1.2"
+    ]
+  },
+  {
+    "filename": "cross_fail_03_activate_without_sid_auth.json",
+    "label": "fail",
+    "concept": "Activate without SID authentication cannot succeed; unauthenticated AdminSP session lacks authority.",
+    "refs": [
+      "core/5.4.3.2",
+      "opal/5.1.1.1",
+      "opal/5.1.1.2"
+    ]
+  },
+  {
+    "filename": "cross_pass_04_revert_requires_adminsp_sid.json",
+    "label": "pass",
+    "concept": "Revert(LockingSP) is valid from an authenticated AdminSP SID session after activation.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.2.2.2.2",
+      "core/5.3.3.11"
+    ]
+  },
+  {
+    "filename": "cross_fail_04_revert_without_sid_auth.json",
+    "label": "fail",
+    "concept": "Revert(LockingSP) without SID authentication cannot succeed.",
+    "refs": [
+      "opal/5.1.2.1",
+      "core/5.3.3.11"
+    ]
+  },
+  {
+    "filename": "cross_pass_05_sid_pin_change_no_admin1_update.json",
+    "label": "pass",
+    "concept": "SID PIN copy to Admin1 happens only at initial Activate; later SID PIN changes do not update Admin1.",
+    "refs": [
+      "opal/5.1.1.2",
+      "opal/5.2.2.3.2",
+      "opal/4.2.1.8"
+    ]
+  },
+  {
+    "filename": "cross_fail_05_sid_pin_change_propagates_to_admin1.json",
+    "label": "fail",
+    "concept": "Admin1 PIN is frozen at Activate time; it must not track subsequent SID PIN changes.",
+    "refs": [
+      "opal/5.1.1.2",
+      "opal/5.2.2.3.2"
+    ]
+  },
+  {
+    "filename": "cross_pass_06_trylimit_zero_means_unlimited.json",
+    "label": "pass",
+    "concept": "TryLimit=0 means no limit on failures; authentication must succeed after any number of bad attempts.",
+    "refs": [
+      "core/5.3.4.1.14",
+      "opal/4.2.1.8",
+      "opal/4.3.1.9"
+    ]
+  },
+  {
+    "filename": "cross_fail_06_trylimit_zero_still_locks_out.json",
+    "label": "fail",
+    "concept": "AUTHORITY_LOCKED_OUT cannot occur when TryLimit=0 (unlimited).",
+    "refs": [
+      "core/5.3.4.1.14",
+      "opal/4.2.1.8"
+    ]
+  },
+  {
+    "filename": "cross_pass_07_auth_success_resets_tries.json",
+    "label": "pass",
+    "concept": "Successful authentication resets Tries to 0; a single prior failure cannot lock out with TryLimit=2.",
+    "refs": [
+      "core/5.3.4.1.14",
+      "core/5.3.4.1.1.2",
+      "opal/4.3.1.9"
+    ]
+  },
+  {
+    "filename": "cross_fail_07_auth_success_does_not_reset_tries.json",
+    "label": "fail",
+    "concept": "With TryLimit=2, a single preceding failure cannot lock out the authority.",
+    "refs": [
+      "core/5.3.4.1.14",
+      "core/5.3.4.1.1.2"
+    ]
+  },
+  {
+    "filename": "cross_pass_08_genkey_in_locking_sp_session.json",
+    "label": "pass",
+    "concept": "GenKey on a LockingSP range media key succeeds in an authenticated LockingSP session.",
+    "refs": [
+      "core/5.6.3.3",
+      "opal/4.3.7"
+    ]
+  },
+  {
+    "filename": "cross_fail_08_genkey_from_admin_sp_on_locking_range.json",
+    "label": "fail",
+    "concept": "GenKey on a LockingSP media key UID cannot succeed in an AdminSP session; UID is not in AdminSP table.",
+    "refs": [
+      "core/5.6.3.3",
+      "opal/4.3.7"
+    ]
+  },
+  {
+    "filename": "cross_pass_09_revertsp_locking_admin1_keep_global.json",
+    "label": "pass",
+    "concept": "RevertSP(LockingSP, KeepGlobalRangeKey=True) is valid from an authenticated LockingSP Admin1 session.",
+    "refs": [
+      "opal/5.1.3.1",
+      "opal/5.1.3.3",
+      "opal/5.1.3.4"
+    ]
+  },
+  {
+    "filename": "cross_fail_09_revertsp_locking_unauthenticated.json",
+    "label": "fail",
+    "concept": "RevertSP(LockingSP) without Admin1 authentication cannot succeed.",
+    "refs": [
+      "opal/5.1.3.1",
+      "opal/5.1.3.2"
+    ]
+  },
+  {
+    "filename": "cross_pass_10_revert_from_adminsp_correct_path.json",
+    "label": "pass",
+    "concept": "Revert(LockingSP) issued from an AdminSP SID session is the correct Opal path.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.2.2.2.2"
+    ]
+  },
+  {
+    "filename": "cross_fail_10_revert_from_locking_sp_session.json",
+    "label": "fail",
+    "concept": "Revert(LockingSP) from within a LockingSP session uses the wrong path; RevertSP is the intra-SP method.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.1.3.1"
+    ]
+  },
+  {
+    "filename": "cross_pass_11_users_class_not_directly_authenticated.json",
+    "label": "pass",
+    "concept": "Users is a class authority; Authenticate must target an instance (User1-User8), not the class row.",
+    "refs": [
+      "core/5.3.4.1.2",
+      "opal/4.2.1.7",
+      "opal/4.3.1.8"
+    ]
+  },
+  {
+    "filename": "cross_fail_11_users_class_authenticate_succeeds.json",
+    "label": "fail",
+    "concept": "Authenticating directly as the Users class cannot succeed.",
+    "refs": [
+      "core/5.3.4.1.2",
+      "opal/4.2.1.7"
+    ]
+  },
+  {
+    "filename": "cross_pass_12_authenticate_sid_in_locking_sp_returns_false.json",
+    "label": "pass",
+    "concept": "Authenticate with SID_UID in LockingSP returns result=False; SID is not a LockingSP authority.",
+    "refs": [
+      "core/5.3.4.1.14",
+      "core/5.3.4.1.14.1",
+      "opal/4.2",
+      "opal/4.3.1"
+    ]
+  },
+  {
+    "filename": "cross_fail_12_authenticate_sid_in_locking_sp_returns_true.json",
+    "label": "fail",
+    "concept": "Authenticate with SID_UID in LockingSP cannot return result=True; SID is not a valid LockingSP authority.",
+    "refs": [
+      "core/5.3.4.1.14",
+      "opal/4.2"
+    ]
+  },
+  {
+    "filename": "cross_pass_13_datarmv_set_active_mech_authorized.json",
+    "label": "pass",
+    "concept": "Set DataRemovalMechanism.ActiveDataRemovalMechanism (col 1) succeeds in an authenticated AdminSP write session.",
+    "refs": [
+      "opal/3.1.1.6",
+      "opal/4.2.6.1.1",
+      "core/5.3.3.7"
+    ]
+  },
+  {
+    "filename": "cross_fail_13_datarmv_set_readonly_session.json",
+    "label": "fail",
+    "concept": "DataRemovalMechanism Set cannot succeed in a read-only session; Core write authorization is required.",
+    "refs": [
+      "opal/3.1.1.6",
+      "opal/4.2.6.1.1",
+      "core/5.3.3.7"
+    ]
+  },
+  {
+    "filename": "cross_pass_14_admin1_pin_get_returns_not_authorized.json",
+    "label": "pass",
+    "concept": "Get on C_PIN_Admin1 PIN column (col 3) must return NOT_AUTHORIZED; no read ACE covers the PIN column.",
+    "refs": [
+      "core/5.3.4.2.1",
+      "opal/4.2.1.7",
+      "opal/4.3.1.8"
+    ]
+  },
+  {
+    "filename": "cross_fail_14_admin1_pin_get_reveals_actual_pin.json",
+    "label": "fail",
+    "concept": "C_PIN.PIN must never return the actual PIN value via Get; SUCCESS with PIN bytes violates the NOPIN rule.",
+    "refs": [
+      "core/5.3.4.2.1",
+      "opal/4.2.1.7"
+    ]
+  },
+  {
+    "filename": "cross_pass_15_revert_returns_locking_sp_inactive.json",
+    "label": "pass",
+    "concept": "After Revert(LockingSP), the SP returns to Manufactured-Inactive and rejects new sessions.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.2.1.2",
+      "opal/5.2.2.2"
+    ]
+  },
+  {
+    "filename": "cross_fail_15_revert_session_still_works.json",
+    "label": "fail",
+    "concept": "LockingSP cannot accept sessions immediately after Revert without re-activation.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.2.1.2"
+    ]
+  }
+]

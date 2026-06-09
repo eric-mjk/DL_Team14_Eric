@@ -56,6 +56,7 @@ STATUS_ALIASES = {
     "invalidparameter": "invalid_parameter",
     "sp_busy": "sp_busy",
     "sp_failed": "sp_failed",
+    "sp_fail": "sp_failed",
     "sp_disabled": "sp_disabled",
     "sp_frozen": "sp_frozen",
     "no_sessions_available": "no_sessions_available",
@@ -75,6 +76,15 @@ STATUS_ALIASES = {
     "failure": "fail",
 }
 
+# spec core/5.1.5 Table 166: numeric/hex status code to canonical name (additive support).
+_STATUS_NUMERIC = {
+    0: "success", 1: "not_authorized", 3: "sp_busy", 4: "sp_failed",
+    5: "sp_disabled", 6: "sp_frozen", 7: "no_sessions_available",
+    8: "uniqueness_conflict", 9: "insufficient_space", 10: "insufficient_rows",
+    12: "invalid_parameter", 15: "tper_malfunction", 16: "transaction_failure",
+    17: "response_overflow", 18: "authority_locked_out", 63: "fail",
+}
+
 
 def compact_uid(value):
     if value is None:
@@ -89,7 +99,17 @@ def compact_uid(value):
 def normalize_status(value):
     if value is None:
         return None
-    text = str(value).strip().lower().replace("-", "_").replace(" ", "_")
+    # Integer status codes: spec core/5.1.5 Table 166.
+    if isinstance(value, int):
+        return _STATUS_NUMERIC.get(value, f"status_{value}")
+    text = str(value).strip()
+    # Hex string: "0x00", "0x0C", "0x3F", etc.
+    if re.match(r"^0[Xx][0-9A-Fa-f]+$", text):
+        try:
+            return _STATUS_NUMERIC.get(int(text, 16), f"status_{text.lower()}")
+        except ValueError:
+            pass
+    text = text.lower().replace("-", "_").replace(" ", "_")
     text = re.sub(r"_+", "_", text)
     return STATUS_ALIASES.get(text, text)
 
@@ -99,8 +119,8 @@ def is_success_status(status):
 
 
 def status_from(inp, out):
-    output_status = normalize_status(out.get("status_codes") if isinstance(out, dict) else None)
-    input_status = normalize_status(inp.get("status_codes") if isinstance(inp, dict) else None)
+    output_status = normalize_status(dict_value(out, "status_codes") if isinstance(out, dict) else None)
+    input_status = normalize_status(dict_value(inp, "status_codes") if isinstance(inp, dict) else None)
     return output_status if output_status is not None else input_status
 
 
@@ -406,16 +426,107 @@ def normalize_lba(value):
     return (numbers[0], numbers[1])
 
 
+ARG_KEY_ALIASES = {
+    "hostsessionid": "HostSessionID",
+    "spsessionid": "SPSessionID",
+    "spid": "SPID",
+    "write": "Write",
+    "hostsigningauthority": "HostSigningAuthority",
+    "authority": "Authority",
+    "signingauthority": "SigningAuthority",
+    "hostexchangeauthority": "HostExchangeAuthority",
+    "spexchangeauthority": "SPExchangeAuthority",
+    "spsigningauthority": "SPSigningAuthority",
+    "hostchallenge": "HostChallenge",
+    "challenge": "Challenge",
+    "proof": "Proof",
+    "cellblock": "Cellblock",
+    "where": "Where",
+    "count": "Count",
+    "keepglobalrangekey": "KeepGlobalRangeKey",
+    "values": "Values",
+    "hostproperties": "HostProperties",
+    "remotesessionnumber": "RemoteSessionNumber",
+    "localsessionnumber": "LocalSessionNumber",
+    "sessiontimeout": "SessionTimeout",
+    "transtimeout": "TransTimeout",
+    "initialcredit": "InitialCredit",
+    "minsize": "MinSize",
+    "maxsize": "MaxSize",
+    "hintsize": "HintSize",
+    "invokingid": "InvokingID",
+    "methodid": "MethodID",
+    "ace": "ACE",
+    "newtablename": "NewTableName",
+    "kind": "Kind",
+    "getsetacl": "GetSetACL",
+    "columns": "Columns",
+    "row": "Row",
+    "rows": "Rows",
+    "purpose": "Purpose",
+    "value": "Value",
+    "input": "Input",
+    "patterninput": "PatternInput",
+    "deletepattern": "DeletePattern",
+    "internal": "Internal",
+    "exacttime": "ExactTime",
+    "lagtime": "LagTime",
+    "logentryname": "LogEntryName",
+    "data": "Data",
+    "newlogtablename": "NewLogTableName",
+    "highsecurity": "HighSecurity",
+    "spname": "SPName",
+    "templates": "Templates",
+}
+
+
+def normalized_key_token(key):
+    return re.sub(r"[^0-9a-z]", "", str(key or "").lower())
+
+
+def canonical_arg_key(key):
+    return ARG_KEY_ALIASES.get(normalized_key_token(key), key)
+
+
+def canonicalize_arg_dict(args):
+    if not isinstance(args, dict):
+        return {}
+    normalized = {}
+    for key, value in args.items():
+        canonical = canonical_arg_key(key)
+        normalized[canonical] = value
+    return normalized
+
+
+def dict_value(source, *names):
+    if not isinstance(source, dict):
+        return None
+    for name in names:
+        if name in source:
+            return source[name]
+    wanted = {normalized_key_token(name) for name in names}
+    for key, value in source.items():
+        if normalized_key_token(key) in wanted:
+            return value
+    return None
+
+
 def normalize_args(args):
     if isinstance(args, dict):
-        required = args.get("required") if isinstance(args.get("required"), dict) else {}
-        optional = args.get("optional") if isinstance(args.get("optional"), dict) else {}
+        required_raw = dict_value(args, "required")
+        optional_raw = dict_value(args, "optional")
+        required = canonicalize_arg_dict(required_raw)
+        optional = canonicalize_arg_dict(optional_raw)
+        for key, value in args.items():
+            if normalized_key_token(key) in {"required", "optional"}:
+                continue
+            optional.setdefault(canonical_arg_key(key), value)
         return required, optional
     if isinstance(args, list):
         optional = {}
         for item in args:
             if isinstance(item, dict):
-                optional.update(item)
+                optional.update(canonicalize_arg_dict(item))
         return {}, optional
     return {}, {}
 
@@ -426,12 +537,12 @@ def arg_value(required, optional, *names):
             return required[name]
         if isinstance(optional, dict) and name in optional:
             return optional[name]
-    wanted = {name.lower() for name in names}
+    wanted = {normalized_key_token(name) for name in names}
     for source in (required, optional):
         if not isinstance(source, dict):
             continue
         for key, value in source.items():
-            if str(key).lower() in wanted:
+            if normalized_key_token(key) in wanted:
                 return value
     return None
 
@@ -612,38 +723,42 @@ def _normalize_discovery(record, index, inp, out, in_args, disc_raw):
         if code is not None:
             features[code] = feat
 
-    result = out.get("result") if isinstance(out, dict) else None
+    result = dict_value(out, "result") if isinstance(out, dict) else None
     result_ok = str(result or "").strip().lower() in {"pass", "success", "ok", ""}
     return {
         "index": index,
         "kind": "discovery",
-        "command": inp.get("command"),
+        "command": dict_value(inp, "command"),
         "result": result,
         "result_ok": result_ok,
         "features": features,
-        "input_status": normalize_status(inp.get("status_codes")),
-        "output_status": normalize_status(out.get("status_codes")),
+        "input_status": normalize_status(dict_value(inp, "status_codes")),
+        "output_status": normalize_status(dict_value(out, "status_codes")),
         "status": status_from(inp, out),
         "raw": record,
     }
 
 
 def normalize_record(record):
-    inp = record.get("input", {}) if isinstance(record, dict) else {}
-    out = record.get("output", {}) if isinstance(record, dict) else {}
-    method = inp.get("method")
-    index = record.get("index") if isinstance(record, dict) else None
+    inp = dict_value(record, "input") if isinstance(record, dict) else {}
+    out = dict_value(record, "output") if isinstance(record, dict) else {}
+    inp = inp if isinstance(inp, dict) else {}
+    out = out if isinstance(out, dict) else {}
+    method = dict_value(inp, "method")
+    index = dict_value(record, "index") if isinstance(record, dict) else None
 
     if isinstance(method, dict):
-        required, optional = normalize_args(method.get("args"))
-        invoking = inp.get("invoking_id") if isinstance(inp.get("invoking_id"), dict) else {}
-        uid = compact_uid(invoking.get("uid"))
-        obj = canonical_object(invoking.get("name"), uid)
+        required, optional = normalize_args(dict_value(method, "args"))
+        invoking_raw = dict_value(inp, "invoking_id")
+        invoking = invoking_raw if isinstance(invoking_raw, dict) else {}
+        uid = compact_uid(dict_value(invoking, "uid"))
+        obj = canonical_object(dict_value(invoking, "name"), uid)
         family = object_family(uid, obj)
-        values = optional.get("Values")
+        values = arg_value(required, optional, "Values")
         value_columns = extract_columns(values, family)
-        return_columns = extract_columns(out.get("return_values"), family)
-        cellblock = normalize_cellblock(required.get("Cellblock"), family)
+        return_values = dict_value(out, "return_values")
+        return_columns = extract_columns(return_values, family)
+        cellblock = normalize_cellblock(arg_value(required, optional, "Cellblock"), family)
         authority_uid = compact_uid(
             arg_value(required, optional, "HostSigningAuthority", "Authority", "SigningAuthority")
         )
@@ -652,30 +767,31 @@ def normalize_record(record):
         sp_signing_uid = compact_uid(arg_value(required, optional, "SPSigningAuthority"))
         host_challenge = arg_value(required, optional, "HostChallenge", "Challenge")
         proof = arg_value(required, optional, "Proof", "HostChallenge", "Challenge")
-        auth_result = find_named_value(out.get("return_values"), {"Success", "Result"})
+        auth_result = find_named_value(return_values, {"Success", "Result"})
         parameters = {}
         parameters.update(required)
         parameters.update(optional)
 
-        method_name = method.get("name") or method_name_from_value(method.get("uid"))
+        method_uid_raw = dict_value(method, "uid")
+        method_name = dict_value(method, "name") or method_name_from_value(method_uid_raw)
         # TCG EndSession: host-side session close has no formal MethodID UID and may
         # appear as null name + null UID when the name field is omitted by the generator.
         # Detect by: both method UID and invoking_id UID are absent (null).
-        if not method_name and method.get("uid") is None and not uid:
+        if not method_name and method_uid_raw is None and not uid:
             method_name = "EndSession"
 
         event = {
             "index": index,
             "kind": "method",
             "method": method_name,
-            "method_uid": compact_uid(method.get("uid")),
+            "method_uid": compact_uid(method_uid_raw),
             "object": obj,
             "object_family": family,
-            "object_name": invoking.get("name"),
+            "object_name": dict_value(invoking, "name"),
             "object_uid": uid,
-            "spid": compact_uid(required.get("SPID")),
-            "sp": canonical_sp(required.get("SPID")),
-            "write": to_bool(required.get("Write")) if "Write" in required else None,
+            "spid": compact_uid(arg_value(required, optional, "SPID")),
+            "sp": canonical_sp(arg_value(required, optional, "SPID")),
+            "write": to_bool(arg_value(required, optional, "Write")) if arg_value(required, optional, "Write") is not None else None,
             "authority": canonical_authority(authority_uid),
             "authority_uid": authority_uid,
             "host_exchange_authority_uid": host_exchange_uid,
@@ -693,7 +809,7 @@ def normalize_record(record):
             "where": arg_value(required, optional, "Where"),
             "count": to_int(arg_value(required, optional, "Count")),
             "keep_global_range_key": to_bool(arg_value(required, optional, "KeepGlobalRangeKey")),
-            "values": values if isinstance(values, list) else [],
+            "values": values if isinstance(values, (list, dict)) else [],
             "value_columns": value_columns,
             "value_columns_duplicate": duplicate_column_keys(values, family),
             "value_byte_length": byte_length(values),
@@ -706,8 +822,8 @@ def normalize_record(record):
             "value_columns_invalid": unrecognized_column_keys(values, family),
             "return_columns": return_columns,
             "return_column_3": return_columns.get(3),
-            "input_status": normalize_status(inp.get("status_codes")),
-            "output_status": normalize_status(out.get("status_codes")),
+            "input_status": normalize_status(dict_value(inp, "status_codes")),
+            "output_status": normalize_status(dict_value(out, "status_codes")),
             "status": status_from(inp, out),
             "locking_range": locking_range_from_uid(uid),
             "key_range": media_key_range_from_uid(uid),
@@ -716,33 +832,35 @@ def normalize_record(record):
         event["credential_authority"] = authority_uid_for_cpin(uid)
         return event
 
-    command = inp.get("command")
-    in_args = inp.get("args") if isinstance(inp.get("args"), dict) else {}
-    out_args = out.get("args") if isinstance(out.get("args"), dict) else {}
+    command = dict_value(inp, "command")
+    in_args_raw = dict_value(inp, "args")
+    out_args_raw = dict_value(out, "args")
+    in_args = in_args_raw if isinstance(in_args_raw, dict) else {}
+    out_args = out_args_raw if isinstance(out_args_raw, dict) else {}
 
     # Level 0 Discovery: IF_RECV with a "discovery" payload in the output.
     if str(command or "").strip().upper() in {"IF_RECV", "IFRECEIVE", "IF-RECV"}:
-        disc = out.get("discovery") if isinstance(out, dict) else None
+        disc = dict_value(out, "discovery") if isinstance(out, dict) else None
         if disc is None:
-            disc = out.get("descriptors") if isinstance(out, dict) else None
+            disc = dict_value(out, "descriptors") if isinstance(out, dict) else None
         if disc is not None:
             return _normalize_discovery(record, index, inp, out, in_args, disc)
 
     kind = str(command).strip().lower() if command else "unknown"
     if kind not in {"read", "write"}:
         kind = "command"
-    result = out_args.get("result")
+    result = dict_value(out_args, "result")
     if result is None and isinstance(out, dict):
-        result = out.get("result")
+        result = dict_value(out, "result")
     return {
         "index": index,
         "kind": kind,
         "command": command,
-        "lba": normalize_lba(in_args.get("LBA")),
-        "pattern": in_args.get("pattern"),
+        "lba": normalize_lba(dict_value(in_args, "LBA")),
+        "pattern": dict_value(in_args, "pattern", "Pattern"),
         "result": result,
-        "input_status": normalize_status(inp.get("status_codes")),
-        "output_status": normalize_status(out.get("status_codes")),
+        "input_status": normalize_status(dict_value(inp, "status_codes")),
+        "output_status": normalize_status(dict_value(out, "status_codes")),
         "status": status_from(inp, out),
         "raw": record,
     }

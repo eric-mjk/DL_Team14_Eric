@@ -15,10 +15,8 @@ Treat this file as a recursive handoff document. Any agent working in `new_datas
 
 ## Current Status
 
-- Core gap dataset now has 189 cases: 100 pass, 89 fail.
-- Added four paired cases after case 95 for direct Core method-shape coverage: `StartSession` SyncSession IDs, `GetACL` required UID parameters, `Next` `Where` UID shape, and `CreateTable` required `MinSize`.
-- `generate_core_gap.py`, `generate_core_gap.py --check`, `validate_debug.py`, and the structural check pass.
-- Debug-state audit is 189/189 correct with 4 weak reasons; `validate_debug.py --strict` exits non-zero because weak reasons remain for `GetFreeSpace` and `GetFreeRows` cases 48-49.
+- 2026-06-06 17:52 UTC: Core gap dataset at 189 cases: 100 pass, 89 fail. Debug audit 185/189 sound (4 weak for GetFreeSpace/GetFreeRows).
+- 2026-06-07: Round 3 expansion added 30 cases (pairs 100-114). Now 219 cases: 115 pass, 104 fail. v7 label check 219/219. Debug strict audit 219/219 sound_debug_reason (0 miss, 0 weak). Previously weak cases 48-49 now also sound (coverage=implemented). New topics: GetClock readonly, IncrementCounter wrong target, AddLog to new log / non-Log target, GetACL bad InvokingID, HMAC+Hash+Decrypt positive paths, Next Count=0, SetPackage authorized, IssueSP missing Size, GenKey C_PIN NOT_AUTHORIZED, AddLog missing LogEntryName, ClearLog new log, Verify wrong proof Result=False.
 
 ## Progress Log
 
@@ -26,7 +24,8 @@ Treat this file as a recursive handoff document. Any agent working in `new_datas
 - 2026-06-06 17:43 UTC: Core worker started. Intended write set: `AGENT_START.md`, `generate_core_gap.py`, generated `testcases/*.json`, `label.jsonl`, `manifest.json`, `README.md`, `debug_audit.json`, `debug_audit.md`, and `FIX_RECCOMENDATIONS.md` if validation findings shift.
 - 2026-06-06 17:44 UTC: Baseline workflow rerun after fixing helper import path. Generation and `--check` pass; non-strict debug audit is 181/181 with 4 weak reasons; strict mode fails on weak reasons as designed.
 - 2026-06-06 17:45 UTC: Chose four paired append-only cases (`core_pass_96` through `core_fail_99`) from representable Core method parameter/response-shape rules.
-- 2026-06-06 17:52 UTC: Completed Core worker run. Commands run: `python3 new_datasets/core_gap_cases/generate_core_gap.py`; `python3 new_datasets/core_gap_cases/generate_core_gap.py --check`; `python3 new_datasets/core_gap_cases/validate_debug.py`; `python3 new_datasets/core_gap_cases/validate_debug.py --strict`; structural Python check. Final counts: 189 cases, 100 pass, 89 fail, 189/189 label accuracy, 185 sound debug reasons, 0 misses, 4 weak reasons. Files changed: `AGENT_START.md`, `generate_core_gap.py`, `README.md`, `FIX_RECCOMENDATIONS.md`, `label.jsonl`, `manifest.json`, `debug_audit.json`, `debug_audit.md`, and generated `testcases/core_pass_96_startsession_sync_ids_present.json`, `testcases/core_fail_96_startsession_success_missing_sync_ids.json`, `testcases/core_pass_97_getacl_missing_methodid_rejected.json`, `testcases/core_fail_97_getacl_missing_methodid_success.json`, `testcases/core_pass_98_next_bad_where_rejected.json`, `testcases/core_fail_98_next_bad_where_success.json`, `testcases/core_pass_99_create_table_missing_minsize_rejected.json`, `testcases/core_fail_99_create_table_missing_minsize_success.json`.
+- 2026-06-06 17:52 UTC: Completed Core worker round 2. Final counts: 189 cases, 100 pass, 89 fail, 189/189 label accuracy, 185 sound debug reasons, 0 misses, 4 weak reasons.
+- 2026-06-07: Round 3 — 30 new cases (pairs 100-114). Files changed: `AGENT_START.md`, `generate_core_gap.py`, `FIX_RECCOMENDATIONS.md`, `label.jsonl`, `manifest.json`, `debug_audit.json`, `debug_audit.md`, and 30 new `testcases/*.json`. Final: 219/219 label accuracy, 219/219 sound_debug_reason. 3 generator fixes required after initial --check run (cases 103/109/114 status or concept adjustments).
 
 ## Decisions
 

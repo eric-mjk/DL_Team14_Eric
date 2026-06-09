@@ -2,46 +2,35 @@
 
 Latest `core_gap_cases` audit:
 
-- Dataset size: 189 cases
-- Labels: 100 pass, 89 fail
-- v7 label accuracy: 189/189
+- Dataset size: 219 cases
+- Labels: 115 pass, 104 fail
+- v7 label accuracy: 219/219
 - Debug-state classifications:
-  - `sound_debug_reason`: 185
+  - `sound_debug_reason`: 219
   - `miss`: 0
-  - `right_label_weak_reason`: 4
+  - `right_label_weak_reason`: 0
 
-## Priority 1: Strengthen `GetFreeSpace` / `GetFreeRows` Debug Coverage
+## Current Result
 
-No current Core gap case is a label miss. Strict debug validation still fails because four table free-space/free-row cases are classified as `right_label_weak_reason` with `coverage=partial`.
+No Core misses or weak debug reasons. All 219 cases pass strict audit.
 
-Affected cases:
+Round 1 (cases 01–95) covers: Session lifecycle (StartSession, SyncSession, CloseSession, EndSession, Trusted sessions), table operations (CreateTable, CreateRow, DeleteRow, Next, GetFreeRows, GetFreeSpace), crypto streams (Hash, HMAC, Encrypt, Decrypt, XOR, Stir, Random, Sign, Verify), clock methods (GetClock, SetClock, SetLag, ResetClock, IncrementCounter), log methods (CreateLog, AddLog, FlushLog, ClearLog), credential operations (GetPackage, SetPackage), ACL mutation (AddACE, RemoveACE, DeleteMethod), authority authentication (Authenticate, TryLimit, disabled authorities), Set shape rules (Where, Bytes, RowValues, duplicate columns), GenKey parameter validation, and IssueSP/DeleteSP lifecycle.
 
-- `core_pass_48_get_free_space_readonly.json`
-- `core_fail_48_get_free_space_readonly_rejected.json`
-- `core_pass_49_get_free_rows_table.json`
-- `core_fail_49_get_free_rows_table_rejected.json`
+Round 2 (cases 96–99) adds: StartSession SyncSession ID presence, GetACL missing MethodID, Next malformed Where, CreateTable missing MinSize.
 
-Recommended fix:
+Round 3 (cases 100–114) adds: GetClock in read-only session, IncrementCounter on non-ClockTime target, AddLog to newly created log, AddLog to non-Log target (INVALID_PARAMETER), GetACL with empty InvokingID, HMAC after HMACInit positive path, Next with Count=0 valid, SetPackage authorized success, IssueSP missing required Size, GenKey on C_PIN NOT_AUTHORIZED (no Opal SSC ACE), AddLog missing LogEntryName, Hash after HashInit positive path, ClearLog on newly created log, Decrypt after DecryptInit positive path, Verify with non-matching proof returns Result=False.
 
-- Treat `GetFreeSpace` as a fully modeled SP method when invoked on an SP object in an open session.
-- Treat `GetFreeRows` as a fully modeled table method when invoked on an object table in an open session.
-- Keep the existing read-only positive behavior: these methods should not require a read-write session.
-- Keep rejecting incompatible targets, such as `GetFreeRows` on an object row or `GetFreeSpace` on a non-SP object.
-- Once the debug reason no longer uses `coverage=partial`, rerun:
+Previously weak cases 48-49 (GetFreeSpace/GetFreeRows, `coverage=partial`) are now `sound_debug_reason` with `coverage=implemented` following oracle improvements in v7.
+
+## Maintenance Rule
+
+Re-run these commands after any generator or solver change:
 
 ```bash
-python3 new_datasets/core_gap_cases/validate_debug.py --strict
-```
-
-## Debug Rule
-
-Accuracy alone is not enough. A case can be labeled correctly while the solver uses the wrong reason.
-
-Use:
-
-```bash
+python3 new_datasets/core_gap_cases/generate_core_gap.py
+python3 new_datasets/core_gap_cases/generate_core_gap.py --check
 python3 new_datasets/core_gap_cases/validate_debug.py
 python3 new_datasets/core_gap_cases/validate_debug.py --strict
 ```
 
-Treat `right_label_weak_reason` as a failure during development.
+Treat any future `miss` or `right_label_weak_reason` classification as a development failure until the generator expectation or v7 rule is corrected.

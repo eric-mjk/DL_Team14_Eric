@@ -1268,5 +1268,309 @@
       "opal/3.1.1",
       "opal/3.1.1.5"
     ]
+  },
+  {
+    "filename": "opal_pass_73_write_locked_no_enable.json",
+    "label": "pass",
+    "concept": "WriteLocked=1 without WriteLockEnabled=1 does not block writes (opal/4.3.5.2.1.2).",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.5.2.1.2",
+      "opal/4.3.7"
+    ]
+  },
+  {
+    "filename": "opal_fail_73_write_locked_no_enable.json",
+    "label": "fail",
+    "concept": "WriteLocked=1 without WriteLockEnabled=1 does not block writes (opal/4.3.5.2.1.2).",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.5.2.1.2",
+      "opal/4.3.7"
+    ]
+  },
+  {
+    "filename": "opal_pass_74_read_locked_no_enable.json",
+    "label": "pass",
+    "concept": "ReadLocked=1 without ReadLockEnabled=1 does not block reads (opal/4.3.5.2.1.1).",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.5.2.1.1",
+      "opal/4.3.7"
+    ]
+  },
+  {
+    "filename": "opal_fail_74_read_locked_no_enable.json",
+    "label": "fail",
+    "concept": "ReadLocked=1 without ReadLockEnabled=1 does not block reads (opal/4.3.5.2.1.1).",
+    "refs": [
+      "opal/4.3.5.2",
+      "opal/4.3.5.2.1.1",
+      "opal/4.3.7"
+    ]
+  },
+  {
+    "filename": "opal_pass_75_revert_sp_readonly_fails.json",
+    "label": "pass",
+    "concept": "RevertSP requires an authenticated write session; read-only session must be rejected.",
+    "refs": [
+      "opal/5.1.3.1",
+      "opal/5.1.3.2",
+      "core/5.3.3.11"
+    ]
+  },
+  {
+    "filename": "opal_fail_75_revert_sp_readonly_fails.json",
+    "label": "fail",
+    "concept": "RevertSP requires an authenticated write session; read-only session must be rejected.",
+    "refs": [
+      "opal/5.1.3.1",
+      "opal/5.1.3.2",
+      "core/5.3.3.11"
+    ]
+  },
+  {
+    "filename": "opal_pass_76_revert_from_locking_sp_wrong_path.json",
+    "label": "pass",
+    "concept": "Revert(LockingSP) must be issued from an authenticated AdminSP SID session, not from within LockingSP.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.2.2.2.2",
+      "core/5.3.3.11"
+    ]
+  },
+  {
+    "filename": "opal_fail_76_revert_from_locking_sp_wrong_path.json",
+    "label": "fail",
+    "concept": "Revert(LockingSP) must be issued from an authenticated AdminSP SID session, not from within LockingSP.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.2.2.2.2",
+      "core/5.3.3.11"
+    ]
+  },
+  {
+    "filename": "opal_pass_77_activate_already_active_noop.json",
+    "label": "pass",
+    "concept": "Activate(LockingSP) on an already-Manufactured SP is a no-op when invoked from an authenticated SID AdminSP write session.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/5.1.1.1",
+      "opal/5.2.2.2.1"
+    ]
+  },
+  {
+    "filename": "opal_fail_77_activate_already_active_noop.json",
+    "label": "fail",
+    "concept": "Activate(LockingSP) on an already-Manufactured SP is a no-op when invoked from an authenticated SID AdminSP write session.",
+    "refs": [
+      "opal/5.1.1",
+      "opal/5.1.1.1",
+      "opal/5.2.2.2.1"
+    ]
+  },
+  {
+    "filename": "opal_pass_78_user1_trylimit_lockout.json",
+    "label": "pass",
+    "concept": "With TryLimit=2, two consecutive wrong PINs lock out the authority; the third attempt must fail with auth_error.",
+    "refs": [
+      "opal/4.3.1.9",
+      "core/5.3.4.1.14",
+      "core/5.3.4.1.14.1"
+    ]
+  },
+  {
+    "filename": "opal_fail_78_user1_trylimit_lockout.json",
+    "label": "fail",
+    "concept": "With TryLimit=2, two consecutive wrong PINs lock out the authority; the third attempt must fail with auth_error.",
+    "refs": [
+      "opal/4.3.1.9",
+      "core/5.3.4.1.14",
+      "core/5.3.4.1.14.1"
+    ]
+  },
+  {
+    "filename": "opal_pass_79_reactivate_admin1_new_sid.json",
+    "label": "pass",
+    "concept": "After Revert(LockingSP) and re-Activate with an updated SID PIN, Admin1 credential is the new SID value.",
+    "refs": [
+      "opal/5.1.1.2",
+      "opal/5.1.2.1",
+      "opal/5.2.2.3.2"
+    ]
+  },
+  {
+    "filename": "opal_fail_79_reactivate_admin1_new_sid.json",
+    "label": "fail",
+    "concept": "After Revert(LockingSP) and re-Activate with an updated SID PIN, Admin1 credential is the new SID value.",
+    "refs": [
+      "opal/5.1.1.2",
+      "opal/5.1.2.1",
+      "opal/5.2.2.3.2"
+    ]
+  },
+  {
+    "filename": "opal_pass_80_admin2_pin_set_by_admin1.json",
+    "label": "pass",
+    "concept": "Admin1 can set Admin2 C_PIN and enable Admin2; Admin2 then authenticates with the new PIN.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ]
+  },
+  {
+    "filename": "opal_fail_80_admin2_pin_set_by_admin1.json",
+    "label": "fail",
+    "concept": "Admin1 can set Admin2 C_PIN and enable Admin2; Admin2 then authenticates with the new PIN.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8",
+      "opal/4.3.1.9"
+    ]
+  },
+  {
+    "filename": "opal_pass_81_authority_disable_mid_trajectory.json",
+    "label": "pass",
+    "concept": "Admin1 can disable an enabled user authority; subsequent StartSession for that authority must fail.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8",
+      "core/5.3.4.1.5"
+    ]
+  },
+  {
+    "filename": "opal_fail_81_authority_disable_mid_trajectory.json",
+    "label": "fail",
+    "concept": "Admin1 can disable an enabled user authority; subsequent StartSession for that authority must fail.",
+    "refs": [
+      "opal/4.3.1.7",
+      "opal/4.3.1.8",
+      "core/5.3.4.1.5"
+    ]
+  },
+  {
+    "filename": "opal_pass_82_done_on_reset_power_cycle.json",
+    "label": "pass",
+    "concept": "When MBRControl.DoneOnReset includes Power Cycle, Done resets to False on power cycle; the re-enabled MBR shadow blocks writes.",
+    "refs": [
+      "opal/4.3.5.3",
+      "opal/3.2.3",
+      "opal/3.3.5.1",
+      "opal/4.3.5.4"
+    ]
+  },
+  {
+    "filename": "opal_fail_82_done_on_reset_power_cycle.json",
+    "label": "fail",
+    "concept": "When MBRControl.DoneOnReset includes Power Cycle, Done resets to False on power cycle; the re-enabled MBR shadow blocks writes.",
+    "refs": [
+      "opal/4.3.5.3",
+      "opal/3.2.3",
+      "opal/3.3.5.1",
+      "opal/4.3.5.4"
+    ]
+  },
+  {
+    "filename": "opal_pass_83_mbr_byte_get_readonly.json",
+    "label": "pass",
+    "concept": "MBR byte-table Get is authorized by ACE_Anybody; a read-only session is sufficient (no write session required).",
+    "refs": [
+      "opal/4.3.5.3.1",
+      "opal/4.3.1.6",
+      "opal/5.3.1.2"
+    ]
+  },
+  {
+    "filename": "opal_fail_83_mbr_byte_get_readonly.json",
+    "label": "fail",
+    "concept": "MBR byte-table Get is authorized by ACE_Anybody; a read-only session is sufficient (no write session required).",
+    "refs": [
+      "opal/4.3.5.3.1",
+      "opal/4.3.1.6",
+      "opal/5.3.1.2"
+    ]
+  },
+  {
+    "filename": "opal_pass_84_genkey_repeated_changes_data.json",
+    "label": "pass",
+    "concept": "Each GenKey on a range key independently invalidates the prior data; two sequential GenKey calls both change data.",
+    "refs": [
+      "opal/4.3.5.5",
+      "opal/4.3.7",
+      "core/5.3.3.16"
+    ]
+  },
+  {
+    "filename": "opal_fail_84_genkey_repeated_changes_data.json",
+    "label": "fail",
+    "concept": "Each GenKey on a range key independently invalidates the prior data; two sequential GenKey calls both change data.",
+    "refs": [
+      "opal/4.3.5.5",
+      "opal/4.3.7",
+      "core/5.3.3.16"
+    ]
+  },
+  {
+    "filename": "opal_pass_85_locking_sp_reactivate_after_revert.json",
+    "label": "pass",
+    "concept": "After Revert(LockingSP) returns SP to inactive, a fresh Activate restores LockingSP and Admin1=SID auth.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.1.1.1",
+      "opal/5.2.2.2",
+      "opal/5.2.2.3"
+    ]
+  },
+  {
+    "filename": "opal_fail_85_locking_sp_reactivate_after_revert.json",
+    "label": "fail",
+    "concept": "After Revert(LockingSP) returns SP to inactive, a fresh Activate restores LockingSP and Admin1=SID auth.",
+    "refs": [
+      "opal/5.1.2.1",
+      "opal/5.1.1.1",
+      "opal/5.2.2.2",
+      "opal/5.2.2.3"
+    ]
+  },
+  {
+    "filename": "opal_pass_86_revertsp_keepglobal_both_locked_fails.json",
+    "label": "pass",
+    "concept": "RevertSP with KeepGlobalRangeKey=True must fail when Global Range is both ReadLocked and WriteLocked (opal/5.1.3.2).",
+    "refs": [
+      "opal/5.1.3.1",
+      "opal/5.1.3.2",
+      "opal/5.1.3.3"
+    ]
+  },
+  {
+    "filename": "opal_fail_86_revertsp_keepglobal_both_locked_fails.json",
+    "label": "fail",
+    "concept": "RevertSP with KeepGlobalRangeKey=True must fail when Global Range is both ReadLocked and WriteLocked (opal/5.1.3.2).",
+    "refs": [
+      "opal/5.1.3.1",
+      "opal/5.1.3.2",
+      "opal/5.1.3.3"
+    ]
+  },
+  {
+    "filename": "opal_pass_87_revertsp_keepglobal_only_write_locked.json",
+    "label": "pass",
+    "concept": "RevertSP with KeepGlobalRangeKey=True succeeds when Global Range is WriteLocked but not ReadLocked.",
+    "refs": [
+      "opal/5.1.3.1",
+      "opal/5.1.3.2",
+      "opal/5.1.3.3"
+    ]
+  },
+  {
+    "filename": "opal_fail_87_revertsp_keepglobal_only_write_locked.json",
+    "label": "fail",
+    "concept": "RevertSP with KeepGlobalRangeKey=True succeeds when Global Range is WriteLocked but not ReadLocked.",
+    "refs": [
+      "opal/5.1.3.1",
+      "opal/5.1.3.2",
+      "opal/5.1.3.3"
+    ]
   }
 ]

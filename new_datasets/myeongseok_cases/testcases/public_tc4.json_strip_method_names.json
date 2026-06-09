@@ -1,0 +1,351 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "00 00 00 00 00 00 00 FF"
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          }
+        },
+        "uid": "00 00 00 00 00 00 FF 02"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": "00000001",
+            "SPSessionID": "000068c0"
+          }
+        },
+        "name": "SyncSession",
+        "uid": "00 00 00 00 00 00 FF 03"
+      },
+      "return_values": {
+        "optional": {},
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "000068c0"
+        }
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 2,
+    "input": {
+      "invoking_id": {
+        "name": "C_PIN",
+        "type": null,
+        "uid": "00 00 00 0B 00 00 84 02"
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "Cellblock": [
+              {
+                "startColumn": 3
+              },
+              {
+                "endColumn": 3
+              }
+            ]
+          }
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": [
+        [
+          {
+            "3": "MJDL5TDSXBZ7NW3TE2PCESSNTLGYSBOW"
+          }
+        ]
+      ],
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 3,
+    "input": {
+      "invoking_id": {
+        "name": null,
+        "type": null,
+        "uid": null
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "uid": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": {
+        "optional": {},
+        "required": {}
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 4,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "00 00 00 00 00 00 00 FF"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "HostChallenge": "3P5ADJBHFA4JJN57CZYR3FW1AEMDKF8J",
+            "HostSigningAuthority": "0000000900000006"
+          },
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          }
+        },
+        "uid": "00 00 00 00 00 00 FF 02"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": "00000001",
+            "SPSessionID": "000068c1"
+          }
+        },
+        "name": "SyncSession",
+        "uid": "00 00 00 00 00 00 FF 03"
+      },
+      "return_values": {
+        "optional": {},
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "000068c1"
+        }
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 5,
+    "input": {
+      "invoking_id": {
+        "name": "C_PIN",
+        "type": null,
+        "uid": "00 00 00 0B 00 00 00 01"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "Values": [
+              {
+                "3": "3e06061d942f8b3cdb5058fdc9252d8d878010ecb205a0e2c2d26881fcb0b860"
+              }
+            ]
+          },
+          "required": {}
+        },
+        "uid": "00 00 00 06 00 00 00 17"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": [],
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 6,
+    "input": {
+      "invoking_id": {
+        "name": null,
+        "type": null,
+        "uid": null
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "uid": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": {
+        "optional": {},
+        "required": {}
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 7,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "00 00 00 00 00 00 00 FF"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "HostChallenge": "3e06061d942f8b3cdb5058fdc9252d8d878010ecb205a0e2c2d26881fcb0b860",
+            "HostSigningAuthority": "0000000900000006"
+          },
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          }
+        },
+        "uid": "00 00 00 00 00 00 FF 02"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": "00000001",
+            "SPSessionID": "000068c2"
+          }
+        },
+        "name": "SyncSession",
+        "uid": "00 00 00 00 00 00 FF 03"
+      },
+      "return_values": {
+        "optional": {},
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "000068c2"
+        }
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 8,
+    "input": {
+      "invoking_id": {
+        "name": "C_PIN",
+        "type": null,
+        "uid": "00 00 00 0B 00 00 00 01"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "Values": [
+              {
+                "3": "f620e538bd84c88385d1312f5a7ffebc0afa652dbe61d9d8f57a75dfd9859b29"
+              }
+            ]
+          },
+          "required": {}
+        },
+        "uid": "00 00 00 06 00 00 00 17"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": [],
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 9,
+    "input": {
+      "invoking_id": {
+        "name": null,
+        "type": null,
+        "uid": null
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "uid": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": {
+        "optional": {},
+        "required": {}
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 10,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "00 00 00 00 00 00 00 FF"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "HostChallenge": "f620e538bd84c88385d1312f5a7ffebc0afa652dbe61d9d8f57a75dfd9859b29",
+            "HostSigningAuthority": "0000000900000006"
+          },
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          }
+        },
+        "uid": "00 00 00 00 00 00 FF 02"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": "00000001",
+            "SPSessionID": "000068c3"
+          }
+        },
+        "name": "SyncSession",
+        "uid": "00 00 00 00 00 00 FF 03"
+      },
+      "return_values": {
+        "optional": {},
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "000068c3"
+        }
+      },
+      "status_codes": "SUCCESS"
+    }
+  }
+]

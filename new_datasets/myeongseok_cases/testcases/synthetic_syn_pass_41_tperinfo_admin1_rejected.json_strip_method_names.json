@@ -1,0 +1,81 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "0000000000000001"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "HostChallenge": "ADMIN1PIN",
+            "HostSigningAuthority": "0000000900010001"
+          },
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          }
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "name": "SyncSession",
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "return_values": {
+        "optional": {},
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "00006572"
+        }
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 2,
+    "input": {
+      "invoking_id": {
+        "name": "TPerInfo",
+        "type": null,
+        "uid": "0000020100030001"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "Values": [
+              {
+                "8": true
+              }
+            ]
+          },
+          "required": {}
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "NOT_AUTHORIZED"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "name": "Set",
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "return_values": {},
+      "status_codes": "NOT_AUTHORIZED"
+    }
+  }
+]

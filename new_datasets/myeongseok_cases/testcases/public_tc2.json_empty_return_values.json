@@ -1,0 +1,78 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "00 00 00 00 00 00 00 FF"
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          }
+        },
+        "name": "StartSession",
+        "uid": "00 00 00 00 00 00 FF 02"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": "00000001",
+            "SPSessionID": "000065ab"
+          }
+        },
+        "name": "SyncSession",
+        "uid": "00 00 00 00 00 00 FF 03"
+      },
+      "return_values": {
+        "optional": {},
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "000065ab"
+        }
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 2,
+    "input": {
+      "invoking_id": {
+        "name": "C_PIN",
+        "type": null,
+        "uid": "00 00 00 0B 00 00 84 02"
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "Cellblock": [
+              {
+                "startColumn": 3
+              },
+              {
+                "endColumn": 3
+              }
+            ]
+          }
+        },
+        "name": "Get",
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "return_values": [],
+      "status_codes": "SUCCESS"
+    }
+  }
+]

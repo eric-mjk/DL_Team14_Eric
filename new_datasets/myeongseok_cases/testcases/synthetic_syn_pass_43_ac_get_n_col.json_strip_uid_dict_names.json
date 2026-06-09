@@ -1,0 +1,77 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "invoking_id": {
+        "type": null,
+        "uid": "0000000000000001"
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          }
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "return_values": {
+        "optional": {},
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "00006572"
+        }
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 2,
+    "input": {
+      "invoking_id": {
+        "type": null,
+        "uid": "0000000700000001"
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "Cellblock": [
+              {
+                "startColumn": 4
+              },
+              {
+                "endColumn": 4
+              }
+            ]
+          }
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "NOT_AUTHORIZED"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "return_values": {},
+      "status_codes": "NOT_AUTHORIZED"
+    }
+  }
+]

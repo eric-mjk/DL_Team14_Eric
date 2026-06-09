@@ -1,0 +1,41 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "args": {
+        "SecurityProtocol": "01",
+        "SecurityProtocolSpecific": "0001"
+      },
+      "command": "IF_RECV"
+    },
+    "output": {
+      "command": "IF_RECV",
+      "discovery": {
+        "features": [
+          {
+            "feature_code": 1,
+            "streaming_supported": 1,
+            "sync_supported": 1
+          },
+          {
+            "feature_code": 2,
+            "locked": 0,
+            "locking_enabled": 0,
+            "locking_supported": 1,
+            "mbr_done": 0,
+            "mbr_enabled": 0,
+            "mbr_shadowing_not_supported": 0,
+            "media_encryption": 1
+          },
+          {
+            "feature_code": 515,
+            "num_admins": 4,
+            "num_comids": 1,
+            "num_users": 8
+          }
+        ]
+      },
+      "result": "pass"
+    }
+  }
+]

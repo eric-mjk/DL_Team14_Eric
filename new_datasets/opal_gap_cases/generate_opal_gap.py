@@ -571,6 +571,248 @@ def scenarios() -> list[Scenario]:
         "Opal SSC V2 discovery reports at least eight user authorities.",
         "opal/3.1.1", "opal/3.1.1.5",
     ))
+
+    # ---- Round 2: deeper edge cases ----------------------------------------
+
+    def set_trylimit(cpin_uid: str, limit: int, status: str = "SUCCESS") -> dict:
+        return make_step("Set", cpin_uid, {}, {"Values": [{5: limit}]}, status, invoking_name="C_PIN")
+
+    # 73 — WriteLocked without WriteLockEnabled: lock flag alone does not block I/O
+    add(pair_scenarios(73, "write_locked_no_enable",
+        "WriteLocked=1 without WriteLockEnabled=1 does not block writes (opal/4.3.5.2.1.2).",
+        ("opal/4.3.5.2", "opal/4.3.5.2.1.2", "opal/4.3.7"), lambda: (
+            locking_admin_session() + [set_locking(RANGE1, {3: 0, 4: 4096, 6: 0, 8: 1}), end_session(), write_step("0-1023", "DATA", "PASS")],
+            locking_admin_session() + [set_locking(RANGE1, {3: 0, 4: 4096, 6: 0, 8: 1}), end_session(), write_step("0-1023", "DATA", "FAIL")],
+        )))
+
+    # 74 — ReadLocked without ReadLockEnabled: lock flag alone does not block reads
+    add(pair_scenarios(74, "read_locked_no_enable",
+        "ReadLocked=1 without ReadLockEnabled=1 does not block reads (opal/4.3.5.2.1.1).",
+        ("opal/4.3.5.2", "opal/4.3.5.2.1.1", "opal/4.3.7"), lambda: (
+            locking_admin_session() + [set_locking(RANGE1, {3: 0, 4: 4096, 5: 0, 7: 1}), end_session(), read_step("0-1023", "USER_DATA", "PASS")],
+            locking_admin_session() + [set_locking(RANGE1, {3: 0, 4: 4096, 5: 0, 7: 1}), end_session(), read_step("0-1023", "DATA_PROTECTION_ERROR", "FAIL")],
+        )))
+
+    # 75 — RevertSP requires a write session (read-only session must fail)
+    add(pair_scenarios(75, "revert_sp_readonly_fails",
+        "RevertSP requires an authenticated write session; read-only session must be rejected.",
+        ("opal/5.1.3.1", "opal/5.1.3.2", "core/5.3.3.11"), lambda: (
+            active_locking_prefix() + [start_session(LOCKING_SP, write=0, authority=ADMIN1_UID, challenge=SID), revert_sp(LOCKING_SP, "NOT_AUTHORIZED")],
+            active_locking_prefix() + [start_session(LOCKING_SP, write=0, authority=ADMIN1_UID, challenge=SID), revert_sp(LOCKING_SP, "SUCCESS")],
+        )))
+
+    # 76 — Revert(LockingSP) requires an AdminSP session, not a LockingSP session
+    add(pair_scenarios(76, "revert_from_locking_sp_wrong_path",
+        "Revert(LockingSP) must be issued from an authenticated AdminSP SID session, not from within LockingSP.",
+        ("opal/5.1.2.1", "opal/5.2.2.2.2", "core/5.3.3.11"), lambda: (
+            locking_admin_session() + [revert(LOCKING_SP, "NOT_AUTHORIZED")],
+            locking_admin_session() + [revert(LOCKING_SP, "SUCCESS")],
+        )))
+
+    # 77 — Activate on already-active LockingSP is a no-op when SID is authenticated
+    add(pair_scenarios(77, "activate_already_active_noop",
+        "Activate(LockingSP) on an already-Manufactured SP is a no-op when invoked from an authenticated SID AdminSP write session.",
+        ("opal/5.1.1", "opal/5.1.1.1", "opal/5.2.2.2.1"), lambda: (
+            active_locking_prefix() + [start_session(ADMIN_SP, authority=SID_UID, challenge=SID), activate(LOCKING_SP, "SUCCESS")],
+            active_locking_prefix() + [start_session(ADMIN_SP, write=1), activate(LOCKING_SP, "SUCCESS")],
+        )))
+
+    # 78 — User1 TryLimit=2: after two wrong PINs, the third attempt is locked out
+    add(pair_scenarios(78, "user1_trylimit_lockout",
+        "With TryLimit=2, two consecutive wrong PINs lock out the authority; the third attempt must fail with auth_error.",
+        ("opal/4.3.1.9", "core/5.3.4.1.14", "core/5.3.4.1.14.1"), lambda: (
+            active_locking_prefix() + setup_user(SID, USER_PIN) + [
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                set_trylimit(C_PIN_USER1, 2),
+                end_session(),
+                start_session(LOCKING_SP, authority=USER1_UID, challenge="WRONG1", status="NOT_AUTHORIZED"),
+                start_session(LOCKING_SP, authority=USER1_UID, challenge="WRONG2", status="NOT_AUTHORIZED"),
+                start_session(LOCKING_SP, authority=USER1_UID, challenge=USER_PIN, status="AUTHORITY_LOCKED_OUT"),
+            ],
+            active_locking_prefix() + setup_user(SID, USER_PIN) + [
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                set_trylimit(C_PIN_USER1, 2),
+                end_session(),
+                start_session(LOCKING_SP, authority=USER1_UID, challenge="WRONG1", status="NOT_AUTHORIZED"),
+                start_session(LOCKING_SP, authority=USER1_UID, challenge="WRONG2", status="NOT_AUTHORIZED"),
+                start_session(LOCKING_SP, authority=USER1_UID, challenge=USER_PIN, status="SUCCESS"),
+            ],
+        )))
+
+    # 79 — After Revert(LockingSP)+re-Activate with new SID, Admin1 credential = new SID
+    NEW_SID = "NEWSIDPIN"
+    add(pair_scenarios(79, "reactivate_admin1_new_sid",
+        "After Revert(LockingSP) and re-Activate with an updated SID PIN, Admin1 credential is the new SID value.",
+        ("opal/5.1.1.2", "opal/5.1.2.1", "opal/5.2.2.3.2"), lambda: (
+            # activate → revert → change SID → reactivate → Admin1 = NEW_SID
+            setup_tper(MSID, SID) + activate_locking_sp(SID) + [
+                start_session(ADMIN_SP, authority=SID_UID, challenge=SID),
+                revert(LOCKING_SP, "SUCCESS"),
+                set_cpin(C_PIN_SID, NEW_SID, "SUCCESS"),
+                end_session(),
+                start_session(ADMIN_SP, authority=SID_UID, challenge=NEW_SID),
+                activate(LOCKING_SP, "SUCCESS"),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=NEW_SID, status="SUCCESS"),
+            ],
+            # same but use OLD SID for Admin1 after reactivation
+            setup_tper(MSID, SID) + activate_locking_sp(SID) + [
+                start_session(ADMIN_SP, authority=SID_UID, challenge=SID),
+                revert(LOCKING_SP, "SUCCESS"),
+                set_cpin(C_PIN_SID, NEW_SID, "SUCCESS"),
+                end_session(),
+                start_session(ADMIN_SP, authority=SID_UID, challenge=NEW_SID),
+                activate(LOCKING_SP, "SUCCESS"),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID, status="SUCCESS"),
+            ],
+        )))
+
+    # 80 — Admin1 can set Admin2's C_PIN and then Admin2 can authenticate
+    add(pair_scenarios(80, "admin2_pin_set_by_admin1",
+        "Admin1 can set Admin2 C_PIN and enable Admin2; Admin2 then authenticates with the new PIN.",
+        ("opal/4.3.1.7", "opal/4.3.1.8", "opal/4.3.1.9"), lambda: (
+            locking_admin_session() + [
+                set_cpin(C_PIN_ADMIN2, "ADMIN2PIN", "SUCCESS"),
+                set_authority(ADMIN2_UID, True, "SUCCESS"),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN2_UID, challenge="ADMIN2PIN", status="SUCCESS"),
+            ],
+            locking_admin_session() + [
+                set_cpin(C_PIN_ADMIN2, "ADMIN2PIN", "SUCCESS"),
+                set_authority(ADMIN2_UID, True, "SUCCESS"),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN2_UID, challenge="ADMIN2PIN", status="NOT_AUTHORIZED"),
+            ],
+        )))
+
+    # 81 — Authority disable mid-trajectory blocks subsequent StartSession
+    add(pair_scenarios(81, "authority_disable_mid_trajectory",
+        "Admin1 can disable an enabled user authority; subsequent StartSession for that authority must fail.",
+        ("opal/4.3.1.7", "opal/4.3.1.8", "core/5.3.4.1.5"), lambda: (
+            active_locking_prefix() + setup_user(SID, USER_PIN) + [
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                set_authority(USER1_UID, False, "SUCCESS"),
+                end_session(),
+                start_session(LOCKING_SP, authority=USER1_UID, challenge=USER_PIN, status="NOT_AUTHORIZED"),
+            ],
+            active_locking_prefix() + setup_user(SID, USER_PIN) + [
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                set_authority(USER1_UID, False, "SUCCESS"),
+                end_session(),
+                start_session(LOCKING_SP, authority=USER1_UID, challenge=USER_PIN, status="SUCCESS"),
+            ],
+        )))
+
+    # 82 — MBRControl.DoneOnReset causes Done to reset on power cycle, re-enabling MBR shadow writes block
+    add(pair_scenarios(82, "done_on_reset_power_cycle",
+        "When MBRControl.DoneOnReset includes Power Cycle, Done resets to False on power cycle; the re-enabled MBR shadow blocks writes.",
+        ("opal/4.3.5.3", "opal/3.2.3", "opal/3.3.5.1", "opal/4.3.5.4"), lambda: (
+            # Set Enable=1, Done=1, DoneOnReset="Power Cycle" → power cycle → Done=0 → shadow active → write blocked
+            locking_admin_session() + [
+                set_mbr({1: 1, 2: 1, 3: "Power Cycle"}, "SUCCESS"),
+                end_session(),
+                power_cycle_step(),
+                write_step("0-1023", "BOOT_DATA", "FAIL"),
+            ],
+            locking_admin_session() + [
+                set_mbr({1: 1, 2: 1, 3: "Power Cycle"}, "SUCCESS"),
+                end_session(),
+                power_cycle_step(),
+                write_step("0-1023", "BOOT_DATA", "PASS"),
+            ],
+        )))
+
+    # 83 — MBR byte-table Get succeeds in a read-only LockingSP session (ACE_Anybody)
+    # MBR is a byte table; Get uses no column Cellblock — just a plain byte-range fetch.
+    add(pair_scenarios(83, "mbr_byte_get_readonly",
+        "MBR byte-table Get is authorized by ACE_Anybody; a read-only session is sufficient (no write session required).",
+        ("opal/4.3.5.3.1", "opal/4.3.1.6", "opal/5.3.1.2"), lambda: (
+            active_locking_prefix() + [start_session(LOCKING_SP, write=0), make_step("Get", MBR_TABLE_UID, {}, {}, "SUCCESS", invoking_name="MBR")],
+            active_locking_prefix() + [start_session(LOCKING_SP, write=0), make_step("Get", MBR_TABLE_UID, {}, {}, "NOT_AUTHORIZED", invoking_name="MBR")],
+        )))
+
+    # 84 — Two sequential GenKey calls both invalidate the range data
+    add(pair_scenarios(84, "genkey_repeated_changes_data",
+        "Each GenKey on a range key independently invalidates the prior data; two sequential GenKey calls both change data.",
+        ("opal/4.3.5.5", "opal/4.3.7", "core/5.3.3.16"), lambda: (
+            locking_admin_session() + [
+                set_locking(RANGE1, {3: 0, 4: 4096, 5: 1, 6: 1}),
+                end_session(),
+                write_step("0-1023", "OLD"),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                gen_key(K_AES_RANGE1),
+                gen_key(K_AES_RANGE1),
+                end_session(),
+                read_step("0-1023", "CHANGED", "PASS"),
+            ],
+            locking_admin_session() + [
+                set_locking(RANGE1, {3: 0, 4: 4096, 5: 1, 6: 1}),
+                end_session(),
+                write_step("0-1023", "OLD"),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                gen_key(K_AES_RANGE1),
+                gen_key(K_AES_RANGE1),
+                end_session(),
+                read_step("0-1023", "OLD", "PASS"),
+            ],
+        )))
+
+    # 85 — LockingSP accessible again after Revert + re-Activate with same SID
+    add(pair_scenarios(85, "locking_sp_reactivate_after_revert",
+        "After Revert(LockingSP) returns SP to inactive, a fresh Activate restores LockingSP and Admin1=SID auth.",
+        ("opal/5.1.2.1", "opal/5.1.1.1", "opal/5.2.2.2", "opal/5.2.2.3"), lambda: (
+            setup_tper(MSID, SID) + activate_locking_sp(SID) + [
+                start_session(ADMIN_SP, authority=SID_UID, challenge=SID),
+                revert(LOCKING_SP, "SUCCESS"),
+                activate(LOCKING_SP, "SUCCESS"),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID, status="SUCCESS"),
+            ],
+            setup_tper(MSID, SID) + activate_locking_sp(SID) + [
+                start_session(ADMIN_SP, authority=SID_UID, challenge=SID),
+                revert(LOCKING_SP, "SUCCESS"),
+                # LockingSP still inactive here; no re-Activate
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID, status="SUCCESS"),
+            ],
+        )))
+
+    # 86 — RevertSP KeepGlobalRangeKey fails when Global Range is both ReadLocked and WriteLocked
+    add(pair_scenarios(86, "revertsp_keepglobal_both_locked_fails",
+        "RevertSP with KeepGlobalRangeKey=True must fail when Global Range is both ReadLocked and WriteLocked (opal/5.1.3.2).",
+        ("opal/5.1.3.1", "opal/5.1.3.2", "opal/5.1.3.3"), lambda: (
+            locking_admin_session() + [
+                set_locking(GLOBAL_RANGE, {5: 1, 6: 1, 7: 1, 8: 1}),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                revert_sp(LOCKING_SP, "FAIL", keep_global=True),
+            ],
+            locking_admin_session() + [
+                set_locking(GLOBAL_RANGE, {5: 1, 6: 1, 7: 1, 8: 1}),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                revert_sp(LOCKING_SP, "SUCCESS", keep_global=True),
+            ],
+        )))
+
+    # 87 — RevertSP KeepGlobalRangeKey succeeds when Global is only WriteLocked (not both)
+    add(pair_scenarios(87, "revertsp_keepglobal_only_write_locked",
+        "RevertSP with KeepGlobalRangeKey=True succeeds when Global Range is WriteLocked but not ReadLocked.",
+        ("opal/5.1.3.1", "opal/5.1.3.2", "opal/5.1.3.3"), lambda: (
+            locking_admin_session() + [
+                set_locking(GLOBAL_RANGE, {5: 1, 6: 1, 7: 0, 8: 1}),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                revert_sp(LOCKING_SP, "SUCCESS", keep_global=True),
+            ],
+            locking_admin_session() + [
+                set_locking(GLOBAL_RANGE, {5: 1, 6: 1, 7: 0, 8: 1}),
+                end_session(),
+                start_session(LOCKING_SP, authority=ADMIN1_UID, challenge=SID),
+                revert_sp(LOCKING_SP, "FAIL", keep_global=True),
+            ],
+        )))
+
     return out
 
 

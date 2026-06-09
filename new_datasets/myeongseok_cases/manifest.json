@@ -1,0 +1,2525 @@
+[
+  {
+    "filename": "activate_success_with_unexpected_return_values.json",
+    "group": "unexpected_return_payload",
+    "label": "fail",
+    "rationale": "Activate is a no-result method; SUCCESS must not include a return_values payload.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "authenticate_success_missing_result.json",
+    "group": "authenticate_response_shape",
+    "label": "fail",
+    "rationale": "Authenticate with Proof is a response-bearing step; SUCCESS must include a boolean Result/Success field.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "authority_enabled_wrong_after_successful_set.json",
+    "group": "state_backed_table_contradiction",
+    "label": "fail",
+    "rationale": "After a successful Authority.Enabled Set to true, a successful Get must not report false.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "authorized_accesscontrol_get_missing_commonname.json",
+    "group": "authorized_get_missing_columns",
+    "label": "fail",
+    "rationale": "An authorized AccessControl Get for column 3 must return that requested column on SUCCESS.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "authorized_authority_get_missing_enabled.json",
+    "group": "authorized_get_missing_columns",
+    "label": "fail",
+    "rationale": "An authorized Authority Get for Enabled column 5 must return the requested column on SUCCESS.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "authorized_cpin_sid_get_missing_trylimit.json",
+    "group": "authorized_get_missing_columns",
+    "label": "fail",
+    "rationale": "An authorized C_PIN Get for TryLimit column 5 must return the requested column on SUCCESS.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "endsession_success_with_unexpected_return_values.json",
+    "group": "unexpected_return_payload",
+    "label": "fail",
+    "rationale": "EndSession is a no-result method; SUCCESS must not include a return_values payload.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "failed_activate_does_not_activate.json",
+    "group": "intermediate_failure",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "failed_createlog_no_duplicate.json",
+    "group": "intermediate_failure",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "failed_enable_user_does_not_enable.json",
+    "group": "intermediate_failure",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "failed_endsession_keeps_session_for_set.json",
+    "group": "intermediate_failure",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "failed_genkey_old_read_is_ok.json",
+    "group": "intermediate_failure",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "failed_lock_set_does_not_lock_read_fail_bad.json",
+    "group": "intermediate_failure",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "failed_revertsp_does_not_deactivate.json",
+    "group": "intermediate_failure",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "failed_second_set_sid_does_not_update.json",
+    "group": "intermediate_failure",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "failed_set_sid_does_not_update.json",
+    "group": "intermediate_failure",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "genkey_success_with_unexpected_return_values.json",
+    "group": "unexpected_return_payload",
+    "label": "fail",
+    "rationale": "GenKey is a no-result method; SUCCESS must not include a return_values payload.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "locking_global_get_missing_range_length.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "A successful Locking Global Get for columns 3-8 must return the requested RangeLength column.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round2"
+    ]
+  },
+  {
+    "filename": "locking_global_get_wrong_range_length.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "A successful Locking Global Get must reflect the tracked RangeLength.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix"
+    ]
+  },
+  {
+    "filename": "locking_global_get_wrong_range_start.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "A successful Locking Global Get must reflect the tracked RangeStart.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix"
+    ]
+  },
+  {
+    "filename": "lockinginfo_get_missing_requested_maxranges.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "A successful LockingInfo Get for column 4 must return the requested MaxRanges column.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round2"
+    ]
+  },
+  {
+    "filename": "mbrcontrol_initial_get_missing_done_column.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "A successful MBRControl Get for columns 1-2 must return both requested columns.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round2"
+    ]
+  },
+  {
+    "filename": "mbrcontrol_initial_get_wrong_default_enable.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "Before MBRControl is modified, a successful Get must reflect the default Enable=False state.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix"
+    ]
+  },
+  {
+    "filename": "mbrcontrol_post_set_get_wrong_enable.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "After successful MBRControl Set operations, a successful Get must reflect tracked Enable/Done state.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix"
+    ]
+  },
+  {
+    "filename": "msid_get_missing_requested_pin_column.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "A successful C_PIN_MSID Get for column 3 must return the requested PIN column.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round2"
+    ]
+  },
+  {
+    "filename": "msid_second_get_returns_wrong_known_pin.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "A second successful C_PIN_MSID Get must return the same PIN value learned from the first successful Get.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix"
+    ]
+  },
+  {
+    "filename": "public_tc1.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc1.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc1.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc1.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc10.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc10.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc11.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc11.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc12.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc12.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc13.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc13.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc14.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc14.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc15.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc15.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc16.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc16.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc17.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc17.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc18.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc18.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc19.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc19.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc2.json_bad_cellblock_range.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc2.json_empty_return_values.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc2.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc2.json_invalid_row_uid.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc2.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc2.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc2.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc2.json_wrong_uid_family.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc20.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc20.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc3.json_bad_host_challenge.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc3.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc3.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc3.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc3.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc3.json_wrong_spid.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc4.json_bad_host_challenge.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc4.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc4.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc4.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc4.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc4.json_wrong_spid.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc5.json_bad_host_challenge.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc5.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc5.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc5.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc5.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc5.json_wrong_spid.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc6.json_bad_set_column.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc6.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc6.json_invalid_row_uid.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc6.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc6.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc6.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc6.json_wrong_uid_family.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc7.json_bad_host_challenge.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc7.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc7.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc7.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc7.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc7.json_wrong_spid.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc8.json_bad_cellblock_range.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc8.json_empty_return_values.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc8.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc8.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc8.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc8.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc8.json_wrong_uid_family.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc9.json_bad_cellblock_range.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc9.json_empty_return_values.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc9.json_flip_status.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc9.json_invalid_row_uid.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc9.json_object_name_removed.json",
+    "group": "public_target_mutation",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc9.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc9.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "public_tc9.json_wrong_uid_family.json",
+    "group": "public_target_mutation",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "set_success_with_unexpected_return_values.json",
+    "group": "unexpected_return_payload",
+    "label": "fail",
+    "rationale": "Set is a no-result method; SUCCESS must not include a return_values payload.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "sp_get_missing_lifecycle_col6.json",
+    "group": "authorized_get_missing_columns",
+    "label": "fail",
+    "rationale": "A successful SP Get for lifecycle column 6 must return the requested column.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round3"
+    ]
+  },
+  {
+    "filename": "startsession_success_wrong_host_session_echo.json",
+    "group": "state_value_contradiction",
+    "label": "fail",
+    "rationale": "A successful StartSession SyncSession payload must echo the requested HostSessionID.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix"
+    ]
+  },
+  {
+    "filename": "syncsession_wrong_sp_session_id_after_start.json",
+    "group": "session_continuity",
+    "label": "fail",
+    "rationale": "SyncSession must use the SPSessionID assigned by the successful StartSession response.",
+    "source_groups": [
+      "adversarial_cases",
+      "failing_before_fix_round2"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_01_properties.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_01_properties.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_02_unauth_session.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_02_unauth_session.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_03_sid_wrong.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_03_sid_wrong.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_05_user1_wrong.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_05_user1_wrong.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_07_user1_empty_pin_wrong.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_07_user1_empty_pin_wrong.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_08_genkey_read_old.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_08_genkey_read_old.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_10_mbrcontrol_unauth_rejected.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_10_mbrcontrol_unauth_rejected.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_11_locking_range_unauth.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_11_locking_range_unauth.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_12_sid_read_unauth.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_12_sid_read_unauth.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_14_locking_get_wrong_values.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_14_locking_get_wrong_values.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_15_revertsp_session_opens.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_15_revertsp_session_opens.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_16_cred_update_old_pin.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_16_cred_update_old_pin.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_17_locking_get_unauth.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_17_locking_get_unauth.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_19_disabled_user1.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_19_disabled_user1.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_20_global_range_start.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_20_global_range_start.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_21_locking_not_active.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_21_locking_not_active.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_22_genkey_cpin_auth_ok.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_22_genkey_cpin_auth_ok.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_24_mbr_no_locking.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_24_mbr_no_locking.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_25_sid_reads_sid_cpin.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_25_sid_reads_sid_cpin.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_25b_admin1_reads_sid_cpin.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_25b_admin1_reads_sid_cpin.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_26_admin1_reads_own_cpin.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_26_admin1_reads_own_cpin.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_27_admin1_reads_user1_cpin.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_27_admin1_reads_user1_cpin.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_28_write_read_different.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_28_write_read_different.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_29_session_before_activate.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_29_session_before_activate.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_30_read_locked.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_30_read_locked.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_31_activate_no_sid.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_31_activate_no_sid.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_32_activate_wrong_uid.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_32_activate_wrong_uid.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_33_addlog_nonexistent.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_33_addlog_nonexistent.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_34_createlog_duplicate.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_34_createlog_duplicate.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_35_reencrypt_set_geometry.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_35_reencrypt_set_geometry.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_36_reencrypt_genkey.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_36_reencrypt_genkey.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_37_reset_session_survives.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_37_reset_session_survives.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_38_sign_auth_inv_param.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_38_sign_auth_inv_param.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_39_disabled_sp_session.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_39_disabled_sp_session.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_40_addace_anybody_set.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_40_addace_anybody_set.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_41_tperinfo_admin1_set.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_41_tperinfo_admin1_set.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_42_datarmv_reserved_enum.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_42_datarmv_reserved_enum.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_43_ac_get_n_col.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_43_ac_get_n_col.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_44_getacl_unauth.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_44_getacl_unauth.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_45_discovery_missing_v2.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_45_discovery_missing_v2.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_46_discovery_locking_enabled.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_46_discovery_locking_enabled.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_47_discovery_few_admins.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_fail_47_discovery_few_admins.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "fail",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_01_properties.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_01_properties.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_02_unauth_session.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_02_unauth_session.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_03_sid_correct.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_03_sid_correct.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_04_sid_wrong_rejected.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_04_sid_wrong_rejected.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_05_user1_correct.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_05_user1_correct.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_06_user1_wrong_rejected.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_06_user1_wrong_rejected.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_07_user1_empty_pin.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_07_user1_empty_pin.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_08_genkey_read_new.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_08_genkey_read_new.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_09_mbrcontrol_auth.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_09_mbrcontrol_auth.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_10_mbrcontrol_unauth_ok.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_10_mbrcontrol_unauth_ok.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_11_locking_range_set.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_11_locking_range_set.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_12_msid_read.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_12_msid_read.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_13_sid_read_rejected.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_13_sid_read_rejected.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_14_locking_get_correct.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_14_locking_get_correct.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_15_revertsp_session_fails.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_15_revertsp_session_fails.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_16_cred_update_latest.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_16_cred_update_latest.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_17_locking_get_unauth.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_17_locking_get_unauth.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_18_admin2_empty_pin.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_18_admin2_empty_pin.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_19_disabled_user1.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_19_disabled_user1.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_20_global_range_start.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_20_global_range_start.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_22_genkey_cpin_auth_fails.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_22_genkey_cpin_auth_fails.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_23_mbr_control_set.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_23_mbr_control_set.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_25_sid_cpin_na.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_25_sid_cpin_na.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_26_admin1_cpin_na.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_26_admin1_cpin_na.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_27_user1_cpin_na.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_27_user1_cpin_na.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_27b_admin1_reads_user1_cpin_na.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_27b_admin1_reads_user1_cpin_na.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_28_write_read_same.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_28_write_read_same.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_29_session_before_activate.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_29_session_before_activate.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_30_read_locked_error.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_30_read_locked_error.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_31_activate_rejected.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_31_activate_rejected.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_33_addlog_default.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_33_addlog_default.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_34_createlog_duplicate_ok.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_34_createlog_duplicate_ok.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_35_reencrypt_idle_set.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_35_reencrypt_idle_set.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_37_reset_session_aborted.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_37_reset_session_aborted.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_38_sign_auth_proof.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_38_sign_auth_proof.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_39_disabled_sp_session.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_39_disabled_sp_session.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_40_addace_anybody_set.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_40_addace_anybody_set.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_41_tperinfo_admin1_rejected.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_41_tperinfo_admin1_rejected.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_42_datarmv_reserved_enum.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_42_datarmv_reserved_enum.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_43_ac_get_n_col.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_43_ac_get_n_col.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_44_getacl_unauth.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_44_getacl_unauth.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_45_discovery_compliant.json_strip_method_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  },
+  {
+    "filename": "synthetic_syn_pass_45_discovery_compliant.json_strip_uid_dict_names.json",
+    "group": "parser_invariance",
+    "label": "pass",
+    "rationale": null,
+    "source_groups": [
+      "adversarial_cases"
+    ]
+  }
+]

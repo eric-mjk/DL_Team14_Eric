@@ -1,0 +1,50 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "command": "IF_RECV",
+      "args": {
+        "SecurityProtocol": "01",
+        "SecurityProtocolSpecific": "0001"
+      }
+    },
+    "output": {
+      "command": "IF_RECV",
+      "result": "pass",
+      "discovery": {
+        "features": [
+          {
+            "feature_code": 1,
+            "length": 12,
+            "sync_supported": 1,
+            "streaming_supported": 1
+          },
+          {
+            "feature_code": 2,
+            "length": 12,
+            "locking_supported": 1,
+            "locking_enabled": 0,
+            "media_encryption": 1,
+            "mbr_shadowing_not_supported": 0
+          },
+          {
+            "feature_code": 3,
+            "length": 28
+          },
+          {
+            "feature_code": 515,
+            "length": 16,
+            "num_comids": 1,
+            "num_admins": 4,
+            "num_users": 8,
+            "initial_sid_indicator": 1
+          },
+          {
+            "feature_code": 1028,
+            "length": 32
+          }
+        ]
+      }
+    }
+  }
+]

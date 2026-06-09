@@ -113,10 +113,10 @@
       "core/3.3.7.1",
       "core/5.2.3.1"
     ],
-    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=no_sessions_available expected={'error', 'resource_error'} actual=resource_error verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession while another session is open should be rejected.",
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=no_sessions_available expected={'resource_error', 'error'} actual=resource_error verdict=pass policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession while another session is open should be rejected.",
     "classification": "sound_debug_reason",
     "final": "method:StartSession",
-    "expected_status": "{'error',",
+    "expected_status": "{'resource_error',",
     "actual_status": "resource_error",
     "policy": "none",
     "coverage": "implemented"
@@ -131,10 +131,10 @@
       "core/3.3.7.1",
       "core/5.2.3.1"
     ],
-    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected={'error', 'resource_error'} actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession while another session is open should be rejected.",
+    "debug": "final=method:StartSession object=SessionManager family=SessionManager status=success expected={'resource_error', 'error'} actual=success verdict=fail policy=none coverage=implemented refs=opal/4.1.1.2,core/5.2.3.1,core/5.3.4.1.5 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=StartSession while another session is open should be rejected.",
     "classification": "sound_debug_reason",
     "final": "method:StartSession",
-    "expected_status": "{'error',",
+    "expected_status": "{'resource_error',",
     "actual_status": "success",
     "policy": "none",
     "coverage": "implemented"
@@ -3279,6 +3279,527 @@
     "final": "method:CreateTable",
     "expected_status": "invalid_parameter",
     "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_100_getclock_readonly.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "GetClock is a read-only ClockTime method valid in a read-only session.",
+    "refs": [
+      "core/5.5.4.1"
+    ],
+    "debug": "final=method:GetClock object=ClockTime family=ClockTime status=success expected=unknown actual=unknown verdict=pass policy=none coverage=implemented refs=core/5.5.3.1,core/5.5.4.1,core/5.5.4.1.2,core/5.5.4.2,core/5.5.4.2.2,core/5.5.4.3,core/5.5.4.3.3,core/5.5.4.4,core/5.5.4.5,core/5.5.4.5.3,core/5.5.4.6,core/5.5.4.7,core/5.5.4.7.1,core/5.5.4.7.2 state=(session=open=True sp=AdminSP write=False auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=GetClock is permitted in a read-only session but requires an open session on the ClockTime table.",
+    "classification": "sound_debug_reason",
+    "final": "method:GetClock",
+    "expected_status": "unknown",
+    "actual_status": "unknown",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_100_getclock_readonly_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "GetClock should not require write authorization.",
+    "refs": [
+      "core/5.5.4.1"
+    ],
+    "debug": "final=method:GetClock object=ClockTime family=ClockTime status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=core/5.5.3.1,core/5.5.4.1,core/5.5.4.1.2,core/5.5.4.2,core/5.5.4.2.2,core/5.5.4.3,core/5.5.4.3.3,core/5.5.4.4,core/5.5.4.5,core/5.5.4.5.3,core/5.5.4.6,core/5.5.4.7,core/5.5.4.7.1,core/5.5.4.7.2 state=(session=open=True sp=AdminSP write=False auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=GetClock in an open session should succeed.",
+    "classification": "sound_debug_reason",
+    "final": "method:GetClock",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_101_incrementcounter_wrong_target_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "IncrementCounter is a ClockTime method; invoking it on a non-ClockTime object is rejected.",
+    "refs": [
+      "core/5.5.4.7",
+      "core/5.5.5.2"
+    ],
+    "debug": "final=method:IncrementCounter object=AdminSP family=SP status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=core/5.5.3.1,core/5.5.4.1,core/5.5.4.1.2,core/5.5.4.2,core/5.5.4.2.2,core/5.5.4.3,core/5.5.4.3.3,core/5.5.4.4,core/5.5.4.5,core/5.5.4.5.3,core/5.5.4.6,core/5.5.4.7,core/5.5.4.7.1,core/5.5.4.7.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=IncrementCounter target must be the ClockTime table.",
+    "classification": "sound_debug_reason",
+    "final": "method:IncrementCounter",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_101_incrementcounter_wrong_target_success.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "IncrementCounter on a non-ClockTime object cannot succeed.",
+    "refs": [
+      "core/5.5.4.7"
+    ],
+    "debug": "final=method:IncrementCounter object=AdminSP family=SP status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=core/5.5.3.1,core/5.5.4.1,core/5.5.4.1.2,core/5.5.4.2,core/5.5.4.2.2,core/5.5.4.3,core/5.5.4.3.3,core/5.5.4.4,core/5.5.4.5,core/5.5.4.5.3,core/5.5.4.6,core/5.5.4.7,core/5.5.4.7.1,core/5.5.4.7.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=IncrementCounter target must be the ClockTime table.",
+    "classification": "sound_debug_reason",
+    "final": "method:IncrementCounter",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_102_addlog_to_new_log.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "AddLog succeeds on a log table created successfully earlier in the same session.",
+    "refs": [
+      "core/5.8.3.1",
+      "core/5.8.3.2"
+    ],
+    "debug": "final=method:AddLog object=Log family=Log status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.8.2.1,core/5.8.2.2,core/5.8.3.1,core/5.8.3.1.1,core/5.8.3.1.2,core/5.8.3.1.4,core/5.8.3.2,core/5.8.3.2.1,core/5.8.3.2.2,core/5.8.3.2.3,core/5.8.3.2.4,core/5.8.3.2.5,core/5.8.3.2.8,core/5.8.3.3,core/5.8.3.3.2,core/5.8.3.4,core/5.8.3.4.2,core/5.8.4.3,core/5.8.4.4 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AddLog requires access to the Log table.",
+    "classification": "sound_debug_reason",
+    "final": "method:AddLog",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_102_addlog_to_new_log_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "AddLog to a valid newly created log table should not be rejected.",
+    "refs": [
+      "core/5.8.3.1"
+    ],
+    "debug": "final=method:AddLog object=Log family=Log status=fail expected=success actual=error verdict=fail policy=none coverage=implemented refs=core/5.8.2.1,core/5.8.2.2,core/5.8.3.1,core/5.8.3.1.1,core/5.8.3.1.2,core/5.8.3.1.4,core/5.8.3.2,core/5.8.3.2.1,core/5.8.3.2.2,core/5.8.3.2.3,core/5.8.3.2.4,core/5.8.3.2.5,core/5.8.3.2.8,core/5.8.3.3,core/5.8.3.3.2,core/5.8.3.4,core/5.8.3.4.2,core/5.8.4.3,core/5.8.4.4 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AddLog requires access to the Log table.",
+    "classification": "sound_debug_reason",
+    "final": "method:AddLog",
+    "expected_status": "success",
+    "actual_status": "error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_103_addlog_nonlog_target_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "AddLog must target a Log table; invoking on a non-Log table returns INVALID_PARAMETER.",
+    "refs": [
+      "core/5.8.3.1"
+    ],
+    "debug": "final=method:AddLog object=Locking family=Locking status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=core/5.8.2.1,core/5.8.2.2,core/5.8.3.1,core/5.8.3.1.1,core/5.8.3.1.2,core/5.8.3.1.4,core/5.8.3.2,core/5.8.3.2.1,core/5.8.3.2.2,core/5.8.3.2.3,core/5.8.3.2.4,core/5.8.3.2.5,core/5.8.3.2.8,core/5.8.3.3,core/5.8.3.3.2,core/5.8.3.4,core/5.8.3.4.2,core/5.8.4.3,core/5.8.4.4 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AddLog target must be a Log table.",
+    "classification": "sound_debug_reason",
+    "final": "method:AddLog",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_103_addlog_nonlog_target_success.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "AddLog cannot succeed when targeting a non-Log table.",
+    "refs": [
+      "core/5.8.3.1"
+    ],
+    "debug": "final=method:AddLog object=Locking family=Locking status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=core/5.8.2.1,core/5.8.2.2,core/5.8.3.1,core/5.8.3.1.1,core/5.8.3.1.2,core/5.8.3.1.4,core/5.8.3.2,core/5.8.3.2.1,core/5.8.3.2.2,core/5.8.3.2.3,core/5.8.3.2.4,core/5.8.3.2.5,core/5.8.3.2.8,core/5.8.3.3,core/5.8.3.3.2,core/5.8.3.4,core/5.8.3.4.2,core/5.8.4.3,core/5.8.4.4 state=(session=open=True sp=LockingSP write=True auth=Admin1 failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured active_locking_sp=True credentials=Admin1,Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AddLog target must be a Log table.",
+    "classification": "sound_debug_reason",
+    "final": "method:AddLog",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_104_getacl_bad_invoking_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "GetACL InvokingID must reference a valid existing object; an empty UID is rejected.",
+    "refs": [
+      "core/5.3.3.13",
+      "core/5.3.3.13.1"
+    ],
+    "debug": "final=method:GetACL object=AccessControl family=AccessControl status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=core/5.3.3.11,core/5.3.3.11.1,core/5.3.3.11.2,core/5.3.3.11.4,core/5.3.3.13,core/5.3.3.14,core/5.3.3.15,core/5.3.4.3,core/5.3.4.3.1 state=(session=open=True sp=AdminSP write=False auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=GetACL meta-ACL parameters must be UID references.",
+    "classification": "sound_debug_reason",
+    "final": "method:GetACL",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_104_getacl_bad_invoking_success.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "GetACL with an invalid InvokingID cannot succeed.",
+    "refs": [
+      "core/5.3.3.13.1"
+    ],
+    "debug": "final=method:GetACL object=AccessControl family=AccessControl status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=core/5.3.3.11,core/5.3.3.11.1,core/5.3.3.11.2,core/5.3.3.11.4,core/5.3.3.13,core/5.3.3.14,core/5.3.3.15,core/5.3.4.3,core/5.3.4.3.1 state=(session=open=True sp=AdminSP write=False auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=GetACL meta-ACL parameters must be UID references.",
+    "classification": "sound_debug_reason",
+    "final": "method:GetACL",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_105_hmac_after_init_succeeds.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "HMAC with data succeeds when an HMAC stream is open via prior HMACInit.",
+    "refs": [
+      "core/5.6.4.14",
+      "core/5.6.4.15"
+    ],
+    "debug": "final=method:HMAC object=H_SHA_256 family=None status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.6.4.3,core/5.6.4.4,core/5.6.4.4.1.1,core/5.6.4.4.4,core/5.6.4.5,core/5.6.4.6,core/5.6.4.7,core/5.6.4.7.1.1,core/5.6.4.7.4,core/5.6.4.8,core/5.6.4.11,core/5.6.4.12,core/5.6.4.12.1.1,core/5.6.4.12.3,core/5.6.4.13,core/5.6.4.14,core/5.6.4.15,core/5.6.4.15.1.1,core/5.6.4.15.3,core/5.6.4.16,core/5.6.5.2,core/5.6.5.3 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=HMAC requires credential-object access control in an open session.",
+    "classification": "sound_debug_reason",
+    "final": "method:HMAC",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_105_hmac_after_init_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "HMAC should not be rejected when an HMAC stream is open.",
+    "refs": [
+      "core/5.6.4.15"
+    ],
+    "debug": "final=method:HMAC object=H_SHA_256 family=None status=fail expected=success actual=error verdict=fail policy=none coverage=implemented refs=core/5.6.4.3,core/5.6.4.4,core/5.6.4.4.1.1,core/5.6.4.4.4,core/5.6.4.5,core/5.6.4.6,core/5.6.4.7,core/5.6.4.7.1.1,core/5.6.4.7.4,core/5.6.4.8,core/5.6.4.11,core/5.6.4.12,core/5.6.4.12.1.1,core/5.6.4.12.3,core/5.6.4.13,core/5.6.4.14,core/5.6.4.15,core/5.6.4.15.1.1,core/5.6.4.15.3,core/5.6.4.16,core/5.6.5.2,core/5.6.5.3 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=HMAC requires credential-object access control in an open session.",
+    "classification": "sound_debug_reason",
+    "final": "method:HMAC",
+    "expected_status": "success",
+    "actual_status": "error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_106_next_count_zero_valid.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Next with Count=0 is a valid unsigned-integer request returning an empty result set.",
+    "refs": [
+      "core/5.3.3.8",
+      "core/5.3.3.8.2"
+    ],
+    "debug": "final=method:Next object=Table family=Table status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.3.3.8,core/5.3.3.8.1,core/5.3.4.2.7 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Next follows table access-control requirements for the target table.",
+    "classification": "sound_debug_reason",
+    "final": "method:Next",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_106_next_count_zero_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Next with Count=0 must not be treated as an invalid parameter.",
+    "refs": [
+      "core/5.3.3.8.2"
+    ],
+    "debug": "final=method:Next object=Table family=Table status=invalid_parameter expected=success actual=invalid_parameter verdict=fail policy=none coverage=implemented refs=core/5.3.3.8,core/5.3.3.8.1,core/5.3.4.2.7 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Next follows table access-control requirements for the target table.",
+    "classification": "sound_debug_reason",
+    "final": "method:Next",
+    "expected_status": "success",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_107_setpackage_authorized_succeeds.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "SetPackage succeeds on a credential object in an authorized write session.",
+    "refs": [
+      "core/5.3.3.18"
+    ],
+    "debug": "final=method:SetPackage object=C_PIN_SID family=C_PIN status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.3.3.18,core/5.3.4.5 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=SetPackage requires a write session and credential-object access control.",
+    "classification": "sound_debug_reason",
+    "final": "method:SetPackage",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_107_setpackage_authorized_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "SetPackage in an authorized write session targeting a credential should not be rejected.",
+    "refs": [
+      "core/5.3.3.18"
+    ],
+    "debug": "final=method:SetPackage object=C_PIN_SID family=C_PIN status=not_authorized expected=success actual=auth_error verdict=fail policy=none coverage=implemented refs=core/5.3.3.18,core/5.3.4.5 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=SetPackage requires a write session and credential-object access control.",
+    "classification": "sound_debug_reason",
+    "final": "method:SetPackage",
+    "expected_status": "success",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_108_issuesp_missing_size_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "IssueSP requires Size; omitting it is rejected with INVALID_PARAMETER.",
+    "refs": [
+      "core/5.4.3.1"
+    ],
+    "debug": "final=method:IssueSP object=AdminSP family=SP status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=none state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=IssueSP is missing required parameter Size.",
+    "classification": "sound_debug_reason",
+    "final": "method:IssueSP",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_108_issuesp_missing_size_success.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "IssueSP missing required Size cannot succeed.",
+    "refs": [
+      "core/5.4.3.1"
+    ],
+    "debug": "final=method:IssueSP object=AdminSP family=SP status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=none state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=IssueSP is missing required parameter Size.",
+    "classification": "sound_debug_reason",
+    "final": "method:IssueSP",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_109_genkey_cpin_not_authorized.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "GenKey on a C_PIN credential in Opal SSC has no AccessControl ACE and returns NOT_AUTHORIZED.",
+    "refs": [
+      "core/5.3.3.16",
+      "core/5.3.3.16.4"
+    ],
+    "debug": "final=method:GenKey object=C_PIN_SID family=C_PIN status=not_authorized expected=auth_error actual=auth_error verdict=pass policy=none coverage=implemented refs=core/5.3.3.16,core/5.3.4.1.1.1,opal/4.3.1.7,opal/4.3.5.5 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=GenKey on C_PIN has no ACE in Opal SSC AccessControl \u2014 not_authorized.",
+    "classification": "sound_debug_reason",
+    "final": "method:GenKey",
+    "expected_status": "auth_error",
+    "actual_status": "auth_error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_109_genkey_cpin_success.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "GenKey on a C_PIN credential cannot succeed without an authorized ACE in Opal SSC.",
+    "refs": [
+      "core/5.3.3.16"
+    ],
+    "debug": "final=method:GenKey object=C_PIN_SID family=C_PIN status=success expected=auth_error actual=success verdict=fail policy=none coverage=implemented refs=core/5.3.3.16,core/5.3.4.1.1.1,opal/4.3.1.7,opal/4.3.5.5 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=GenKey on C_PIN has no ACE in Opal SSC AccessControl \u2014 not_authorized.",
+    "classification": "sound_debug_reason",
+    "final": "method:GenKey",
+    "expected_status": "auth_error",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_110_addlog_missing_logentryname_rejected.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "AddLog requires LogEntryName; omitting it returns INVALID_PARAMETER.",
+    "refs": [
+      "core/5.8.3.1",
+      "core/5.8.3.1.1"
+    ],
+    "debug": "final=method:AddLog object=Log family=Log status=invalid_parameter expected=invalid_parameter actual=invalid_parameter verdict=pass policy=none coverage=implemented refs=core/5.8.2.1,core/5.8.2.2,core/5.8.3.1,core/5.8.3.1.1,core/5.8.3.1.2,core/5.8.3.1.4,core/5.8.3.2,core/5.8.3.2.1,core/5.8.3.2.2,core/5.8.3.2.3,core/5.8.3.2.4,core/5.8.3.2.5,core/5.8.3.2.8,core/5.8.3.3,core/5.8.3.3.2,core/5.8.3.4,core/5.8.3.4.2,core/5.8.4.3,core/5.8.4.4 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AddLog is missing required parameter LogEntryName.",
+    "classification": "sound_debug_reason",
+    "final": "method:AddLog",
+    "expected_status": "invalid_parameter",
+    "actual_status": "invalid_parameter",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_110_addlog_missing_logentryname_success.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "AddLog without required LogEntryName cannot succeed.",
+    "refs": [
+      "core/5.8.3.1.1"
+    ],
+    "debug": "final=method:AddLog object=Log family=Log status=success expected=invalid_parameter actual=success verdict=fail policy=none coverage=implemented refs=core/5.8.2.1,core/5.8.2.2,core/5.8.3.1,core/5.8.3.1.1,core/5.8.3.1.2,core/5.8.3.1.4,core/5.8.3.2,core/5.8.3.2.1,core/5.8.3.2.2,core/5.8.3.2.3,core/5.8.3.2.4,core/5.8.3.2.5,core/5.8.3.2.8,core/5.8.3.3,core/5.8.3.3.2,core/5.8.3.4,core/5.8.3.4.2,core/5.8.4.3,core/5.8.4.4 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=AddLog is missing required parameter LogEntryName.",
+    "classification": "sound_debug_reason",
+    "final": "method:AddLog",
+    "expected_status": "invalid_parameter",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_111_hash_after_init_succeeds.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Hash with data succeeds when a hash stream is open via prior HashInit.",
+    "refs": [
+      "core/5.6.4.11",
+      "core/5.6.4.12"
+    ],
+    "debug": "final=method:Hash object=H_SHA_256 family=None status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.6.4.3,core/5.6.4.4,core/5.6.4.4.1.1,core/5.6.4.4.4,core/5.6.4.5,core/5.6.4.6,core/5.6.4.7,core/5.6.4.7.1.1,core/5.6.4.7.4,core/5.6.4.8,core/5.6.4.11,core/5.6.4.12,core/5.6.4.12.1.1,core/5.6.4.12.3,core/5.6.4.13,core/5.6.4.14,core/5.6.4.15,core/5.6.4.15.1.1,core/5.6.4.15.3,core/5.6.4.16,core/5.6.5.2,core/5.6.5.3 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Hash requires credential-object access control in an open session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Hash",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_111_hash_after_init_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Hash should not be rejected when a hash stream is open.",
+    "refs": [
+      "core/5.6.4.12"
+    ],
+    "debug": "final=method:Hash object=H_SHA_256 family=None status=fail expected=success actual=error verdict=fail policy=none coverage=implemented refs=core/5.6.4.3,core/5.6.4.4,core/5.6.4.4.1.1,core/5.6.4.4.4,core/5.6.4.5,core/5.6.4.6,core/5.6.4.7,core/5.6.4.7.1.1,core/5.6.4.7.4,core/5.6.4.8,core/5.6.4.11,core/5.6.4.12,core/5.6.4.12.1.1,core/5.6.4.12.3,core/5.6.4.13,core/5.6.4.14,core/5.6.4.15,core/5.6.4.15.1.1,core/5.6.4.15.3,core/5.6.4.16,core/5.6.5.2,core/5.6.5.3 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Hash requires credential-object access control in an open session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Hash",
+    "expected_status": "success",
+    "actual_status": "error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_112_clearlog_new_log_succeeds.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "ClearLog succeeds on a log table created within the current write session.",
+    "refs": [
+      "core/5.8.3.2",
+      "core/5.8.3.3"
+    ],
+    "debug": "final=method:ClearLog object=Log family=Log status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.8.2.1,core/5.8.2.2,core/5.8.3.1,core/5.8.3.1.1,core/5.8.3.1.2,core/5.8.3.1.4,core/5.8.3.2,core/5.8.3.2.1,core/5.8.3.2.2,core/5.8.3.2.3,core/5.8.3.2.4,core/5.8.3.2.5,core/5.8.3.2.8,core/5.8.3.3,core/5.8.3.3.2,core/5.8.3.4,core/5.8.3.4.2,core/5.8.4.3,core/5.8.4.4 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=ClearLog requires access to the Log table.",
+    "classification": "sound_debug_reason",
+    "final": "method:ClearLog",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_112_clearlog_new_log_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "ClearLog on a valid newly created log table should not fail.",
+    "refs": [
+      "core/5.8.3.3"
+    ],
+    "debug": "final=method:ClearLog object=Log family=Log status=fail expected=success actual=error verdict=fail policy=none coverage=implemented refs=core/5.8.2.1,core/5.8.2.2,core/5.8.3.1,core/5.8.3.1.1,core/5.8.3.1.2,core/5.8.3.1.4,core/5.8.3.2,core/5.8.3.2.1,core/5.8.3.2.2,core/5.8.3.2.3,core/5.8.3.2.4,core/5.8.3.2.5,core/5.8.3.2.8,core/5.8.3.3,core/5.8.3.3.2,core/5.8.3.4,core/5.8.3.4.2,core/5.8.4.3,core/5.8.4.4 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=ClearLog requires access to the Log table.",
+    "classification": "sound_debug_reason",
+    "final": "method:ClearLog",
+    "expected_status": "success",
+    "actual_status": "error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_113_decrypt_after_init_succeeds.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Decrypt succeeds when a decrypt stream is open via prior DecryptInit.",
+    "refs": [
+      "core/5.6.4.3",
+      "core/5.6.4.4"
+    ],
+    "debug": "final=method:Decrypt object=C_AES_256 family=None status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.6.4.3,core/5.6.4.4,core/5.6.4.4.1.1,core/5.6.4.4.4,core/5.6.4.5,core/5.6.4.6,core/5.6.4.7,core/5.6.4.7.1.1,core/5.6.4.7.4,core/5.6.4.8,core/5.6.4.11,core/5.6.4.12,core/5.6.4.12.1.1,core/5.6.4.12.3,core/5.6.4.13,core/5.6.4.14,core/5.6.4.15,core/5.6.4.15.1.1,core/5.6.4.15.3,core/5.6.4.16,core/5.6.5.2,core/5.6.5.3 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Decrypt requires credential-object access control in an open session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Decrypt",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_113_decrypt_after_init_rejected.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Decrypt should not be rejected when a decrypt stream is open.",
+    "refs": [
+      "core/5.6.4.4"
+    ],
+    "debug": "final=method:Decrypt object=C_AES_256 family=None status=fail expected=success actual=error verdict=fail policy=none coverage=implemented refs=core/5.6.4.3,core/5.6.4.4,core/5.6.4.4.1.1,core/5.6.4.4.4,core/5.6.4.5,core/5.6.4.6,core/5.6.4.7,core/5.6.4.7.1.1,core/5.6.4.7.4,core/5.6.4.8,core/5.6.4.11,core/5.6.4.12,core/5.6.4.12.1.1,core/5.6.4.12.3,core/5.6.4.13,core/5.6.4.14,core/5.6.4.15,core/5.6.4.15.1.1,core/5.6.4.15.3,core/5.6.4.16,core/5.6.5.2,core/5.6.5.3 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Decrypt requires credential-object access control in an open session.",
+    "classification": "sound_debug_reason",
+    "final": "method:Decrypt",
+    "expected_status": "success",
+    "actual_status": "error",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_pass_114_verify_wrong_proof_success_false.json",
+    "expected": "pass",
+    "predicted": "pass",
+    "ok": true,
+    "concept": "Verify with a non-matching proof returns SUCCESS with Result=False rather than a failure method status.",
+    "refs": [
+      "core/5.6.4.10",
+      "core/5.6.5.6.2"
+    ],
+    "debug": "final=method:Verify object=H_SHA_256 family=None status=success expected=success actual=success verdict=pass policy=none coverage=implemented refs=core/5.6.4.9,core/5.6.4.10,core/5.6.5.5,core/5.6.5.5.1,core/5.6.5.5.2,core/5.6.5.6,core/5.6.5.6.1,core/5.6.5.6.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Verify requires access control on the invoking credential/hash object.",
+    "classification": "sound_debug_reason",
+    "final": "method:Verify",
+    "expected_status": "success",
+    "actual_status": "success",
+    "policy": "none",
+    "coverage": "implemented"
+  },
+  {
+    "filename": "core_fail_114_verify_wrong_proof_as_fail.json",
+    "expected": "fail",
+    "predicted": "fail",
+    "ok": true,
+    "concept": "Verify with a non-matching proof must not return a FAIL method status.",
+    "refs": [
+      "core/5.6.4.10"
+    ],
+    "debug": "final=method:Verify object=H_SHA_256 family=None status=fail expected=success actual=error verdict=fail policy=none coverage=implemented refs=core/5.6.4.9,core/5.6.4.10,core/5.6.5.5,core/5.6.5.5.1,core/5.6.5.5.2,core/5.6.5.6,core/5.6.5.6.1,core/5.6.5.6.2 state=(session=open=True sp=AdminSP write=True auth=SID failed=False lifecycle=AdminSP:Manufactured,LockingSP:Manufactured-Inactive active_locking_sp=False credentials=Admin2,Admin3,Admin4,MSID,SID,User1,User2,User3,User4,User5,User6,User7,User8 key_gens=none ranges=[Global:start=0 len=0 r=0:0 w=0:0; Range1:start=0 len=0 r=0:0 w=0:0]) reason=Verify requires access control on the invoking credential/hash object.",
+    "classification": "sound_debug_reason",
+    "final": "method:Verify",
+    "expected_status": "success",
+    "actual_status": "error",
     "policy": "none",
     "coverage": "implemented"
   }

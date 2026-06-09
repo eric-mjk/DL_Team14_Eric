@@ -440,17 +440,18 @@ def scenarios() -> list[Scenario]:
             "cross_pass_13_datarmv_set_active_mech_authorized",
             "pass",
             sid_admin_session() + [
-                make_step("Set", DATARMV_UID, {}, {"Values": [{2: 2}]}, "SUCCESS",
+                # Column 1 = ActiveDataRemovalMechanism (the only writable column), value=2 (BlockErase)
+                make_step("Set", DATARMV_UID, {}, {"Values": [{1: 2}]}, "SUCCESS",
                           invoking_name="DataRemovalMechanism"),
             ],
-            "Set DataRemovalMechanism.ActiveDataRemovalMechanism succeeds in an authenticated AdminSP write session.",
+            "Set DataRemovalMechanism.ActiveDataRemovalMechanism (col 1) succeeds in an authenticated AdminSP write session.",
             "opal/3.1.1.6", "opal/4.2.6.1.1", "core/5.3.3.7",
         ),
         scen(
             "cross_fail_13_datarmv_set_readonly_session",
             "fail",
             sid_admin_session(write=0) + [
-                make_step("Set", DATARMV_UID, {}, {"Values": [{2: 2}]}, "SUCCESS",
+                make_step("Set", DATARMV_UID, {}, {"Values": [{1: 2}]}, "SUCCESS",
                           invoking_name="DataRemovalMechanism"),
             ],
             "DataRemovalMechanism Set cannot succeed in a read-only session; Core write authorization is required.",
@@ -458,17 +459,17 @@ def scenarios() -> list[Scenario]:
         ),
     ]
 
-    # 14 — C_PIN.PIN Get always returns NOPIN regardless of authority (Core NOPIN + Opal Admin1 table)
-    # Core/5.3.4.2.1: PIN column always returns NOPIN sentinel.
-    # Opal/4.2.1.7: applies to all C_PIN rows in both AdminSP and LockingSP.
+    # 14 — C_PIN.PIN column (col 3) has no read ACE in Opal SSC; Get must return NOT_AUTHORIZED
+    # Core defines the NOPIN write-only constraint; Opal's ACE structure enforces it.
+    # ACE_C_PIN_Admins_Get_All_NOPIN covers only non-PIN columns; PIN column has no read ACE.
     out += [
         scen(
-            "cross_pass_14_admin1_pin_get_returns_nopin",
+            "cross_pass_14_admin1_pin_get_returns_not_authorized",
             "pass",
             locking_admin_session() + [
-                get_cpin(C_PIN_ADMIN1, "SUCCESS", pin_value=None),  # None → NOPIN
+                get_cpin(C_PIN_ADMIN1, "NOT_AUTHORIZED"),
             ],
-            "Get on Admin1 C_PIN.PIN returns SUCCESS with NOPIN sentinel, never the actual PIN value.",
+            "Get on C_PIN_Admin1 PIN column (col 3) must return NOT_AUTHORIZED; no read ACE covers the PIN column.",
             "core/5.3.4.2.1", "opal/4.2.1.7", "opal/4.3.1.8",
         ),
         scen(
@@ -477,7 +478,7 @@ def scenarios() -> list[Scenario]:
             locking_admin_session() + [
                 get_cpin(C_PIN_ADMIN1, "SUCCESS", pin_value=SID),   # Returns actual PIN — violation
             ],
-            "C_PIN.PIN must never return the actual PIN value; returning actual bytes violates the NOPIN rule.",
+            "C_PIN.PIN must never return the actual PIN value via Get; SUCCESS with PIN bytes violates the NOPIN rule.",
             "core/5.3.4.2.1", "opal/4.2.1.7",
         ),
     ]

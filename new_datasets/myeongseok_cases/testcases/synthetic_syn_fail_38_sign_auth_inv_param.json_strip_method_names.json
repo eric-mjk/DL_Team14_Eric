@@ -1,0 +1,112 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "0000000000000001"
+      },
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          }
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "name": "SyncSession",
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "return_values": {
+        "optional": {},
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "00006572"
+        }
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 2,
+    "input": {
+      "invoking_id": {
+        "name": "Authority",
+        "type": null,
+        "uid": "0000000900030001"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "Values": [
+              {
+                "5": 1,
+                "9": "Sign"
+              }
+            ]
+          },
+          "required": {}
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "name": "Set",
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "return_values": {},
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 3,
+    "input": {
+      "invoking_id": {
+        "name": "Session Manager UID",
+        "type": null,
+        "uid": "0000000000000001"
+      },
+      "method": {
+        "args": {
+          "optional": {
+            "Authority": "0000000900030001",
+            "Proof": "testproof"
+          },
+          "required": {}
+        },
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "status_codes": "INVALID_PARAMETER"
+    },
+    "output": {
+      "method": {
+        "args": {
+          "optional": {},
+          "required": {}
+        },
+        "name": "Authenticate",
+        "uid": "00 00 00 06 00 00 00 16"
+      },
+      "return_values": {},
+      "status_codes": "INVALID_PARAMETER"
+    }
+  }
+]
