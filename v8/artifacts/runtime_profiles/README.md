@@ -2,6 +2,8 @@
 
 The solver loads `state_machine.env` by default. That profile disables the LLM parser fallback so submission runs on the deterministic state machine unless the caller explicitly selects another profile. Runtime environment variables set
 by the caller always take precedence over profile values.
+Prompt files live in `../prompts/`. See `../prompts/README.md` for the exact LLM/RAG input-output contract and a copy-paste audit command.
+
 
 Use a profile:
 

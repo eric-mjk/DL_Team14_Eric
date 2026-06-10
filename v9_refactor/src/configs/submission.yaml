@@ -1,0 +1,14 @@
+# Canonical submission config.
+#
+# The solver loads this file by default when neither SOLVER_PROFILE nor
+# SOLVER_CONFIG_PATH is set. Edit this file to choose the behavior you want to
+# submit.
+#
+# Current default: deterministic state machine only, no LLM calls, no direct LLM
+# verdict override.
+settings:
+  USE_LLM_PARSE_FALLBACK: false
+  ENABLE_RAG_REPAIR: false
+  ENABLE_PARSE_AUDIT: true
+  LLM_PIPELINE_MODE: off
+  LLM_ALLOW_VERDICT_OVERRIDE: false

@@ -1,0 +1,26 @@
+# Experimental RAG parser repair without the legacy parse fallback path.
+# Use when you want RAG repair attempts to patch damaged normalized events and then re-run the deterministic oracle.
+settings:
+  USE_LLM_PARSE_FALLBACK: false
+  ENABLE_RAG_REPAIR: true
+  ENABLE_PARSE_AUDIT: true
+  RAG_REPAIR_MODE: llm
+  RAG_APPLY_REPAIRS: true
+  RAG_REPAIR_MIN_CONFIDENCE: 0.75
+  LLM_PIPELINE_MODE: repair
+  LLM_ALLOW_VERDICT_OVERRIDE: false
+
+  MODEL_NAME: Qwen/Qwen3.5-9B
+  HF_HOME: /workspace/cache/hf_cache
+  HF_HUB_OFFLINE: true
+
+  RAG_REPAIR_PROMPT_MAX_CHARS: 14000
+  ENABLE_RAG_REPAIR_LLM: true
+  RAG_REPAIR_MAX_MODEL_LEN: 8192
+  RAG_REPAIR_MAX_NEW_TOKENS: 256
+  RAG_REPAIR_TEMPERATURE: 0.0
+  RAG_REPAIR_STRUCTURED_OUTPUT: true
+
+  LLM_WORKFLOW_TRACE_PATH: /tmp/v9_rag_repair_workflow_trace.jsonl
+  EVIDENCE_PACKET_AUDIT_PATH: /tmp/v9_rag_repair_evidence_packets.jsonl
+  PARSE_RAG_AUDIT_PATH: /tmp/v9_rag_repair_audit.jsonl

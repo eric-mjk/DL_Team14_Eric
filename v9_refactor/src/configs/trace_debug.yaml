@@ -1,0 +1,13 @@
+# Deterministic state machine plus interpretable audit artifacts.
+# This does not call an LLM and should not change verdicts.
+settings:
+  USE_LLM_PARSE_FALLBACK: false
+  ENABLE_RAG_REPAIR: false
+  ENABLE_PARSE_AUDIT: true
+  LLM_PIPELINE_MODE: audit
+  LLM_ALLOW_VERDICT_OVERRIDE: false
+
+  # Edit these paths before running if you want persistent artifacts.
+  LLM_WORKFLOW_TRACE_PATH: /tmp/v9_workflow_trace.jsonl
+  EVIDENCE_PACKET_AUDIT_PATH: /tmp/v9_evidence_packets.jsonl
+  PARSE_RAG_AUDIT_PATH: /tmp/v9_parse_rag_audit.jsonl

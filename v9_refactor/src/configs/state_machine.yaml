@@ -1,0 +1,8 @@
+# Fast, submission-safe deterministic profile.
+# Use this when you want the state machine only.
+settings:
+  USE_LLM_PARSE_FALLBACK: false
+  ENABLE_RAG_REPAIR: false
+  ENABLE_PARSE_AUDIT: true
+  LLM_PIPELINE_MODE: off
+  LLM_ALLOW_VERDICT_OVERRIDE: false

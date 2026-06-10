@@ -1,0 +1,10 @@
+Analyze this SSD protocol step. If the deterministic parser missed a protocol object/method, infer the canonical event and any state mutation caused by a successful pre-target step. For target judging, decide whether the observed response is compliant.
+
+Return JSON only with this schema:
+{"usable": true|false, "confidence": 0.0-1.0, "reason": "short", "normalized_event": object|null, "state_patch": object|null, "verdict": "pass"|"fail"|null}
+
+Allowed event patch fields are the normalized event fields used by the v8 state machine, including method/object/session/auth/cellblock/status fields.
+Allowed state_patch keys: session, credentials, sp_lifecycle, locking_sp_active, locking_ranges, mbr, trylimit_by_authority, failed_auth_counts, writes.
+
+INPUT:
+$payload_json

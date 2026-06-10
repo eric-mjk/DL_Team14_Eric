@@ -1,0 +1,45 @@
+=== Few-Shot Examples ===
+
+Example A: flat StartSession args outside required/optional.
+Input concern:
+- step=4 raw args contain HostSessionID, SPID, Write at input.method.args top level.
+- parsed event is missing spid/sp/write.
+Valid output:
+{"action":"repair_event","confidence":0.92,"step_index":4,"event_patch":{"spid":"0000020500000002","sp":"LockingSP","write":true,"parameters":{"HostSessionID":1,"SPID":"0000020500000002","Write":1},"required_parameters":{"HostSessionID":1,"SPID":"0000020500000002","Write":1}},"state_effect":"no_effect","reason":"Raw StartSession args contain SPID and Write outside required/optional; patch normalized fields the state machine consumes."}
+
+Example B: unknown object UID but deterministic parser intentionally maps it to NonLockingSP.
+Input concern:
+- final Activate target UID is 0000010500000004, name is SP, parsed object is NonLockingSP.
+- spec evidence says Activate is an SP object method for Manufactured SPs; deterministic rule expects invalid_parameter for non-LockingSP target.
+Valid output:
+{"action":"no_repair","confidence":0.88,"step_index":null,"event_patch":null,"state_effect":"no_effect","reason":"The raw UID does not identify the LockingSP object. The parsed NonLockingSP target supports the deterministic invalid_parameter judgment; no parser repair is warranted."}
+
+Example C: unknown successful history command that looks like a reset.
+Input concern:
+- history step command is PowerCycleReset and output result is pass.
+- state machine only recognizes reset-like command text for reset effects.
+Valid output:
+{"action":"state_effect","confidence":0.82,"step_index":12,"event_patch":null,"state_effect":"reset_like_event","reason":"Raw successful history command is a power-cycle/reset event and should be treated as reset-like if deterministic parsing missed it."}
+
+Example D: understood input but missing deterministic rule.
+Input concern:
+- raw and parsed event agree; no important parser fields are missing.
+- retrieved spec evidence contradicts deterministic oracle behavior.
+Valid output:
+{"action":"needs_rule_patch","confidence":0.76,"step_index":null,"event_patch":null,"state_effect":"no_effect","reason":"The input is already parsed; the issue is a deterministic rule gap, not parser repair."}
+
+Example E: Set Values represented as a dict.
+Input concern:
+- step=6 raw Set args contain Values as {"RowValues":{"ReadLocked":true}} instead of a list.
+- parsed event has empty values or missing value_columns.
+Valid output:
+{"action":"repair_event","confidence":0.90,"step_index":6,"event_patch":{"values":{"RowValues":{"ReadLocked":true}},"parameters":{"Values":{"RowValues":{"ReadLocked":true}}},"required_parameters":{"Values":{"RowValues":{"ReadLocked":true}}}},"state_effect":"no_effect","reason":"Raw Set Values are present as a dict shape; patch the normalized fields consumed by Set handling without changing protocol behavior."}
+
+Example F: data command key casing changed.
+Input concern:
+- step=9 raw command is Write and input args contain Lba and Pattern.
+- parsed write event is missing lba or pattern.
+Valid output:
+{"action":"repair_event","confidence":0.87,"step_index":9,"event_patch":{"kind":"write","command":"Write","lba":[100,101],"pattern":"A5"},"state_effect":"no_effect","reason":"Raw data command contains Lba/Pattern with alternate casing; patch only the normalized write fields."}
+
+If no repair is justified, output no_repair. Do not explain before or after JSON.

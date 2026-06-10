@@ -1,0 +1,40 @@
+# Parser-recovery profile for adversarial/damaged traces.
+# The LLM can repair parser interpretation, but final verdict override remains off.
+settings:
+  USE_LLM_PARSE_FALLBACK: true
+  ENABLE_RAG_REPAIR: false
+  ENABLE_PARSE_AUDIT: true
+  LLM_PIPELINE_MODE: repair
+  LLM_ALLOW_VERDICT_OVERRIDE: false
+
+  MODEL_NAME: Qwen/Qwen3.5-9B
+  HF_HOME: /workspace/cache/hf_cache
+  HF_HUB_OFFLINE: true
+
+  LLM_PARSE_MIN_CONFIDENCE: 0.72
+  LLM_PARSE_MAX_NEW_TOKENS: 384
+  LLM_PARSE_MAX_MODEL_LEN: 4096
+  LLM_PARSE_LOCAL_FILES_ONLY: true
+  LLM_PARSE_STRUCTURED_OUTPUTS: true
+
+  LLM_PARSE_JUDGE_BELOW_CONFIDENCE: 0.60
+  LLM_PARSE_JUDGE_PARTIAL: true
+  LLM_PARSE_JUDGE_WITH_FAILURE_CONTEXT: false
+  LLM_PARSE_TRUST_IMPLEMENTED_HIGH_CONF: true
+  LLM_PARSE_TRUST_MIN_CONFIDENCE: 0.95
+
+  LLM_PARSE_REPAIR_NO_FAMILY: true
+  LLM_PARSE_REPAIR_NON_RW_COMMANDS: true
+  LLM_PARSE_REPAIR_NO_FAMILY_PRETARGET: false
+  LLM_PARSE_REPAIR_NON_RW_COMMANDS_PRETARGET: false
+  LLM_PARSE_REPAIR_INFERRED: false
+  LLM_PARSE_REPAIR_FAILED_EVENTS: false
+
+  LLM_PARSE_ENABLE_RAG: true
+  LLM_PARSE_RAG_TOP_K: 8
+  LLM_PARSE_RAG_MAX_CHARS: 3500
+  RAG_MAX_CHUNK_CHARS: 3500
+
+  # Safe high-level observability. Raw prompt/response audit remains disabled unless you set LLM_PARSE_AUDIT_PATH.
+  LLM_WORKFLOW_TRACE_PATH: /tmp/v9_parser_workflow_trace.jsonl
+  EVIDENCE_PACKET_AUDIT_PATH: /tmp/v9_parser_evidence_packets.jsonl

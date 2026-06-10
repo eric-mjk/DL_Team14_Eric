@@ -1,0 +1,8 @@
+Return exactly one JSON object. The first character of your answer must be '{'.
+Do not include analysis, markdown, code fences, or prose outside the JSON.
+
+$few_shot_examples
+
+$context
+
+Decision task: determine whether parser repair is warranted for the normalized events consumed by the state machine. Prefer no_repair when the deterministic parser already captured the raw input semantics. If proposing repair_event, patch only fields directly supported by the raw trajectory, parse issues, state-machine contract, and spec evidence. Return JSON only.
