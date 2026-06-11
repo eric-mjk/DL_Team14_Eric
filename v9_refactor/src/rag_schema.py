@@ -61,6 +61,20 @@ ALLOWED_EVENT_PATCH_FIELDS = frozenset(
     }
 )
 
+ALLOWED_STATE_PATCH_FIELDS = frozenset(
+    {
+        "locking_sp_active",
+        "credentials",
+        "sp_lifecycle",
+        "trylimit_by_authority",
+        "failed_auth_counts",
+        "session",
+        "locking_ranges",
+        "mbr",
+        "writes",
+    }
+)
+
 ALLOWED_VERDICTS = frozenset({"pass", "fail"})
 
 
@@ -85,7 +99,9 @@ class RepairDecision:
     step_index: int | None = None
     event_patch: dict[str, Any] | None = None
     state_effect: str | None = None
+    state_patch: dict[str, Any] | None = None
     verdict: str | None = None
+    validation_error: str | None = None
     evidence: list[RetrievedChunk] = field(default_factory=list)
     raw: dict[str, Any] = field(default_factory=dict)
 
@@ -94,7 +110,7 @@ class RepairDecision:
         if self.action == "repair_event":
             return self.event_patch is not None and self.confidence > 0.0
         if self.action == "state_effect":
-            return self.state_effect is not None and self.confidence > 0.0
+            return (self.state_effect is not None or self.state_patch is not None) and self.confidence > 0.0
         return False
 
 
@@ -165,6 +181,22 @@ def validate_event_patch(value: Any) -> dict[str, Any]:
     return dict(value)
 
 
+def validate_state_patch(value: Any) -> dict[str, Any]:
+    """Validate a bounded state patch and return a shallow copy.
+
+    Nested interpretation is owned by ``llm_parse_fallback.apply_state_patch``.
+    This schema gate only allows the top-level domains that the existing mutator
+    already understands.
+    """
+
+    if not isinstance(value, dict):
+        raise RepairValidationError("state_patch must be an object")
+    unknown = sorted(set(value) - ALLOWED_STATE_PATCH_FIELDS)
+    if unknown:
+        raise RepairValidationError(f"state_patch contains unknown fields: {', '.join(unknown)}")
+    return dict(value)
+
+
 def validate_repair_decision(payload: str | dict[str, Any], evidence: list[RetrievedChunk] | None = None) -> RepairDecision:
     """Parse and validate constrained LLM JSON output.
 
@@ -175,6 +207,7 @@ def validate_repair_decision(payload: str | dict[str, Any], evidence: list[Retri
         "step_index": 3,
         "event_patch": {...},
         "state_effect": "open_session",
+        "state_patch": {...},
         "verdict": "pass|fail",
         "reason": "..."
       }
@@ -197,9 +230,12 @@ def validate_repair_decision(payload: str | dict[str, Any], evidence: list[Retri
 
     event_patch = data.get("event_patch")
     state_effect = data.get("state_effect")
+    state_patch = data.get("state_patch")
 
     if action == "repair_event":
         event_patch = validate_event_patch(event_patch)
+        if state_patch is not None:
+            raise RepairValidationError("state_patch is only allowed for state_effect actions")
     elif event_patch is not None:
         event_patch = validate_event_patch(event_patch)
 
@@ -210,6 +246,11 @@ def validate_repair_decision(payload: str | dict[str, Any], evidence: list[Retri
         if state_effect not in ALLOWED_STATE_EFFECTS:
             raise RepairValidationError(f"unknown state_effect: {state_effect!r}")
 
+    if state_patch is not None:
+        if action != "state_effect":
+            raise RepairValidationError("state_patch is only allowed for state_effect actions")
+        state_patch = validate_state_patch(state_patch)
+
     return RepairDecision(
         action=action,
         confidence=confidence,
@@ -217,6 +258,7 @@ def validate_repair_decision(payload: str | dict[str, Any], evidence: list[Retri
         step_index=step_index,
         event_patch=event_patch,
         state_effect=state_effect,
+        state_patch=state_patch,
         verdict=verdict,
         evidence=list(evidence or []),
         raw=data,
@@ -228,11 +270,16 @@ def no_repair_decision(
     *,
     confidence: float = 1.0,
     evidence: list[RetrievedChunk] | None = None,
+    validation_error: str | None = None,
 ) -> RepairDecision:
+    raw = {"action": "no_repair", "confidence": confidence, "reason": reason}
+    if validation_error:
+        raw["validation_error"] = validation_error
     return RepairDecision(
         action="no_repair",
         confidence=_validate_confidence(confidence),
         reason=reason,
+        validation_error=validation_error,
         evidence=list(evidence or []),
-        raw={"action": "no_repair", "confidence": confidence, "reason": reason},
+        raw=raw,
     )

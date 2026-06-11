@@ -21,14 +21,23 @@ uv run python /workspace/Eric/ws/new_datasets/run_all_tests.py /workspace/Eric/w
 
 ## Which config should I edit?
 
-- `submission.yaml` — the one default file the solver points to. Edit this for the behavior you want to submit.
+- `submission.yaml` — the one default file the solver points to. Edit this for the behavior you want to submit. Currently set to the myeongseok-replica behavior.
+- `myeongseok_replica.yaml` — named copy of the teammate pipeline replication:
+  legacy per-event LLM parser repair + state patches, LLM target-verdict judge
+  with verdict override enabled, no trust gate, RAG off. See
+  `notes/TODO_LLM_PIPELINE.md` for the rationale and expected score.
 - `state_machine.yaml` — deterministic state machine only. Use/copy this for fast, stable scoring.
-- `trace_debug.yaml` — deterministic state machine plus safe JSONL traces. Use
-  this when you want to understand a decision without invoking an LLM.
-- `parser_debug.yaml` — legacy LLM parser fallback plus RAG context. Use this
-  only for parser-damaged/adversarial cases.
-- `rag_repair_experiment.yaml` — newer RAG repair experiment. It tries to repair
-  normalized events and then re-runs the deterministic oracle.
+- `probe_all_pass.yaml` — calibration probe: constant "pass" for every case
+  (`PROBE_CONSTANT_VERDICT`). Submitting it measures the hidden pass base rate
+  exactly. Copy over `submission.yaml` for the probe slot, then restore.
+- `llm_rag.yaml` — canonical LLM + RAG repair profile. It may repair damaged
+  normalized events or apply bounded state patches, then re-runs the deterministic
+  oracle. It does not directly override the final verdict.
+- `llm_rag_debug.yaml` — same route/action semantics as `llm_rag.yaml`, plus
+  bounded JSONL artifacts under `LLM_DEBUG_DIR`.
+- `trace_debug.yaml`, `parser_debug.yaml`, `rag_repair_experiment.yaml` —
+  deprecated compatibility profiles. Keep them for old experiments, not normal
+  workflow decisions.
 
 ## YAML vs JSON
 
@@ -71,7 +80,7 @@ Turns on the newer RAG repair path in `solver.py`.
   then re-run the deterministic state machine.
 
 Usually keep this off unless you are specifically experimenting with
-`rag_repair_experiment.yaml`.
+`llm_rag.yaml`.
 
 ### `ENABLE_PARSE_AUDIT`
 
@@ -127,6 +136,20 @@ This tells you:
 
 This is the best first debug artifact.
 
+### `LLM_DEBUG_DIR`
+
+One directory for the canonical debug profile. When set, the runtime loader fills
+these existing artifact paths only if they are unset:
+
+- `LLM_WORKFLOW_TRACE_PATH=$LLM_DEBUG_DIR/workflow_trace.jsonl`
+- `EVIDENCE_PACKET_AUDIT_PATH=$LLM_DEBUG_DIR/evidence_packets.jsonl`
+- `PARSE_RAG_AUDIT_PATH=$LLM_DEBUG_DIR/parse_rag_audit.jsonl`
+
+This changes artifact destinations only; it must not change route/action
+semantics compared with `llm_rag.yaml`. Raw prompt/response auditing via
+`RAG_PROMPT_AUDIT_PATH` is intentionally not enabled by `LLM_DEBUG_DIR`; set it
+explicitly only for local redaction-safe debugging.
+
 ### `EVIDENCE_PACKET_AUDIT_PATH`
 
 Path to deterministic state/rule evidence packets.
@@ -179,8 +202,9 @@ to the model.
 ## Recommended workflow
 
 1. Submit/debug baseline with `state_machine.yaml`.
-2. If you need explanations, use `trace_debug.yaml`.
-3. If failures look parser-damaged, try `parser_debug.yaml`.
-4. Only use `rag_repair_experiment.yaml` for focused experiments.
+2. If failures look parser-damaged, use `llm_rag.yaml`.
+3. If you need interpretable JSONL artifacts, use `llm_rag_debug.yaml` and set
+   `LLM_DEBUG_DIR`.
+4. Use deprecated compatibility profiles only when reproducing old experiments.
 5. Avoid `LLM_ALLOW_VERDICT_OVERRIDE: true` unless you are explicitly testing
    whether direct LLM verdict changes improve hidden score.

@@ -296,6 +296,7 @@ def serialize_repair_provenance(
     decision: Any = None,
     applied: bool = False,
     source: str = "none",
+    escalation_tokens: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     event_patch = _get(decision, "event_patch", None) or {}
     state_patch = _get(decision, "state_patch", None) or {}
@@ -308,6 +309,7 @@ def serialize_repair_provenance(
         "confidence": _get(decision, "confidence", None),
         "reason": _safe_provenance_reason(_get(decision, "reason", None)),
         "source": source,
+        "escalation_tokens": [str(token) for token in list(escalation_tokens or [])[:16]],
         "delta": {
             "event_changed": bool(event_patch),
             "state_changed": bool(state_patch),

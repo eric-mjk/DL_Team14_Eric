@@ -1,0 +1,16 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "command": "IF_RECV",
+      "args": {
+        "Reason": "out-of-band sentinel",
+        "rag_probe_hint": "Level 0 Discovery IF_RECV feature descriptors state effect"
+      }
+    },
+    "output": {
+      "command": "IF_RECV",
+      "result": "pass"
+    }
+  }
+]

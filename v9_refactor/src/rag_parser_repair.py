@@ -13,6 +13,7 @@ from .rag_retriever import SpecTextRetriever
 from .rag_schema import (
     ALLOWED_ACTIONS,
     ALLOWED_EVENT_PATCH_FIELDS,
+    ALLOWED_STATE_PATCH_FIELDS,
     ALLOWED_STATE_EFFECTS,
     RepairDecision,
     RepairValidationError,
@@ -207,6 +208,11 @@ def _call_vllm_repair_backend(prompt: str) -> str:
             "confidence": {"type": "number", "minimum": 0.0, "maximum": 1.0},
             "step_index": {"type": ["integer", "null"], "minimum": 0},
             "event_patch": {"type": ["object", "null"]},
+            "state_patch": {
+                "type": ["object", "null"],
+                "additionalProperties": False,
+                "properties": {key: {} for key in sorted(ALLOWED_STATE_PATCH_FIELDS)},
+            },
             "state_effect": {
                 "type": ["string", "null"],
                 "enum": [
@@ -225,7 +231,7 @@ def _call_vllm_repair_backend(prompt: str) -> str:
             },
             "reason": {"type": "string"},
         },
-        "required": ["action", "confidence", "step_index", "event_patch", "state_effect", "reason"],
+        "required": ["action", "confidence", "step_index", "event_patch", "state_effect", "state_patch", "reason"],
         "additionalProperties": False,
     }
     structured = None
@@ -291,9 +297,10 @@ def run_parser_repair(
         return parse_repair_response(response, evidence=chunks)
     except RepairValidationError as exc:
         return no_repair_decision(
-            f"LLM repair output failed validation: {exc}; raw={str(response)[:500]}",
+            f"LLM repair output failed validation: {exc}",
             confidence=0.0,
             evidence=chunks,
+            validation_error=str(exc),
         )
 
 

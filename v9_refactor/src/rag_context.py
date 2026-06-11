@@ -9,6 +9,7 @@ from typing import Any
 
 from .normalizer import dict_value
 from .rag_schema import RetrievedChunk
+from .spec_docs import COLUMN_NAME_NUMBERS, METHOD_UID_NAMES, compact_uid
 
 
 IMPORTANT_KEYS = (
@@ -231,6 +232,64 @@ def summarize_event(event: Any, max_chars: int = 1600) -> str:
     return _safe_json(plain, max_chars=max_chars)
 
 
+def summarize_protocol_facts(
+    raw_steps: list[Any] | tuple[Any, ...] | None,
+    events: list[Any] | tuple[Any, ...] | None,
+    max_lines: int = 18,
+) -> str:
+    """Summarize exact protocol identifiers the LLM is weak at inferring."""
+
+    lines: list[str] = []
+    event_list = list(events or [])
+    for event in event_list:
+        plain = _to_plain(event)
+        if not isinstance(plain, dict):
+            continue
+        parts = []
+        index = plain.get("index")
+        method_uid = compact_uid(plain.get("method_uid"))
+        if method_uid:
+            parts.append(f"method_uid={method_uid}")
+            mapped = METHOD_UID_NAMES.get(method_uid)
+            if mapped:
+                parts.append(f"method_uid_name={mapped}")
+        object_uid = compact_uid(plain.get("object_uid"))
+        if object_uid:
+            parts.append(f"object_uid={object_uid}")
+        for key in ("method", "object", "object_family", "spid", "sp", "authority", "status", "result"):
+            value = plain.get(key)
+            if value not in (None, "", [], {}):
+                parts.append(f"{key}={value}")
+        values = plain.get("values")
+        if isinstance(values, list) and values:
+            columns = sorted({str(k) for row in values if isinstance(row, dict) for k in row.keys()})[:12]
+            if columns:
+                parts.append(f"value_columns={columns}")
+        if parts:
+            lines.append(f"- step={index if index is not None else '?'} " + " ".join(parts))
+        if len(lines) >= max_lines:
+            break
+
+    column_lines = []
+    for family in ("Locking", "C_PIN", "MBRControl", "Authority", "MethodID", "AccessControl"):
+        mapping = COLUMN_NAME_NUMBERS.get(family)
+        if not mapping:
+            continue
+        preview = ", ".join(f"{name}->{number}" for name, number in list(mapping.items())[:10])
+        column_lines.append(f"- {family} columns: {preview}")
+
+    if not lines and not column_lines:
+        return "No protocol UID/column facts available from normalized events."
+    return "\n".join(
+        [
+            "Exact protocol facts from normalized events and spec mappings:",
+            *(lines or ["- No UID-bearing normalized events supplied."]),
+            "Column-number facts for common tables:",
+            *column_lines[:6],
+        ]
+    )
+
+
 def summarize_rule_result(rule_result: Any, max_chars: int = 1000) -> str:
     if rule_result is None:
         return "No deterministic rule result supplied."
@@ -435,6 +494,8 @@ def build_repair_context(
             STATE_MACHINE_CONTRACT,
             "=== Current State-Machine Source Excerpts ===",
             current_state_machine_source_context(max_chars=source_max_chars),
+            "=== Protocol Facts ===",
+            summarize_protocol_facts(raw_steps, events),
             "=== Full Trajectory Parse Context ===",
             summarize_trajectory(
                 raw_steps,

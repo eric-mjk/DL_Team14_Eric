@@ -1,0 +1,27 @@
+# Canonical LLM + RAG repair debug profile.
+# Route/action semantics match llm_rag. Set LLM_DEBUG_DIR to choose where the
+# existing bounded JSONL artifacts are written.
+settings:
+  USE_LLM_PARSE_FALLBACK: false
+  ENABLE_RAG_REPAIR: true
+  ENABLE_PARSE_AUDIT: true
+  LLM_PIPELINE_MODE: repair
+  LLM_ALLOW_VERDICT_OVERRIDE: false
+  LLM_ALLOW_STATE_PATCH: true
+
+  RAG_REPAIR_MODE: llm
+  RAG_APPLY_REPAIRS: true
+  RAG_REPAIR_MIN_CONFIDENCE: 0.75
+
+  MODEL_NAME: Qwen/Qwen3.5-9B
+  HF_HOME: /workspace/cache/hf_cache
+  HF_HUB_OFFLINE: true
+
+  RAG_REPAIR_PROMPT_MAX_CHARS: 14000
+  ENABLE_RAG_REPAIR_LLM: true
+  RAG_REPAIR_MAX_MODEL_LEN: 8192
+  RAG_REPAIR_MAX_NEW_TOKENS: 256
+  RAG_REPAIR_TEMPERATURE: 0.0
+  RAG_REPAIR_STRUCTURED_OUTPUT: true
+
+  LLM_DEBUG_DIR: /tmp/v9_llm_rag_debug

@@ -1,0 +1,377 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "method": {
+        "name": "StartSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          },
+          "optional": {}
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "SyncSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "00006572"
+        },
+        "optional": {}
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 2,
+    "input": {
+      "method": {
+        "name": "Get",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {
+            "Cellblock": [
+              {
+                "startColumn": 3
+              },
+              {
+                "endColumn": 3
+              }
+            ]
+          },
+          "optional": {}
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000B00008402",
+        "name": "C_PIN",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "Get",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": [
+        [
+          {
+            "3": "MSIDVAL"
+          }
+        ]
+      ],
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 3,
+    "input": {
+      "method": {
+        "name": "EndSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "EndSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {},
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 4,
+    "input": {
+      "method": {
+        "name": "StartSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          },
+          "optional": {
+            "HostSigningAuthority": "0000000900000006",
+            "HostChallenge": "MSIDVAL"
+          }
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "SyncSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "00006572"
+        },
+        "optional": {}
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 5,
+    "input": {
+      "method": {
+        "name": "Set",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {
+            "Values": [
+              {
+                "3": "SIDVAL"
+              }
+            ]
+          }
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000B00000001",
+        "name": "C_PIN",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "Set",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {},
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 6,
+    "input": {
+      "method": {
+        "name": "EndSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "EndSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {},
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 7,
+    "input": {
+      "method": {
+        "name": "StartSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {
+            "HostSessionID": 1,
+            "SPID": "0000020500000001",
+            "Write": 1
+          },
+          "optional": {
+            "HostSigningAuthority": "0000000900000006",
+            "HostChallenge": "SIDVAL"
+          }
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "SyncSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {
+        "required": {
+          "HostSessionID": "00000001",
+          "SPSessionID": "00006572"
+        },
+        "optional": {}
+      },
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 8,
+    "input": {
+      "method": {
+        "name": "Activate",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "invoking_id": {
+        "uid": "0000020500000002",
+        "name": "SP",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "Activate",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {},
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 9,
+    "input": {
+      "method": {
+        "name": "EndSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "invoking_id": {
+        "uid": "0000000000000001",
+        "name": "Session Manager UID",
+        "type": null
+      },
+      "status_codes": "SUCCESS"
+    },
+    "output": {
+      "method": {
+        "name": "EndSession",
+        "uid": "00 00 00 06 00 00 00 16",
+        "args": {
+          "required": {},
+          "optional": {}
+        }
+      },
+      "return_values": {},
+      "status_codes": "SUCCESS"
+    }
+  },
+  {
+    "index": 10,
+    "input": {
+      "command": "IF_RECV",
+      "args": {
+        "SecurityProtocol": "01",
+        "SecurityProtocolSpecific": "0001"
+      }
+    },
+    "output": {
+      "command": "IF_RECV",
+      "result": "pass",
+      "discovery": {
+        "features": [
+          {
+            "feature_code": 1,
+            "sync_supported": 1,
+            "streaming_supported": 1
+          },
+          {
+            "feature_code": 2,
+            "locking_supported": 1,
+            "locking_enabled": 1,
+            "locked": 0,
+            "media_encryption": 1,
+            "mbr_shadowing_not_supported": 0,
+            "mbr_enabled": 0,
+            "mbr_done": 0
+          },
+          {
+            "feature_code": 515,
+            "num_comids": 1,
+            "num_admins": 4,
+            "num_users": 8
+          }
+        ]
+      }
+    }
+  }
+]

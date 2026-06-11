@@ -1,0 +1,43 @@
+# Myeongseok-replica profile.
+#
+# Replicates the teammate pipeline that scores 88 on the private leaderboard:
+# per-event LLM parser repair + state patches during history tracking, and an
+# LLM target-verdict judge that MAY OVERRIDE the deterministic verdict whenever
+# the deterministic result is fallback/partial/low-confidence or the final
+# event looks repairable. RAG is disabled; the new rag_parser_repair pipeline
+# is off. Deterministic oracle still judges everything first.
+settings:
+  # Legacy parse-fallback pipeline (the myeongseok port) ON; new RAG repair OFF.
+  USE_LLM_PARSE_FALLBACK: true
+  ENABLE_RAG_REPAIR: false
+  ENABLE_PARSE_AUDIT: false
+  LLM_PIPELINE_MODE: off
+
+  # The LLM may replace the final verdict (his _maybe_llm_target_verdict).
+  LLM_ALLOW_VERDICT_OVERRIDE: true
+  # He has no trust gate: even implemented/high-confidence results are judged
+  # when a judge trigger fires.
+  LLM_PARSE_TRUST_IMPLEMENTED_HIGH_CONF: false
+
+  # Judge triggers (parity with his should_judge_with_llm).
+  LLM_PARSE_JUDGE_PARTIAL: true
+  LLM_PARSE_JUDGE_BELOW_CONFIDENCE: 0.60
+
+  # Repair triggers: he applies the same triggers to pre-target and target.
+  LLM_PARSE_REPAIR_NO_FAMILY: true
+  LLM_PARSE_REPAIR_NON_RW_COMMANDS: true
+  LLM_PARSE_REPAIR_NO_FAMILY_PRETARGET: true
+  LLM_PARSE_REPAIR_NON_RW_COMMANDS_PRETARGET: true
+
+  # Decision acceptance threshold (his LLM_PARSE_MIN_CONFIDENCE default).
+  LLM_PARSE_MIN_CONFIDENCE: 0.82
+  LLM_PARSE_MAX_NEW_TOKENS: 384
+
+  # RAG disabled for the replica baseline.
+  LLM_PARSE_ENABLE_RAG: false
+
+  MODEL_NAME: Qwen/Qwen3.5-9B
+  HF_HOME: /workspace/cache/hf_cache
+  HF_HUB_OFFLINE: true
+  LLM_PARSE_MAX_MODEL_LEN: 8192
+  LLM_PARSE_STRUCTURED_OUTPUTS: true

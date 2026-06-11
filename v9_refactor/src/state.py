@@ -236,26 +236,10 @@ def clear_credential_candidates(state, authority):
     (state.get("credential_candidates") or {}).pop(authority, None)
 
 
-def candidate_credential_match(state, authority, proof):
-    """True when the proof matches a speculative candidate; None when
-    candidates exist but none match (value may be vendor unique)."""
-    candidates = (state.get("credential_candidates") or {}).get(authority) or []
-    if not candidates:
-        return None
-    if any(credentials_equal(proof, candidate) for candidate in candidates):
-        return True
-    return None
-
-
-def credential_matches(state, authority, proof):
-    if not authority:
-        return True
-    known = state["credentials"].get(authority)
-    if known is None:
-        return candidate_credential_match(state, authority, proof)
-    # Encoding-tolerant comparison: the trace may encode the same PIN bytes as
-    # raw hex, 0x/space-formatted hex, plain text, or an atom-wrapped value.
-    return credentials_equal(proof, known)
+# NOTE: credential matching for verdicts lives in oracle.credential_matches,
+# which is the single source of truth (handles invalidated credentials, empty
+# credentials, and the candidate system). State-side code must not re-implement
+# it — a second copy previously drifted on the empty-credential case.
 
 
 def add_authenticated_authority(state, authority):
@@ -459,8 +443,15 @@ def remember_successful_authenticate(state, event):
         return
 
     auth_result = event.get("auth_result")
-    match = credential_matches(state, authority, proof)
-    if auth_result is True or (auth_result is None and match is True):
+    # Prefix events are device truth: a SUCCESS Authenticate means the device
+    # authenticated this authority (the project spec's own Example 1 flow is
+    # StartSession -> Authenticate(SUCCESS, empty result) -> protected op).
+    # This mirrors remember_successful_start_session, which credits the session
+    # authority unconditionally on success. Only an explicit boolean False
+    # result (challenge-response rejection encoded as SUCCESS+False) withholds
+    # the credit; judging of the *final* event still uses the strict credential
+    # model in oracle.credential_matches.
+    if auth_result is not False:
         add_authenticated_authority(state, authority)
         if proof is not None and state["credentials"].get(authority) is None:
             state["credentials"][authority] = proof

@@ -1,0 +1,25 @@
+# Canonical LLM + RAG repair profile.
+# Uses the model only for parser/RAG repair; deterministic oracle still decides
+# the final verdict. Direct LLM verdict override is disabled.
+settings:
+  USE_LLM_PARSE_FALLBACK: false
+  ENABLE_RAG_REPAIR: true
+  ENABLE_PARSE_AUDIT: true
+  LLM_PIPELINE_MODE: repair
+  LLM_ALLOW_VERDICT_OVERRIDE: false
+  LLM_ALLOW_STATE_PATCH: true
+
+  RAG_REPAIR_MODE: llm
+  RAG_APPLY_REPAIRS: true
+  RAG_REPAIR_MIN_CONFIDENCE: 0.75
+
+  MODEL_NAME: Qwen/Qwen3.5-9B
+  HF_HOME: /workspace/cache/hf_cache
+  HF_HUB_OFFLINE: true
+
+  RAG_REPAIR_PROMPT_MAX_CHARS: 14000
+  ENABLE_RAG_REPAIR_LLM: true
+  RAG_REPAIR_MAX_MODEL_LEN: 8192
+  RAG_REPAIR_MAX_NEW_TOKENS: 256
+  RAG_REPAIR_TEMPERATURE: 0.0
+  RAG_REPAIR_STRUCTURED_OUTPUT: true

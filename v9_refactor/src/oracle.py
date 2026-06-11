@@ -128,11 +128,16 @@ def status_class(status):
         return "resource_error"
     if status in GENERIC_ERROR_STATUSES:
         return "error"
-    return "error"
+    # Unrecognized non-empty status token: carries no evidence about the
+    # outcome (status drift / vendor text). Distinguished from the known
+    # classes so judging can treat it as non-contradicting.
+    return "unknown_status"
 
 
 def actual_status_class(event):
-    if event["kind"] in {"read", "write"}:
+    if event["kind"] in {"read", "write", "command"}:
+        # Bare interface commands (IF_RECV sentinels, resets) have no method
+        # status; an absent status with no error text is not a failure.
         return "data_success" if data_command_success(event) else "data_error"
     return status_class(event.get("status"))
 
@@ -337,6 +342,19 @@ def expected_status_result(
 ):
     actual = actual_status_class(event)
     refs = spec_refs_for(rule_key) if rule_key else ()
+    if actual == "unknown_status":
+        # The device's status token is uninterpretable: it cannot contradict
+        # the expectation. Pass leniently at reduced confidence so the LLM
+        # route/risk layer can pick these up.
+        return pass_result(
+            reason + " (device status token unrecognized; not contradicted)",
+            0.60,
+            expected_status,
+            actual,
+            refs,
+            policy_source,
+            "partial",
+        )
     if status_matches(actual, expected_status):
         return pass_result(reason, confidence, expected_status, actual, refs, policy_source, coverage_status)
     return fail_result(reason, confidence, expected_status, actual, refs, policy_source, coverage_status)
@@ -6103,6 +6121,23 @@ def judge_final(state, event):
         return fallback(event, state)
 
     method = event.get("method")
+
+    # Uninterpretable device status (vendor drift text, e.g.
+    # "STATUS_CODE_DRIFT_UNKNOWN"): the status carries no evidence and cannot
+    # contradict any expectation. Judge leniently at reduced confidence; the
+    # LLM route layer keys off low confidence/partial coverage for these.
+    if actual_status_class(event) == "unknown_status":
+        return pass_result(
+            f"{method or 'method'} returned an unrecognized status token; the response "
+            "cannot be contradicted from status evidence alone.",
+            0.60,
+            "any",
+            "unknown_status",
+            spec_refs_for("fallback"),
+            "none",
+            "partial",
+        )
+
     preflight = method_preflight(state, event)
     if preflight is not None:
         return preflight

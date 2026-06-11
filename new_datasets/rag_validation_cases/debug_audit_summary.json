@@ -1,0 +1,42 @@
+{
+  "dataset_size": {
+    "total_cases": 81
+  },
+  "generator_check": {
+    "evidence": "generation check passed\n",
+    "status": "passed"
+  },
+  "out_of_band_sentinel": {
+    "evidence": "wrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.json\nwrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.md\nparser_debug out_of_band: hit@1=0.000 hit@3=0.000 hit@5=0.000 action_accuracy=0.000 no_repair_fp=0.000\n",
+    "scope": "out_of_band",
+    "thresholded": false
+  },
+  "parser_debug": {
+    "evidence": "wrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.json\nwrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.md\nparser_debug primary: hit@1=0.543 hit@3=0.829 hit@5=1.000 action_accuracy=1.000 no_repair_fp=0.000\n",
+    "match_policy": "section_prefix_tolerant",
+    "scope": "primary"
+  },
+  "py_compile": {
+    "evidence": "",
+    "status": "passed"
+  },
+  "rag_repair_controls": {
+    "evidence": "wrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.json\nwrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.md\nrag_repair_experiment controls (offline-dry): repair_application=0.000 control_regressions=0 (evaluated)\n",
+    "offline_dry_mode": true,
+    "scope": "controls"
+  },
+  "rag_repair_experiment": {
+    "evidence": "wrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.json\nwrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.md\nrag_repair_experiment repair_positive (offline-dry): repair_application=0.000 control_regressions=None (not_evaluated)\n",
+    "offline_dry_mode": true,
+    "scope": "repair_positive"
+  },
+  "state_machine": {
+    "evidence": "wrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.json\nwrote /workspace/Eric/ws/new_datasets/rag_validation_cases/debug_audit.md\nstate_machine controls: 19/19 accuracy=1.000 gating=True\n",
+    "gating": true,
+    "scope": "controls"
+  },
+  "state_machine_non_gating": {
+    "evidence": "state_machine primary non-gating: 62/74 accuracy=0.838\nstate_machine all non-gating: 69/81 accuracy=0.852\n",
+    "scope": "primary/all"
+  }
+}

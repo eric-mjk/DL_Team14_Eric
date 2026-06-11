@@ -18,6 +18,24 @@ class RuntimeConfigTest(unittest.TestCase):
         "LLM_PIPELINE_MODE",
         "MODEL_NAME",
         "LLM_PARSE_MAX_MODEL_LEN",
+        "LLM_DEBUG_DIR",
+        "LLM_WORKFLOW_TRACE_PATH",
+        "EVIDENCE_PACKET_AUDIT_PATH",
+        "PARSE_RAG_AUDIT_PATH",
+        "RAG_PROMPT_AUDIT_PATH",
+        "LLM_ALLOW_VERDICT_OVERRIDE",
+        "LLM_ALLOW_STATE_PATCH",
+        "RAG_REPAIR_MODE",
+        "RAG_APPLY_REPAIRS",
+        "RAG_REPAIR_MIN_CONFIDENCE",
+        "HF_HOME",
+        "HF_HUB_OFFLINE",
+        "RAG_REPAIR_PROMPT_MAX_CHARS",
+        "ENABLE_RAG_REPAIR_LLM",
+        "RAG_REPAIR_MAX_MODEL_LEN",
+        "RAG_REPAIR_MAX_NEW_TOKENS",
+        "RAG_REPAIR_TEMPERATURE",
+        "RAG_REPAIR_STRUCTURED_OUTPUT",
     }
 
     def setUp(self):
@@ -96,7 +114,35 @@ class RuntimeConfigTest(unittest.TestCase):
 
         self.assertEqual((Path(__file__).resolve().parents[1] / "src" / "configs" / "submission.yaml"), loaded)
         self.assertEqual("off", os.environ["LLM_PIPELINE_MODE"])
+        self.assertEqual("0", os.environ["ENABLE_RAG_REPAIR"])
+        self.assertEqual("1", os.environ["USE_LLM_PARSE_FALLBACK"])
+        self.assertEqual("1", os.environ["LLM_ALLOW_VERDICT_OVERRIDE"])
+        self.assertEqual("0", os.environ["LLM_PARSE_TRUST_IMPLEMENTED_HIGH_CONF"])
+        self.assertEqual("0", os.environ["LLM_PARSE_ENABLE_RAG"])
+        self.assertEqual("0.82", os.environ["LLM_PARSE_MIN_CONFIDENCE"])
+
+    def test_llm_rag_profile_is_canonical_repair_without_verdict_override(self):
+        os.environ["SOLVER_PROFILE"] = "llm_rag"
+
+        loaded = runtime_config.load_runtime_config()
+
+        self.assertEqual((Path(__file__).resolve().parents[1] / "src" / "configs" / "llm_rag.yaml"), loaded)
+        self.assertEqual("repair", os.environ["LLM_PIPELINE_MODE"])
+        self.assertEqual("1", os.environ["ENABLE_RAG_REPAIR"])
         self.assertEqual("0", os.environ["USE_LLM_PARSE_FALLBACK"])
+        self.assertEqual("0", os.environ["LLM_ALLOW_VERDICT_OVERRIDE"])
+
+    def test_llm_debug_dir_fans_out_existing_artifact_paths_without_overwriting(self):
+        os.environ["SOLVER_PROFILE"] = "llm_rag_debug"
+        os.environ["LLM_DEBUG_DIR"] = "/tmp/custom-debug"
+        os.environ["PARSE_RAG_AUDIT_PATH"] = "/tmp/explicit-parse.jsonl"
+
+        runtime_config.load_runtime_config()
+
+        self.assertEqual("/tmp/custom-debug/workflow_trace.jsonl", os.environ["LLM_WORKFLOW_TRACE_PATH"])
+        self.assertEqual("/tmp/custom-debug/evidence_packets.jsonl", os.environ["EVIDENCE_PACKET_AUDIT_PATH"])
+        self.assertEqual("/tmp/explicit-parse.jsonl", os.environ["PARSE_RAG_AUDIT_PATH"])
+        self.assertNotIn("RAG_PROMPT_AUDIT_PATH", os.environ)
 
 
 if __name__ == "__main__":

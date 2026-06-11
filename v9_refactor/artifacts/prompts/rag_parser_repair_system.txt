@@ -16,10 +16,19 @@ Allowed state_effect values:
 no_effect, open_session, sync_session_ids, close_session, authenticate_authority,
 set_table_columns, activate_locking_sp, revert_sp, reset_like_event, gen_key.
 
+For state_effect only, state_patch may contain a bounded direct state update for a
+successful pre-target history event. Allowed top-level state_patch keys are:
+locking_sp_active, credentials, sp_lifecycle, trylimit_by_authority,
+failed_auth_counts, session, locking_ranges, mbr, writes.
+
+Do not include state_patch for repair_event, no_repair, needs_rule_patch, final target
+events, failed events, or speculative protocol behavior. If a state effect is known but
+no bounded patch is justified, set state_patch to null.
+
 For repair_event, event_patch may contain only:
 kind, method, command, object_uid, object, object_family, status, result, parameters,
 required_parameters, optional_parameters, spid, sp, write, authority, where, count,
-values, lba, pattern.
+values, lba, pattern. repair_event must not include state_patch.
 
 Required JSON shape:
 {
@@ -28,5 +37,6 @@ Required JSON shape:
   "step_index": 0,
   "event_patch": {},
   "state_effect": "no_effect",
+  "state_patch": null,
   "reason": "brief evidence-backed reason"
 }

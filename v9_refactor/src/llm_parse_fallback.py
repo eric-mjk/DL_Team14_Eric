@@ -12,6 +12,9 @@ from .rag_context import build_retrieval_query, format_retrieved_context
 from .prompt_templates import load_prompt, render_prompt
 from .rag_retriever import SpecTextRetriever
 from .runtime_config import load_runtime_config
+from .spec_docs import METHOD_NAMES
+
+_KNOWN_METHOD_NAMES = frozenset(METHOD_NAMES)
 
 
 @dataclass
@@ -55,7 +58,14 @@ def should_repair_event(
     if not event.get("method"):
         return True
     if include_no_family and event.get("object_family") is None:
-        return True
+        # A known modeled method with no object family is normal parser output
+        # for session-manager methods (EndSession etc.); the state machine
+        # already interprets it. Asking the model to "repair" such events
+        # measurably corrupts clean traces (public 100 -> 80).
+        if not is_state_machine_interpretable(event) or env_flag(
+            "LLM_PARSE_REPAIR_NO_FAMILY_KNOWN_METHODS", False
+        ):
+            return True
     if env_flag("LLM_PARSE_REPAIR_INFERRED", False) and event.get("method_inferred"):
         return True
     if event.get("name_uid_conflict") or event.get("cellblock_invalid"):
@@ -67,6 +77,27 @@ def should_repair_event(
         if status and status != "success":
             return True
     return False
+
+
+def is_state_machine_interpretable(event: dict[str, Any]) -> bool:
+    """True when the deterministic state machine can process this event as-is.
+
+    Used to keep LLM repair/state patches away from events the deterministic
+    lane already understands: an LLM state patch may only fill gaps the replay
+    left, never overwrite tracked state for a modeled method.
+    """
+
+    if not isinstance(event, dict):
+        return False
+    kind = event.get("kind")
+    if kind in {"read", "write"}:
+        return True
+    if kind == "command":
+        return event.get("command") in {"read", "write"}
+    if kind != "method":
+        return False
+    method = event.get("method")
+    return bool(method) and method in _KNOWN_METHOD_NAMES
 
 
 def should_judge_with_llm(event: dict[str, Any], result: Any) -> bool:
@@ -347,7 +378,11 @@ class LLMParseFallback:
             )
             return decision
         except Exception as exc:  # noqa: BLE001
-            self._available = False
+            if self._llm is None:
+                # Engine never initialized (OOM, missing weights): disable the
+                # lane. A per-call failure on a live engine (over-long prompt,
+                # serialization bug) must not silently kill all later calls.
+                self._available = False
             decision = LLMParseDecision(reason=str(exc)[:200])
             self._write_audit(
                 task=task,
@@ -379,6 +414,7 @@ class LLMParseFallback:
                 dtype=os.environ.get("LLM_PARSE_DTYPE", "bfloat16"),
                 gpu_memory_utilization=float(os.environ.get("LLM_PARSE_GPU_MEMORY", "0.85")),
                 max_model_len=int(os.environ.get("LLM_PARSE_MAX_MODEL_LEN", "8192")),
+                enforce_eager=env_flag("LLM_PARSE_ENFORCE_EAGER", False),
                 disable_log_stats=True,
             )
         messages = [
@@ -417,8 +453,8 @@ class LLMParseFallback:
     ) -> str:
         payload = {
             "task": task,
-            "raw_step": _compact(raw_step, 5000),
-            "current_normalized_event": _compact(normalized_event, 3000),
+            "raw_step": _compact(_json_ready(raw_step), 5000),
+            "current_normalized_event": _compact(_json_ready(normalized_event), 3000),
             "state_before_step": _state_snapshot(state),
             "retrieved_spec_context": self._rag_context(
                 task=task,
@@ -441,7 +477,7 @@ class LLMParseFallback:
         }
         return render_prompt(
             "llm_parse_user_template.txt",
-            payload_json=json.dumps(payload, ensure_ascii=True, sort_keys=True),
+            payload_json=json.dumps(_json_ready(payload), ensure_ascii=True, sort_keys=True, default=str),
         )
 
     def _rag_context(

@@ -115,7 +115,12 @@ class SolverLLMWorkflowTraceRAGTest(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as td:
             trace_path = Path(td) / "trace.jsonl"
-            with _env(ENABLE_RAG_REPAIR="1", RAG_REPAIR_MODE="dry_run", LLM_WORKFLOW_TRACE_PATH=str(trace_path)), patch(
+            with _env(
+                ENABLE_RAG_REPAIR="1",
+                RAG_REPAIR_MODE="dry_run",
+                LLM_PIPELINE_MODE="repair",
+                LLM_WORKFLOW_TRACE_PATH=str(trace_path),
+            ), patch(
                 "src.solver.audit_trajectory_parse",
                 return_value=parse_report,
             ), patch.object(Solver, "_run_rag_repair", return_value=decision), patch(
@@ -133,6 +138,115 @@ class SolverLLMWorkflowTraceRAGTest(unittest.TestCase):
             self.assertEqual(record["deterministic_before"]["verdict"], "fail")
             self.assertEqual(record["deterministic_after"]["verdict"], "pass")
             self.assertTrue(record["merge"]["verdict_changed_by_repair"])
+
+    def test_rag_state_patch_visibility_and_before_after_ordering(self):
+        steps = PROPERTIES_PASS + PROPERTIES_FAIL
+        parse_report = ParseAuditReport(
+            issues=[
+                ParseIssue(
+                    "high",
+                    "unknown_successful_history_method",
+                    0,
+                    "input.method.name",
+                    "successful unknown history method may affect state",
+                )
+            ],
+            risk_score=5,
+            should_run_rag=True,
+        )
+        decision = RepairDecision(
+            action="state_effect",
+            confidence=0.9,
+            reason="history method opened a trusted session",
+            step_index=0,
+            state_effect="open_session",
+            state_patch={"session": {"open": True, "trusted": True}},
+            evidence=[RetrievedChunk("Core", "spec.md", "Session", "session state effect", 0.8)],
+        )
+        before = RuleResult("fail", 0.4, "before repair", policy_source="fallback", coverage_status="partial")
+        after = RuleResult("pass", 0.99, "after repair", spec_refs=("Core:Session",))
+
+        with tempfile.TemporaryDirectory() as td:
+            trace_path = Path(td) / "trace.jsonl"
+            with _env(
+                ENABLE_RAG_REPAIR="1",
+                LLM_PIPELINE_MODE="repair",
+                LLM_ALLOW_STATE_PATCH="1",
+                LLM_WORKFLOW_TRACE_PATH=str(trace_path),
+            ), patch("src.solver.audit_trajectory_parse", return_value=parse_report), patch.object(
+                Solver,
+                "_run_rag_repair",
+                return_value=decision,
+            ), patch("src.solver.judge_final", side_effect=[before, after]):
+                verdict = Solver().predict_one(steps)
+
+            self.assertEqual(verdict, "pass")
+            record = json.loads(trace_path.read_text().splitlines()[0])
+            self.assertTrue(record["rag_repair"]["applied"])
+            self.assertEqual(record["repair"]["action"], "state_effect")
+            self.assertTrue(record["repair"]["state_patch_present"])
+            self.assertEqual(record["repair"]["state_patch_fields"], ["session"])
+            self.assertIn("unresolved_state_effect_gap", record["escalation_tokens"])
+
+    def test_llm_rag_profile_bypasses_legacy_parse_fallback_even_if_env_enables_it(self):
+        with patch.object(LLMParseFallback, "repair_event", side_effect=AssertionError("legacy repair called")), patch.object(
+            LLMParseFallback,
+            "judge_target",
+            side_effect=AssertionError("legacy judge called"),
+        ), _env(SOLVER_PROFILE="llm_rag", USE_LLM_PARSE_FALLBACK="1", ENABLE_RAG_REPAIR="0", LLM_PIPELINE_MODE="off"):
+            verdict = Solver().predict_one(PROPERTIES_PASS)
+
+        self.assertEqual(verdict, "pass")
+
+    def test_parse_rag_audit_summarizes_repair_without_raw_model_response(self):
+        secret = "SECRET_PIN_123"
+        decision = RepairDecision(
+            action="state_effect",
+            confidence=0.9,
+            reason="safe summary",
+            step_index=0,
+            state_effect="open_session",
+            state_patch={"session": {"open": True}},
+            raw={"_raw_model_response": secret},
+        )
+        with tempfile.TemporaryDirectory() as td:
+            audit_path = Path(td) / "parse_rag.jsonl"
+            with _env(PARSE_RAG_AUDIT_PATH=str(audit_path)):
+                solver = Solver()
+                solver._write_audit_record(
+                    ParseAuditReport(),
+                    decision,
+                    RuleResult("pass", 0.9, "ok"),
+                    ("unresolved_state_effect_gap",),
+                )
+
+            text = audit_path.read_text()
+            record = json.loads(text)
+            self.assertNotIn(secret, text)
+            self.assertTrue(record["repair_decision"]["state_patch_present"])
+            self.assertEqual(record["repair_decision"]["state_patch_fields"], ["session"])
+
+    def test_parse_rag_audit_redacts_legacy_raw_reason_suffix(self):
+        secret = "SECRET_PIN_123"
+        decision = RepairDecision(
+            action="no_repair",
+            confidence=0.0,
+            reason=f"LLM repair output failed validation: bad; raw={secret}",
+            validation_error="bad",
+        )
+        with tempfile.TemporaryDirectory() as td:
+            audit_path = Path(td) / "parse_rag.jsonl"
+            with _env(PARSE_RAG_AUDIT_PATH=str(audit_path)):
+                solver = Solver()
+                solver._write_audit_record(ParseAuditReport(), decision, RuleResult("fail", 0.4, "bad"), ())
+
+            text = audit_path.read_text()
+            record = json.loads(text)
+            self.assertNotIn(secret, text)
+            self.assertEqual(
+                "LLM repair output failed validation: bad; raw=<omitted>",
+                record["repair_decision"]["reason"],
+            )
 
 
 class SolverLLMVerdictOverrideGuardTest(unittest.TestCase):

@@ -96,6 +96,26 @@ STATUS_ALIASES = {
     "error": "fail",
 }
 
+# Non-success statuses recognizable when embedded in damaged prose statuses.
+_EMBEDDED_ERROR_STATUSES = (
+    "not_authorized",
+    "invalid_parameter",
+    "invalid_command",
+    "sp_busy",
+    "sp_failed",
+    "sp_disabled",
+    "sp_frozen",
+    "no_sessions_available",
+    "uniqueness_conflict",
+    "insufficient_space",
+    "insufficient_rows",
+    "insufficient_columns",
+    "tper_malfunction",
+    "transaction_failure",
+    "response_overflow",
+    "authority_locked_out",
+)
+
 # spec core/5.1.5 Table 166: numeric/hex status code to canonical name (additive support).
 _STATUS_NUMERIC = {
     0: "success", 1: "not_authorized", 2: "obsolete", 3: "sp_busy", 4: "sp_failed",
@@ -132,7 +152,36 @@ def normalize_status(value):
             pass
     text = text.lower().replace("-", "_").replace(" ", "_")
     text = re.sub(r"_+", "_", text)
-    return STATUS_ALIASES.get(text, text)
+    if text in STATUS_ALIASES:
+        return STATUS_ALIASES[text]
+    # Damaged traces may bury the status inside prose ("spec says
+    # INVALID_PARAMETER / not successful", "write completed ok ...").
+    # Rescue a known non-success token first (longest match wins); rescue to
+    # success only when a success token is present AND nothing negates it.
+    tokens = set(text.split("_"))
+    for known in sorted(_EMBEDDED_ERROR_STATUSES, key=len, reverse=True):
+        if known in text:
+            return known
+    success_words = {"success", "successful", "ok", "passed", "pass", "completed"}
+    negation_words = {"not", "no", "never", "fail", "failed", "error", "denied", "rejected", "without"}
+    if tokens & success_words and not tokens & negation_words:
+        return "success"
+    # Prose that is clearly a failure but names no specific Table-166 class is
+    # still a non-success outcome — map to the generic failure status so it is
+    # NOT treated as an uninterpretable (lenient) unknown_status downstream.
+    if tokens & _GENERIC_FAILURE_WORDS:
+        return "fail"
+    return text
+
+
+# Generic failure words for damaged/drift statuses that carry a clear "this
+# failed" signal but no specific Table-166 class (which is handled above via
+# _EMBEDDED_ERROR_STATUSES).
+_GENERIC_FAILURE_WORDS = {
+    "fail", "failed", "failure", "error", "denied", "deny", "rejected",
+    "reject", "unauthorized", "refused", "refuse", "aborted", "abort",
+    "malformed", "timeout", "timedout",
+}
 
 
 def is_success_status(status):
@@ -619,11 +668,23 @@ def infer_method_name(method_uid, obj, family, required, optional, out):
     if compact and compact not in {"0000000600000016"}:
         return method_name_from_value(method_uid)
 
-    if _has_any_parameter(required, optional, "SPID", "HostSessionID", "Write"):
+    if _has_any_parameter(required, optional, "SPID"):
+        return "StartSession"
+    # HostSessionID + SPSessionID without SPID/Write is the SyncSession
+    # response signature (core/5.2.3.2).
+    if _has_any_parameter(required, optional, "SPSessionID") and not _has_any_parameter(
+        required, optional, "Write"
+    ):
+        return "SyncSession"
+    if _has_any_parameter(required, optional, "HostSessionID", "Write"):
         return "StartSession"
     if _has_any_parameter(required, optional, "Proof", "Authority", "HostSigningAuthority", "HostChallenge"):
         if obj == "SessionManager":
             return "Authenticate"
+    # RemoteSessionNumber/LocalSessionNumber is the CloseSession signature
+    # (core/5.2.3.5).
+    if _has_any_parameter(required, optional, "RemoteSessionNumber", "LocalSessionNumber"):
+        return "CloseSession"
     if _has_any_parameter(required, optional, "Values"):
         return "Set"
     if _has_any_parameter(required, optional, "Cellblock", "Count", "Where"):
@@ -798,7 +859,38 @@ def _args_from_list(items, method_name=None):
     return named
 
 
+def _embedded_json_object(text):
+    """Extract the first balanced JSON object embedded in damaged string args
+    (e.g. 'flattened required/optional parameters: {...}')."""
+    start = text.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    for position in range(start, len(text)):
+        ch = text[position]
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                import json as _json
+
+                try:
+                    parsed = _json.loads(text[start : position + 1])
+                except ValueError:
+                    return None
+                return parsed if isinstance(parsed, dict) else None
+    return None
+
+
 def normalize_args(args, method_name=None):
+    if isinstance(args, str):
+        # Damaged traces sometimes serialize the args dict into a string;
+        # the embedded JSON is unambiguous evidence — recover it.
+        embedded = _embedded_json_object(args)
+        if embedded is not None:
+            return normalize_args(embedded, method_name)
+        return {}, {}
     if isinstance(args, dict):
         required_raw = dict_value(args, "required")
         optional_raw = dict_value(args, "optional")
@@ -1236,6 +1328,14 @@ def normalize_record(record):
 
         method_uid_raw = dict_value(method, "uid")
         explicit_method_name = canonical_method_name(dict_value(method, "name"))
+        if explicit_method_name is not None and explicit_method_name not in _METHOD_NAME_CANONICAL.values():
+            # Damaged/aliased method name ("Start Session Negotiation",
+            # "Activate Locking SP"): the name itself is not a spec method, so
+            # treat it as absent and let the UID/argument-signature inference
+            # identify the method when the evidence is unambiguous.
+            inferred = infer_method_name(method_uid_raw, obj, family, required, optional, out)
+            if inferred in _METHOD_NAME_CANONICAL.values():
+                explicit_method_name = None
         method_name = explicit_method_name or infer_method_name(method_uid_raw, obj, family, required, optional, out)
         # TCG EndSession: host-side session close has no formal MethodID UID and may
         # appear as null name + null UID when the name field is omitted by the generator.

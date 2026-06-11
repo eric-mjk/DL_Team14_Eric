@@ -1,0 +1,16 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "command": "HOT_RESET",
+      "args": {
+        "Reason": "out-of-band sentinel",
+        "rag_probe_hint": "Hot reset abort sessions lock on reset state effect"
+      }
+    },
+    "output": {
+      "command": "HOT_RESET",
+      "result": "pass"
+    }
+  }
+]

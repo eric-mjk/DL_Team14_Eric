@@ -1,0 +1,17 @@
+# Calibration probe: predict "pass" for every testcase.
+#
+# Submitting this spends one slot to measure the hidden pass-label base rate
+# exactly (score = pass fraction). That reveals the direction of the wrong
+# ~15.5% and bounds every directional strategy (see PROJECT_DIRECTION.md).
+#
+# To submit: copy this file over src/configs/submission.yaml (the grader loads
+# submission.yaml with no env vars), then restore the real config afterwards.
+settings:
+  PROBE_CONSTANT_VERDICT: pass
+
+  # Everything else off: the probe must not load models or burn time.
+  USE_LLM_PARSE_FALLBACK: false
+  ENABLE_RAG_REPAIR: false
+  ENABLE_PARSE_AUDIT: false
+  LLM_PIPELINE_MODE: off
+  LLM_ALLOW_VERDICT_OVERRIDE: false

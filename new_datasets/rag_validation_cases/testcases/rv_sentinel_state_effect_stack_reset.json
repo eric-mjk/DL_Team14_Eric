@@ -1,0 +1,16 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "command": "STACK_RESET",
+      "args": {
+        "Reason": "out-of-band sentinel",
+        "rag_probe_hint": "Protocol Stack Reset Commands reset_like_event close sessions"
+      }
+    },
+    "output": {
+      "command": "STACK_RESET",
+      "result": "pass"
+    }
+  }
+]

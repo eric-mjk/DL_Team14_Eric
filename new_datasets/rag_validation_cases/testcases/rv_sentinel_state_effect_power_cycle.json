@@ -1,0 +1,16 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "command": "TCG_RESET",
+      "args": {
+        "Reason": "out-of-band sentinel",
+        "rag_probe_hint": "TCG Reset Events storage device reset reset_like_event"
+      }
+    },
+    "output": {
+      "command": "TCG_RESET",
+      "result": "pass"
+    }
+  }
+]

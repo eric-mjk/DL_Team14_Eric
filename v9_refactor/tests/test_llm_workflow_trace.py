@@ -65,6 +65,7 @@ class LLMWorkflowTraceSchemaTest(unittest.TestCase):
             ),
             repair_attempted=True,
             repair_applied=False,
+            escalation_tokens=("route:parser_damage", "schema_violation"),
         )
 
         for key in (
@@ -85,6 +86,7 @@ class LLMWorkflowTraceSchemaTest(unittest.TestCase):
         self.assertEqual(trace["parse_audit"]["issue_count"], 1)
         self.assertEqual(trace["rag"]["evidence_count"], 1)
         self.assertEqual(trace["repair"]["action"], "no_repair")
+        self.assertEqual(trace["escalation_tokens"], ["route:parser_damage", "schema_violation"])
 
     def test_trace_redacts_forbidden_raw_debug_fields_and_sensitive_values(self):
         unsafe = {
@@ -145,6 +147,24 @@ class LLMWorkflowTraceSchemaTest(unittest.TestCase):
         self.assertTrue(summary["event_patch"]["required_parameters"]["omitted"])
         for forbidden in ("SECRET_MODEL_RESPONSE", "SECRET_PIN_MARKER", "CHALLENGE_MARKER", "raw="):
             self.assertNotIn(forbidden, blob)
+
+    def test_repair_decision_summarizes_state_patch_without_values(self):
+        decision = RepairDecision(
+            action="state_effect",
+            confidence=0.9,
+            reason="bounded state effect",
+            step_index=0,
+            state_effect="open_session",
+            state_patch={"session": {"open": True, "authority": "secret"}, "credentials": {"x": "y"}},
+        )
+
+        summary = serialize_repair_decision(decision, enabled=True, attempted=True, applied=True)
+        blob = json.dumps(summary, sort_keys=True)
+
+        self.assertTrue(summary["state_patch_present"])
+        self.assertEqual(summary["state_patch_fields"], ["credentials", "session"])
+        self.assertNotIn("authority", blob)
+        self.assertNotIn("secret", blob)
 
     def test_legacy_parse_fallback_summaries_are_bounded(self):
         trace = build_llm_workflow_trace(

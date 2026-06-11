@@ -1,0 +1,16 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "command": "MEDIA_REKEY",
+      "args": {
+        "Reason": "out-of-band sentinel",
+        "rag_probe_hint": "Out of band media rekey changes locking range data state effect"
+      }
+    },
+    "output": {
+      "command": "MEDIA_REKEY",
+      "result": "pass"
+    }
+  }
+]

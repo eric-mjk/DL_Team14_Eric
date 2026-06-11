@@ -1,0 +1,16 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "command": "PSID_REVERT",
+      "args": {
+        "Reason": "out-of-band sentinel",
+        "rag_probe_hint": "PSID Revert out of band administrative reset state effect"
+      }
+    },
+    "output": {
+      "command": "PSID_REVERT",
+      "result": "pass"
+    }
+  }
+]

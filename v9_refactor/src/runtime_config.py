@@ -44,8 +44,25 @@ def load_runtime_config() -> Path | None:
         if key:
             os.environ.setdefault(key, _env_value(value))
 
+    _expand_debug_dir()
     _LOADED_PATHS.add(path)
     return path
+
+
+def _expand_debug_dir() -> None:
+    """Fan out one debug directory into the existing bounded artifact paths."""
+
+    debug_dir = os.environ.get("LLM_DEBUG_DIR")
+    if not debug_dir:
+        return
+    base = Path(debug_dir).expanduser()
+    defaults = {
+        "LLM_WORKFLOW_TRACE_PATH": "workflow_trace.jsonl",
+        "EVIDENCE_PACKET_AUDIT_PATH": "evidence_packets.jsonl",
+        "PARSE_RAG_AUDIT_PATH": "parse_rag_audit.jsonl",
+    }
+    for key, filename in defaults.items():
+        os.environ.setdefault(key, str(base / filename))
 
 
 def _has_config_suffix(value: str) -> bool:

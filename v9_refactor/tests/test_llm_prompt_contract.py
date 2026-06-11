@@ -6,6 +6,8 @@ from unittest.mock import patch
 os.environ.setdefault("SOLVER_PROFILE", "state_machine")
 
 from src.llm_parse_fallback import LLMParseFallback, _extract_prompt_rag_context
+from src.rag_context import build_repair_context
+from src.rag_schema import RetrievedChunk
 from src.state import initial_state
 
 
@@ -66,6 +68,29 @@ class LLMPromptContractTest(unittest.TestCase):
     def test_prompt_rag_context_extractor_surfaces_embedded_context(self):
         prompt = 'prefix INPUT:\n{"retrieved_spec_context": "abc", "task": "x"}'
         self.assertEqual(_extract_prompt_rag_context(prompt), "abc")
+
+    def test_rag_repair_context_has_protocol_facts_lane(self):
+        context = build_repair_context(
+            [],
+            {"method": "Get", "object_uid": "0000000600000016", "object_family": "MethodID"},
+            "state summary",
+            None,
+            [RetrievedChunk("s", "doc.md", "Title", "retrieved text", 0.7)],
+            events=[
+                {
+                    "index": 0,
+                    "method": "Get",
+                    "method_uid": "0000000600000016",
+                    "object_family": "MethodID",
+                    "status": "success",
+                }
+            ],
+        )
+
+        self.assertIn("=== Protocol Facts ===", context)
+        self.assertIn("method_uid=0000000600000016", context)
+        self.assertIn("method_uid_name=Get", context)
+        self.assertLess(context.index("=== Protocol Facts ==="), context.index("=== Retrieved Spec Evidence ==="))
 
 
 if __name__ == "__main__":

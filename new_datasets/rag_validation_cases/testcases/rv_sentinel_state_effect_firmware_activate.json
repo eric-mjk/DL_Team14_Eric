@@ -1,0 +1,16 @@
+[
+  {
+    "index": 1,
+    "input": {
+      "command": "FIRMWARE_ACTIVATE",
+      "args": {
+        "Reason": "out-of-band sentinel",
+        "rag_probe_hint": "Firmware activation out of band reset-like state effect"
+      }
+    },
+    "output": {
+      "command": "FIRMWARE_ACTIVATE",
+      "result": "pass"
+    }
+  }
+]

@@ -134,6 +134,7 @@ def build_llm_workflow_trace(
     parse_audit_write_status: Any = None,
     evidence_packet_path: str | None = None,
     evidence_packet_enabled: bool = False,
+    escalation_tokens: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     """Build the compact process-audit trace for parser/LLM/RAG workflow.
 
@@ -181,6 +182,7 @@ def build_llm_workflow_trace(
                 "evidence_packet_path": evidence_packet_path if evidence_packet_path else None,
             },
             "route": serialize_route_decision(route_decision),
+            "escalation_tokens": [str(token) for token in list(escalation_tokens or ())[:MAX_LIST_ITEMS]],
             "parse_audit": serialize_parse_audit(
                 parse_report,
                 enabled=parse_audit_enabled,
@@ -340,6 +342,8 @@ def serialize_repair_decision(
             "step_index": None,
             "event_patch": {},
             "state_effect": None,
+            "state_patch_present": False,
+            "state_patch_fields": [],
             "evidence": evidence,
             "evidence_count": 0,
         }
@@ -347,6 +351,7 @@ def serialize_repair_decision(
     raw = getattr(decision, "raw", {}) or {}
     model_called = isinstance(raw, dict) and "_raw_model_response" in raw
     patch = getattr(decision, "event_patch", None) or {}
+    state_patch = getattr(decision, "state_patch", None) or {}
     safe_patch = _safe_event_patch(patch)
     return {
         "enabled": bool(enabled),
@@ -361,6 +366,13 @@ def serialize_repair_decision(
         "event_patch": safe_patch,
         "state_effect": _bounded_text(getattr(decision, "state_effect", "") or "", 120)
         if getattr(decision, "state_effect", None) is not None
+        else None,
+        "state_patch_present": bool(state_patch),
+        "state_patch_fields": sorted(str(key) for key in state_patch)[:MAX_LIST_ITEMS]
+        if isinstance(state_patch, dict)
+        else [],
+        "validation_error": _bounded_text(getattr(decision, "validation_error", "") or "", MAX_REASON_CHARS)
+        if getattr(decision, "validation_error", None)
         else None,
         "evidence": evidence,
         "evidence_count": len(getattr(decision, "evidence", ()) or ()),
@@ -382,7 +394,9 @@ def sanitize_trace_value(value: Any) -> Any:
             text_key = str(key)
             if _is_forbidden_key(text_key):
                 continue
-            if _is_sensitive_key(text_key):
+            if text_key == "escalation_tokens":
+                safe[text_key] = sanitize_trace_value(item)
+            elif _is_sensitive_key(text_key):
                 safe[text_key] = "<redacted>"
             else:
                 safe[text_key] = sanitize_trace_value(item)
